@@ -1,18 +1,35 @@
-<div
-  style="display: flex; width: 100%; height: 100%; justify-content: center; align-items: center;"
->
-  <div style="text-align: center;">
-    <ng-template [ngIf]="user$ | async" let-user="ngIf">
-      <p>Logged in as {{ user.firstName }} {{ user.lastName }}</p>
-    </ng-template>
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span>LOGO</span>
+    <span class="example-spacer"></span>
 
     <button
-      mat-raised-button
-      color="warn"
-      class="logout-btn"
-      (click)="onLogout()"
+      mat-icon-button
+      color="white"
+      aria-label="Example icon-button with a heart icon"
+      routerLink="/dashboard"
     >
-      Logout
+      <mat-icon>home</mat-icon>
     </button>
-  </div>
-</div>
+    <button
+      mat-icon-button
+      color="white"
+      aria-label="Example icon-button with a heart icon"
+      [matMenuTriggerFor]="menu"
+    >
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button
+        mat-raised-button
+        color="warn"
+        class="logout-btn"
+        (click)="onLogout()"
+      >
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+    </mat-menu>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<router-outlet></router-outlet>
