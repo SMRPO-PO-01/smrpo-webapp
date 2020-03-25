@@ -20,12 +20,11 @@
       <mat-icon>account_circle</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button
-        mat-raised-button
-        color="warn"
-        class="logout-btn"
-        (click)="onLogout()"
-      >
+      <button mat-raised-button routerLink="/dashboard/add-user">
+        Add new user
+      </button>
+      <br />
+      <button mat-raised-button color="warn" (click)="onLogout()">
         <mat-icon>exit_to_app</mat-icon>
       </button>
     </mat-menu>
