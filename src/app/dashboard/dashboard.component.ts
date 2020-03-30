@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { Observable } from "rxjs";
 
-import { User } from '../interfaces/user.interface';
-import { RootStore } from '../store/root.store';
+import { User } from "../interfaces/user.interface";
+import { RootStore } from "../store/root.store";
 
 @Component({
   selector: "app-dashboard",
