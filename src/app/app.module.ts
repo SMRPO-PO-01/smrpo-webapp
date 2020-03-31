@@ -1,11 +1,12 @@
-import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { HttpRequestInterceptor } from "./interceptors/http-request.interceptor";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { HttpRequestInterceptor } from './interceptors/http-request.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -13,7 +14,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatSnackBarModule
   ],
   providers: [
     {

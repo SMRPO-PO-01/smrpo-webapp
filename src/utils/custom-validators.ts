@@ -1,7 +1,8 @@
-import { AbstractControl } from "@angular/forms";
+import { AbstractControl } from '@angular/forms';
 
 export const CUSTOM_VALIDATORS = {
   upperAndLowerLetters: (control: AbstractControl) =>
+    control.value &&
     control.value !== control.value.toUpperCase() &&
     control.value !== control.value.toLowerCase()
       ? null
