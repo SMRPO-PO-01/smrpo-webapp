@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Resolve, Router } from '@angular/router';
+import { Injectable } from "@angular/core";
+import { Resolve, Router } from "@angular/router";
 
-import { RootStore } from '../store/root.store';
+import { RootStore } from "../store/root.store";
 
 @Injectable()
 export class AuthResolver implements Resolve<void> {

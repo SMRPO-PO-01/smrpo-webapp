@@ -1,14 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
+import { ErrorStateMatcher } from "@angular/material/core";
+import { Router } from "@angular/router";
 
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from "../../services/auth.service";
 
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.scss"]
+  styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent implements OnInit {
   form: FormGroup;
@@ -25,7 +30,7 @@ export class LoginComponent implements OnInit {
   ) {
     this.form = formBuilder.group({
       username: ["", Validators.required],
-      password: ["", Validators.required]
+      password: ["", Validators.required],
     });
   }
 
@@ -44,7 +49,7 @@ export class LoginComponent implements OnInit {
       () => {
         this.router.navigate(["/dashboard"]);
       },
-      err => {
+      (err) => {
         if (err.body.message === "Wrong password") {
           this.password.setErrors({ error: true });
           this.passwordError = err.body.message;

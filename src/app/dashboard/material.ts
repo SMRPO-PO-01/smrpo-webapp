@@ -19,7 +19,7 @@ import { MatIconModule } from "@angular/material/icon";
     MatSidenavModule,
     MatListModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
   ],
   exports: [
     MatButtonModule,
@@ -30,7 +30,7 @@ import { MatIconModule } from "@angular/material/icon";
     MatSidenavModule,
     MatListModule,
     MatIconModule,
-    MatMenuModule
-  ]
+    MatMenuModule,
+  ],
 })
 export class MaterialModule {}

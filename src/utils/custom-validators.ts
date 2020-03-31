@@ -8,5 +8,5 @@ export const CUSTOM_VALIDATORS = {
       : { noUpperAndLowerCase: { value: control.value } },
 
   atLeastOneNumber: (control: AbstractControl) =>
-    /\d/.test(control.value) ? null : { noNumbers: { value: control.value } }
+    /\d/.test(control.value) ? null : { noNumbers: { value: control.value } },
 };

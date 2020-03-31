@@ -14,7 +14,7 @@ import { MaterialModule } from "./material";
     DashboardRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    MaterialModule
-  ]
+    MaterialModule,
+  ],
 })
 export class DashboardModule {}
