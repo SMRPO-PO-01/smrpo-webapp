@@ -1,6 +1,10 @@
 @import "../../../variables";
 
+$gradient1:  #accbee;
+$gradient2: #e7f0fd;
+
 .login-container {
+  background-image: linear-gradient(to top, $gradient1 0%, $gradient2 100%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,5 +20,6 @@
 
     padding: 30px 50px;
     border-radius: 10px;
+
   }
 }
