@@ -1,5 +1,5 @@
 <div class="add-user-container">
-  <form class="add-user-form" [formGroup]="form">
+  <form class="add-user-form" autocomplete="off" [formGroup]="form">
     <div>
       <mat-form-field appearance="standard">
         <mat-label>Username</mat-label>
@@ -13,7 +13,12 @@
 
       <mat-form-field appearance="standard">
         <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password" />
+        <input
+          matInput
+          type="password"
+          formControlName="password"
+          autocomplete="new-password"
+        />
       </mat-form-field>
     </div>
     <div>
