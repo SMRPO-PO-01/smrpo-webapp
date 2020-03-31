@@ -1,0 +1,13 @@
+sudo: required
+notifications:
+  email: false
+dist: bionic
+language: node_js
+node_js:
+  - 13
+cache:
+  directories:
+    - node_modules
+script:
+  - npm ci 
+  - npm run build
