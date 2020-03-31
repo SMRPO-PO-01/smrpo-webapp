@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { CustomErrorStateMatcher } from '../../../utils/custom-error-state-matcher';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -13,7 +13,7 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent implements OnInit {
   form: FormGroup;
 
-  errorMatcher = new LoginErrorStateMatcher();
+  errorMatcher = new CustomErrorStateMatcher();
 
   usernameError: string;
   passwordError: string;
@@ -62,11 +62,5 @@ export class LoginComponent implements OnInit {
 
   get password() {
     return this.form.get("password");
-  }
-}
-
-class LoginErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl): boolean {
-    return control.touched && !!control.errors;
   }
 }
