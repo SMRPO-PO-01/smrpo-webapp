@@ -7,7 +7,19 @@ table {
   width: 100%;
 }
 
-td,
+.delete-icon {
+  float: right;
+}
+
+.delete-header {
+  width: 0%;
+}
+
+// td,
 th {
-  width: 25%;
+  background-color: #fafafa;
+}
+
+.mat-icon {
+  cursor: pointer;
 }
