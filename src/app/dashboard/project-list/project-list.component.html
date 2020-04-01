@@ -1,7 +1,11 @@
 <div class="project-container">
   <div class="title">My projects:</div>
 
-  <mat-card *ngFor="let project of projects" class="project">
+  <mat-card
+    *ngFor="let project of projects"
+    class="project"
+    [routerLink]="['/dashboard', 'project', project.id]"
+  >
     <div>
       <div class="project-title">{{ project.title }}</div>
       <div class="project-members">Members: {{ project.users.length }}</div>
@@ -12,7 +16,7 @@
       color="primary"
       style="margin-top: 10px;"
       *ngIf="project.myRole === 'PRODUCT_OWNER'"
-      (click)="addSprint(project)"
+      (click)="addSprint(project); $event.stopPropagation()"
     >
       Add sprint
     </button>
