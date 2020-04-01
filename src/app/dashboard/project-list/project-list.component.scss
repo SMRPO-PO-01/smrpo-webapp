@@ -1,0 +1,16 @@
+@import '../../../variables';
+
+.project-container {
+  padding: 20px 50px;
+
+  .title {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .project {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+  }
+}
