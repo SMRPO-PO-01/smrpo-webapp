@@ -1,9 +1,10 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
 
-import { AdminGuard } from '../guards/admin.guard';
-import { AddUserComponent } from './add-user/add-user.component';
-import { DashboardComponent } from './dashboard.component';
+import { AdminGuard } from "../guards/admin.guard";
+import { AddUserComponent } from "./add-user/add-user.component";
+import { DashboardComponent } from "./dashboard.component";
+import { AddProjectComponent } from "./add-project/add-project.component";
 
 const routes: Routes = [
   {
@@ -19,6 +20,10 @@ const routes: Routes = [
       {
         path: "add-user",
         component: AddUserComponent
+      },
+      {
+        path: "add-project",
+        component: AddProjectComponent
       }
     ]
   }

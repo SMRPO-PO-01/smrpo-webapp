@@ -27,6 +27,13 @@
       >
         Add new user
       </button>
+      <button
+        mat-menu-item
+        routerLink="/dashboard/admin/add-project"
+        *ngIf="isAdmin"
+      >
+        Create project
+      </button>
       <button mat-menu-item (click)="onLogout()">
         Log out <mat-icon>exit_to_app</mat-icon>
       </button>

@@ -6,9 +6,11 @@ import { AddUserComponent } from './add-user/add-user.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { MaterialModule } from './material';
+import { AddProjectComponent } from './add-project/add-project.component';
+import { UsersOnProjectComponent } from './users-on-project/users-on-project.component';
 
 @NgModule({
-  declarations: [DashboardComponent, AddUserComponent],
+  declarations: [DashboardComponent, AddUserComponent, AddProjectComponent, UsersOnProjectComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule,
