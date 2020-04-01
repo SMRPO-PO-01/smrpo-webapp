@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { tap } from 'rxjs/operators';
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { tap } from "rxjs/operators";
 
-import { User } from '../interfaces/user.interface';
-import { InfoSnackbarComponent } from '../snackbars/info-snackbar/info-snackbar.component';
+import { User } from "../interfaces/user.interface";
+import { InfoSnackbarComponent } from "../snackbars/info-snackbar/info-snackbar.component";
 
 @Injectable({
   providedIn: "root"
@@ -21,5 +21,17 @@ export class AdminService {
         })
       )
     );
+  }
+
+  getAllUsers(search = "", page = 1, perPage = 100) {
+    return this.http.get<Array<User>>("admin/users", {
+      params: new HttpParams({
+        fromObject: {
+          page: page.toString(),
+          perPage: perPage.toString(),
+          search
+        }
+      })
+    });
   }
 }
