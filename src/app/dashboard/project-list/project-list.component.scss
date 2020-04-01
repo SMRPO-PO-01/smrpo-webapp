@@ -1,4 +1,4 @@
-@import '../../../variables';
+@import "../../../variables";
 
 .project-container {
   padding: 20px 50px;
@@ -12,5 +12,11 @@
     margin: 10px 0;
     display: flex;
     justify-content: space-between;
+
+    cursor: pointer;
+
+    &:hover {
+      background: $lightgray;
+    }
   }
 }

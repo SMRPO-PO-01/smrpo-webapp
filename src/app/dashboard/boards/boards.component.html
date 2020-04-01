@@ -1,0 +1,11 @@
+<div class="board-container" cdkDropListGroup>
+    <div class="board" *ngFor="let board of boards; let i = index" cdkDropList [cdkDropListData]="board" (cdkDropListDropped)="drop($event)">
+        <div class="title">{{board.title}}</div>
+        <div class="cards">
+            <mat-card *ngFor="let task of board.tasks" cdkDrag>
+                <mat-card-title>{{task.title}}</mat-card-title>
+                <mat-card-content>{{task.description}}</mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>
