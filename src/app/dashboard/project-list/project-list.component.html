@@ -1,0 +1,20 @@
+<div class="project-container">
+  <div class="title">My projects:</div>
+
+  <mat-card *ngFor="let project of projects" class="project">
+    <div>
+      <div class="project-title">{{ project.title }}</div>
+      <div class="project-members">Members: {{ project.users.length }}</div>
+      <div class="project-role">My role: {{ project.myRole }}</div>
+    </div>
+    <button
+      mat-raised-button
+      color="primary"
+      style="margin-top: 10px;"
+      *ngIf="project.myRole === 'PRODUCT_OWNER'"
+      (click)="addSprint(project)"
+    >
+      Add sprint
+    </button>
+  </mat-card>
+</div>
