@@ -1,5 +1,5 @@
 <div class="add-user-container">
-  <form class="add-user-form" [formGroup]="form">
+  <form class="add-user-form" autocomplete="off" [formGroup]="form">
     <div>
       <mat-form-field appearance="standard">
         <mat-label>Username</mat-label>
@@ -13,26 +13,47 @@
 
       <mat-form-field appearance="standard">
         <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password" />
+        <input
+          matInput
+          type="password"
+          formControlName="password"
+          autocomplete="new-password"
+          [errorStateMatcher]="errorMatcher"
+        />
+        <mat-error>
+          Should have 8 characters, 1 uppercase, 1 lowercase and a number
+        </mat-error>
       </mat-form-field>
     </div>
     <div>
       <mat-form-field appearance="standard">
         <mat-label>First name</mat-label>
-        <input matInput formControlName="firstName" />
+        <input
+          matInput
+          formControlName="firstName"
+          [errorStateMatcher]="errorMatcher"
+        />
       </mat-form-field>
       <mat-form-field appearance="standard">
         <mat-label>Last name</mat-label>
-        <input matInput formControlName="lastName" />
+        <input
+          matInput
+          formControlName="lastName"
+          [errorStateMatcher]="errorMatcher"
+        />
       </mat-form-field>
     </div>
     <mat-form-field appearance="standard">
       <mat-label>Email</mat-label>
-      <input matInput formControlName="email" />
+      <input
+        matInput
+        formControlName="email"
+        [errorStateMatcher]="errorMatcher"
+      />
     </mat-form-field>
     <mat-form-field>
       <mat-label>Role</mat-label>
-      <mat-select formControlName="role">
+      <mat-select formControlName="role" [errorStateMatcher]="errorMatcher">
         <mat-option value="ADMIN">
           ADMIN
         </mat-option>

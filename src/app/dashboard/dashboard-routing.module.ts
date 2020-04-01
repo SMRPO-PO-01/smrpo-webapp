@@ -1,9 +1,11 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
-import { DashboardComponent } from "./dashboard.component";
-import { AddUserComponent } from "./add-user/add-user.component";
+import { AdminGuard } from '../guards/admin.guard';
+import { AddUserComponent } from './add-user/add-user.component';
 import { BoardsComponent } from './boards/boards.component';
+import { DashboardComponent } from './dashboard.component';
+import { ProjectListComponent } from './project-list/project-list.component';
 
 const routes: Routes = [
   {
@@ -11,12 +13,23 @@ const routes: Routes = [
     component: DashboardComponent,
     children: [
       {
-        path: "add-user",
-        component: AddUserComponent
+        path: "",
+        component: ProjectListComponent
       },
       {
-        path: "",
+        path: "board",
         component: BoardsComponent
+      }
+    ]
+  },
+  {
+    path: "admin",
+    component: DashboardComponent,
+    canActivate: [AdminGuard],
+    children: [
+      {
+        path: "add-user",
+        component: AddUserComponent
       }
     ]
   }
@@ -24,6 +37,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [AdminGuard]
 })
 export class DashboardRoutingModule {}
