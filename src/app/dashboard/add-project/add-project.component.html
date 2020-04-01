@@ -1,0 +1,67 @@
+<div class="add-project-container">
+  <form class="add-project-form" autocomplete="off" [formGroup]="form">
+    <div>
+      <mat-form-field appearance="standard">
+        <mat-label>Project name</mat-label>
+        <input
+          matInput
+          formControlName="title"
+          [errorStateMatcher]="errorMatcher"
+        />
+        <mat-error *ngIf="title?.errors?.invalidTitle">{{
+          title.errors.invalidTitle
+        }}</mat-error>
+      </mat-form-field>
+      <mat-divider></mat-divider>
+      <mat-form-field>
+        <mat-label>Users</mat-label>
+        <input
+          type="text"
+          matInput
+          [formControl]="myControl"
+          [matAutocomplete]="auto"
+          #autoInput
+        />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="addUser($event.option.value); autoInput.blur()"
+        >
+          <mat-option
+            *ngFor="let option of filteredOptions | async"
+            [value]="option"
+          >
+            {{ option.firstName }} {{ option.lastName }} ({{ option.username }})
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <app-users-on-project
+        [users]="selectedUsers"
+        (onRemove)="removeUser($event)"
+      ></app-users-on-project>
+      <!-- <mat-form-field>
+        <mat-label>Role</mat-label>
+        <mat-select formControlName="role" [errorStateMatcher]="errorMatcher">
+          <mat-option value="PRODUCT_LEADER">
+            PRODUCT LEADER
+          </mat-option>
+          <mat-option value="PRODUCT_OWNER">
+            PRODUCT OWNER
+          </mat-option>
+          <mat-option value="TEAM_MEMBER">
+            TEAM MEMBER
+          </mat-option>
+        </mat-select>
+      </mat-form-field> -->
+      <br />
+      <button
+        mat-raised-button
+        color="primary"
+        style="margin-top: 10px;"
+        [disabled]="form.invalid || !users.length"
+        (click)="sendData()"
+      >
+        Add user to project
+      </button>
+    </div>
+  </form>
+</div>

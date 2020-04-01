@@ -19,6 +19,17 @@ export class ProjectService {
     private snackBar: MatSnackBar
   ) {}
 
+  createProject(project: Project) {
+    return this.http.post("project/create", project).pipe(
+      tap(() =>
+        this.snackBar.openFromComponent(InfoSnackbarComponent, {
+          data: { message: "Project was successfully created!" },
+          duration: 5000
+        })
+      )
+    );
+  }
+
   getMyProjects(page = 1, perPage = 25, search = "") {
     return this.http
       .get<Project[]>("project/my", {
