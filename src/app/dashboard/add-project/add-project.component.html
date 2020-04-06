@@ -38,20 +38,6 @@
         [users]="selectedUsers"
         (onRemove)="removeUser($event)"
       ></app-users-on-project>
-      <!-- <mat-form-field>
-        <mat-label>Role</mat-label>
-        <mat-select formControlName="role" [errorStateMatcher]="errorMatcher">
-          <mat-option value="PRODUCT_LEADER">
-            PRODUCT LEADER
-          </mat-option>
-          <mat-option value="PRODUCT_OWNER">
-            PRODUCT OWNER
-          </mat-option>
-          <mat-option value="TEAM_MEMBER">
-            TEAM MEMBER
-          </mat-option>
-        </mat-select>
-      </mat-form-field> -->
       <br />
       <button
         mat-raised-button
@@ -60,7 +46,12 @@
         [disabled]="form.invalid || !users.length"
         (click)="sendData()"
       >
-        Add user to project
+        <span
+          matTooltipPosition="right"
+          [matTooltip]="form.getError('error')"
+          [matTooltipDisabled]="!form.hasError('error')"
+          >Create project</span
+        >
       </button>
     </div>
   </form>

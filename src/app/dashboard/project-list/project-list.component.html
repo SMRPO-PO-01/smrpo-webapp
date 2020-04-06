@@ -15,7 +15,7 @@
       mat-raised-button
       color="primary"
       style="margin-top: 10px;"
-      *ngIf="project.myRole === 'PRODUCT_OWNER'"
+      *ngIf="project.myRole === 'SCRUM_MASTER'"
       (click)="addSprint(project); $event.stopPropagation()"
     >
       Add sprint
