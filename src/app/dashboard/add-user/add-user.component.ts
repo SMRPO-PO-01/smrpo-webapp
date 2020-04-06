@@ -9,7 +9,7 @@ import { CustomErrorStateMatcher } from '../../../utils/custom-error-state-match
 @Component({
   selector: "app-add-user",
   templateUrl: "./add-user.component.html",
-  styleUrls: ["./add-user.component.scss"]
+  styleUrls: ["./add-user.component.scss"],
 })
 export class AddUserComponent implements OnInit {
   form: FormGroup;
@@ -34,10 +34,10 @@ export class AddUserComponent implements OnInit {
     delete this.usernameError;
 
     this.adminService.createUser(this.form.value).subscribe(
-      user => {
+      (user) => {
         this.buildForm();
       },
-      err => {
+      (err) => {
         // Error (user že obstaja)
         this.usernameError = err.body.message;
         this.username.setErrors({ error: true });
@@ -54,14 +54,17 @@ export class AddUserComponent implements OnInit {
           Validators.required,
           Validators.minLength(8),
           CUSTOM_VALIDATORS.atLeastOneNumber,
-          CUSTOM_VALIDATORS.upperAndLowerLetters
-        ]
+          CUSTOM_VALIDATORS.upperAndLowerLetters,
+        ],
       ],
+      password2: "",
       firstName: ["", Validators.required],
       lastName: ["", Validators.required],
       email: ["", [Validators.required, Validators.email]],
-      role: [USER_ROLE.USER, Validators.required]
+      role: [USER_ROLE.USER, Validators.required],
     });
+
+    this.form.setValidators(CUSTOM_VALIDATORS.passwordsMatch);
   }
 
   get username() {

@@ -12,6 +12,17 @@
       </mat-form-field>
 
       <mat-form-field appearance="standard">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          formControlName="email"
+          [errorStateMatcher]="errorMatcher"
+        />
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field appearance="standard">
         <mat-label>Password</mat-label>
         <input
           matInput
@@ -24,7 +35,22 @@
           Should have 8 characters, 1 uppercase, 1 lowercase and a number
         </mat-error>
       </mat-form-field>
+
+      <mat-form-field appearance="standard">
+        <mat-label>Confirm Password</mat-label>
+        <input
+          matInput
+          type="password"
+          formControlName="password2"
+          autocomplete="new-password"
+          [errorStateMatcher]="errorMatcher"
+        />
+        <mat-error *ngIf="form.hasError('noPasswordMatch')">
+          Passwords do not match
+        </mat-error>
+      </mat-form-field>
     </div>
+
     <div>
       <mat-form-field appearance="standard">
         <mat-label>First name</mat-label>
@@ -43,14 +69,7 @@
         />
       </mat-form-field>
     </div>
-    <mat-form-field appearance="standard">
-      <mat-label>Email</mat-label>
-      <input
-        matInput
-        formControlName="email"
-        [errorStateMatcher]="errorMatcher"
-      />
-    </mat-form-field>
+
     <mat-form-field>
       <mat-label>Role</mat-label>
       <mat-select formControlName="role" [errorStateMatcher]="errorMatcher">

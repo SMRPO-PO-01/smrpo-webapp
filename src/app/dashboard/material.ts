@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const modules = [
   MatButtonModule,
@@ -24,10 +25,11 @@ const modules = [
   MatMenuModule,
   MatCardModule,
   MatTableModule,
-  MatAutocompleteModule
+  MatTooltipModule,
+  MatAutocompleteModule,
 ];
 @NgModule({
   imports: modules,
-  exports: modules
+  exports: modules,
 })
 export class MaterialModule {}

@@ -5,3 +5,17 @@
 .example-spacer {
   flex: 1 1 auto;
 }
+
+.logged-in-user {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+
+  padding-left: 10px;
+
+  .name {
+    padding: 10px 0;
+    font-size: 16px;
+  }
+}
