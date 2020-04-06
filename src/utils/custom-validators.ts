@@ -11,8 +11,15 @@ export const CUSTOM_VALIDATORS = {
   atLeastOneNumber: (control: AbstractControl) =>
     /\d/.test(control.value) ? null : { noNumbers: { value: control.value } },
 
+  passwordsMatch: (control: AbstractControl) => {
+    if (control.get("password").value !== control.get("password2").value) {
+      control.get("password2").setErrors({ noPasswordMatch: true });
+      return { noPasswordMatch: true };
+    }
+  },
+
   isInt: (control: AbstractControl) =>
     Number.isInteger(control.value)
       ? null
-      : { notInteger: { value: control.value } }
+      : { notInteger: { value: control.value } },
 };
