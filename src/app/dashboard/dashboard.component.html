@@ -3,20 +3,20 @@
     <span>KanBan</span>
     <span class="example-spacer"></span>
 
-    <button
-      mat-icon-button
-      color="white"
-      aria-label="Example icon-button with a heart icon"
-      routerLink="/dashboard"
-    >
+    <button mat-icon-button color="white" routerLink="/dashboard">
       <mat-icon>home</mat-icon>
     </button>
-    <button
-      mat-icon-button
-      color="white"
-      aria-label="Example icon-button with a heart icon"
-      [matMenuTriggerFor]="menu"
-    >
+
+    <div class="logged-in-user">
+      <span class="name">
+        {{ userName$ | async }}
+      </span>
+      <span class="last-login">
+        Last login: {{ lastLogin$ | async | date: "d.M.yyyy, h:mm a" }}
+      </span>
+    </div>
+
+    <button mat-icon-button color="white" [matMenuTriggerFor]="menu">
       <mat-icon>account_circle</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
