@@ -14,16 +14,63 @@
       </mat-form-field>
       <mat-divider></mat-divider>
       <mat-form-field>
+        <mat-label>Scrum Master</mat-label>
+        <input
+          type="text"
+          matInput
+          formControlName="scrumMaster"
+          [errorStateMatcher]="errorMatcher"
+          [matAutocomplete]="autoMaster"
+          #autoInput
+          (blur)="onScrumMasterBlur()"
+        />
+        <mat-autocomplete
+          #autoMaster="matAutocomplete"
+          (optionSelected)="scrumMasterSelected($event.option.value)"
+        >
+          <mat-option
+            *ngFor="let master of scrumFilteredOptions | async"
+            [value]="master"
+          >
+            {{ master.firstName }} {{ master.lastName }} ({{ master.username }})
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Project owner</mat-label>
+        <input
+          type="text"
+          matInput
+          formControlName="projectOwner"
+          [errorStateMatcher]="errorMatcher"
+          [matAutocomplete]="autoOwner"
+          #autoInput
+          (blur)="onProjectOwnerBlur()"
+        />
+        <mat-autocomplete
+          #autoOwner="matAutocomplete"
+          (optionSelected)="projectOwnerSelected($event.option.value)"
+        >
+          <mat-option
+            *ngFor="let master of ownerFilteredOptions | async"
+            [value]="master"
+          >
+            {{ master.firstName }} {{ master.lastName }} ({{ master.username }})
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-divider></mat-divider>
+      <mat-form-field>
         <mat-label>Users</mat-label>
         <input
           type="text"
           matInput
           [formControl]="myControl"
-          [matAutocomplete]="auto"
+          [matAutocomplete]="autoDevelopers"
           #autoInput
         />
         <mat-autocomplete
-          #auto="matAutocomplete"
+          #autoDevelopers="matAutocomplete"
           (optionSelected)="addUser($event.option.value); autoInput.blur()"
         >
           <mat-option
@@ -43,7 +90,7 @@
         mat-raised-button
         color="primary"
         style="margin-top: 10px;"
-        [disabled]="form.invalid || !users.length"
+        [disabled]="form.invalid"
         (click)="sendData()"
       >
         <span

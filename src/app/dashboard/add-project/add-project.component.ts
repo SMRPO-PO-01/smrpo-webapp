@@ -1,15 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
-import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
-import { PROJECT_USER_ROLE } from 'src/app/interfaces/project.interface';
-import { User } from 'src/app/interfaces/user.interface';
-import { AdminService } from 'src/app/services/admin.service';
-import { ProjectService } from 'src/app/services/project.service';
-import { WarningSnackbarComponent } from 'src/app/snackbars/warning-snackbar/warning-snackbar.component';
+import { Component, OnInit } from "@angular/core";
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Observable } from "rxjs";
+import { debounceTime, map, startWith, switchMap, tap } from "rxjs/operators";
+import { User } from "src/app/interfaces/user.interface";
+import { AdminService } from "src/app/services/admin.service";
+import { ProjectService } from "src/app/services/project.service";
+import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
 
-import { CustomErrorStateMatcher } from '../../../utils/custom-error-state-matcher';
+import { CustomErrorStateMatcher } from "../../../utils/custom-error-state-matcher";
 
 @Component({
   selector: "app-add-project",
@@ -19,6 +25,9 @@ import { CustomErrorStateMatcher } from '../../../utils/custom-error-state-match
 export class AddProjectComponent implements OnInit {
   form: FormGroup;
   myControl = new FormControl();
+
+  scrumFilteredOptions: Observable<User[]>;
+  ownerFilteredOptions: Observable<User[]>;
   errorMatcher = new CustomErrorStateMatcher();
   options: User[] = [];
   filteredOptions: Observable<User[]>;
@@ -34,12 +43,33 @@ export class AddProjectComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
-    this.filteredOptions = this.myControl.valueChanges.pipe(
-      startWith(""),
-      map((value) => (typeof value === "string" ? value : value.firstName)),
-      debounceTime(250),
-      switchMap((value) => this.adminService.getAllUsers(value))
+
+    const sw = startWith("");
+    const mp = map((value: any) =>
+      typeof value === "string" ? value : value.firstName
     );
+    const dt = debounceTime(250);
+    const sm = switchMap((value: string) =>
+      this.adminService.getAllUsers(value)
+    );
+
+    this.filteredOptions = this.myControl.valueChanges.pipe(sw, mp, dt, sm);
+    this.scrumFilteredOptions = this.scrumMaster.valueChanges.pipe(
+      sw,
+      mp,
+      dt,
+      sm
+    );
+    this.ownerFilteredOptions = this.projectOwner.valueChanges.pipe(
+      sw,
+      mp,
+      dt,
+      sm
+    );
+  }
+
+  displayFn(user: User): string {
+    return user && user.firstName ? user.firstName : "";
   }
 
   sendData() {
@@ -48,26 +78,67 @@ export class AddProjectComponent implements OnInit {
       return;
     }
 
-    console.log(this.form.value);
-
-    this.projectService.createProject(this.form.value).subscribe(
-      () => {
-        this.buildForm();
-      },
-      (error) => {
-        if (error.status === 409) {
-          this.title.setErrors({ invalidTitle: error.body.message });
-        } else {
-          console.error(error);
+    this.projectService
+      .createProject({
+        ...this.form.value,
+        developers: this.developers.value.map((d) => d.id),
+      })
+      .subscribe(
+        () => {
+          this.buildForm();
+        },
+        (error) => {
+          if (error.status === 409) {
+            this.title.setErrors({ invalidTitle: error.body.message });
+          } else {
+            console.error(error);
+          }
         }
-      }
-    );
+      );
+  }
+
+  onScrumMasterBlur() {
+    console.log("SM BLUR");
+    const user = this.scrumMasterUser.value;
+    if (!user || this.scrumMaster.value === "") {
+      this.scrumMaster.patchValue("");
+      this.scrumMasterId.patchValue(null);
+      this.scrumMasterUser.patchValue(null);
+    } else {
+      this.scrumMaster.patchValue(`${user.firstName} ${user.lastName}`);
+    }
+  }
+
+  scrumMasterSelected(user: User) {
+    console.log("SM SELECTED");
+    this.scrumMaster.patchValue(`${user.firstName} ${user.lastName}`);
+    this.scrumMasterId.patchValue(user.id);
+    this.scrumMasterUser.patchValue(user);
+  }
+
+  onProjectOwnerBlur() {
+    console.log("PO BLUR");
+    const user = this.projectOwnerUser.value;
+    if (!user || this.projectOwner.value === "") {
+      this.projectOwner.patchValue("");
+      this.projectOwnerId.patchValue(null);
+      this.projectOwnerUser.patchValue(null);
+    } else {
+      this.projectOwner.patchValue(`${user.firstName} ${user.lastName}`);
+    }
+  }
+
+  projectOwnerSelected(user: User) {
+    console.log("PO SELECTED");
+    this.projectOwner.patchValue(`${user.firstName} ${user.lastName}`);
+    this.projectOwnerId.patchValue(user.id);
+    this.projectOwnerUser.patchValue(user);
   }
 
   addUser(user: User) {
     this.myControl.patchValue("");
 
-    if (this.users.value.some((u) => u.id === user.id)) {
+    if (this.developers.value.some((u) => u.id === user.id)) {
       this.snackBar.openFromComponent(WarningSnackbarComponent, {
         data: { message: "User already added!" },
         duration: 5000,
@@ -75,45 +146,31 @@ export class AddProjectComponent implements OnInit {
       return;
     }
 
-    this.users.push(
+    this.developers.push(
       this.formbuilder.group({
         user,
         id: user.id,
-        role: PROJECT_USER_ROLE.DEVELOPER,
       })
     );
 
-    this.selectedUsers = [...this.users.controls];
+    this.selectedUsers = [...this.developers.controls];
   }
 
   removeUser(index: number) {
-    this.users.removeAt(index);
-    this.selectedUsers = [...this.users.controls];
+    this.developers.removeAt(index);
+    this.selectedUsers = [...this.developers.controls];
   }
 
   private buildForm() {
     this.form = this.formbuilder.group({
       title: ["", Validators.required],
-      users: this.formbuilder.array([]),
-    });
-
-    this.form.setValidators((form: FormControl) => {
-      const users: Array<{ id: number; role: PROJECT_USER_ROLE }> = form.get(
-        "users"
-      ).value;
-
-      const projectOwners = users.filter(
-        (user) => user.role === PROJECT_USER_ROLE.PROJECT_OWNER
-      ).length;
-      const scrumMasters = users.filter(
-        (user) => user.role === PROJECT_USER_ROLE.SCRUM_MASTER
-      ).length;
-
-      if (projectOwners !== 1 || scrumMasters !== 1)
-        return {
-          error:
-            "Project should have exactly 1 Project owner and 1 Scrum master.",
-        };
+      scrumMaster: ["", Validators.required],
+      scrumMasterId: [null],
+      scrumMasterUser: [null],
+      projectOwner: ["", Validators.required],
+      projectOwnerId: [null],
+      projectOwnerUser: [null],
+      developers: this.formbuilder.array([]),
     });
   }
 
@@ -121,7 +178,28 @@ export class AddProjectComponent implements OnInit {
     return this.form.get("title");
   }
 
-  get users() {
-    return this.form.get("users") as FormArray;
+  get scrumMaster() {
+    return this.form.get("scrumMaster");
+  }
+  get projectOwner() {
+    return this.form.get("projectOwner");
+  }
+
+  get scrumMasterId() {
+    return this.form.get("scrumMasterId");
+  }
+  get projectOwnerId() {
+    return this.form.get("projectOwnerId");
+  }
+
+  get scrumMasterUser() {
+    return this.form.get("scrumMasterUser");
+  }
+  get projectOwnerUser() {
+    return this.form.get("projectOwnerUser");
+  }
+
+  get developers() {
+    return this.form.get("developers") as FormArray;
   }
 }
