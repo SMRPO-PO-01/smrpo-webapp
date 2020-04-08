@@ -8,14 +8,15 @@
   >
     <div>
       <div class="project-title">{{ project.title }}</div>
-      <div class="project-members">Members: {{ project.users.length }}</div>
-      <div class="project-role">My role: {{ project.myRole }}</div>
+      <div class="project-members">
+        Developers: {{ project.developers.length }}
+      </div>
     </div>
     <button
       mat-raised-button
       color="primary"
       style="margin-top: 10px;"
-      *ngIf="project.myRole === 'SCRUM_MASTER'"
+      *ngIf="project.scrumMaster.id === (user$ | async).id"
       (click)="addSprint(project); $event.stopPropagation()"
     >
       Add sprint
