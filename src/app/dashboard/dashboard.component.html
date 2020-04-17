@@ -12,7 +12,7 @@
         {{ userName$ | async }}
       </span>
       <span class="last-login">
-        Last login: {{ lastLogin$ | async | date: "d.M.yyyy, h:mm a" }}
+        Last login: {{ (lastLogin$ | async | date: "d.M.yyyy, h:mm a") || "-" }}
       </span>
     </div>
 
