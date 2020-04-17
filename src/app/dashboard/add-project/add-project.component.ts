@@ -1,21 +1,14 @@
-import { Component, OnInit } from "@angular/core";
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from "@angular/forms";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { Observable } from "rxjs";
-import { debounceTime, map, startWith, switchMap, tap } from "rxjs/operators";
-import { User } from "src/app/interfaces/user.interface";
-import { AdminService } from "src/app/services/admin.service";
-import { ProjectService } from "src/app/services/project.service";
-import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
+import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable } from 'rxjs';
+import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
+import { User } from 'src/app/interfaces/user.interface';
+import { AdminService } from 'src/app/services/admin.service';
+import { ProjectService } from 'src/app/services/project.service';
+import { WarningSnackbarComponent } from 'src/app/snackbars/warning-snackbar/warning-snackbar.component';
 
-import { CustomErrorStateMatcher } from "../../../utils/custom-error-state-matcher";
+import { CustomErrorStateMatcher } from '../../../utils/custom-error-state-matcher';
 
 @Component({
   selector: "app-add-project",
@@ -98,7 +91,6 @@ export class AddProjectComponent implements OnInit {
   }
 
   onScrumMasterBlur() {
-    console.log("SM BLUR");
     const user = this.scrumMasterUser.value;
     if (!user || this.scrumMaster.value === "") {
       this.scrumMaster.patchValue("");
@@ -110,14 +102,12 @@ export class AddProjectComponent implements OnInit {
   }
 
   scrumMasterSelected(user: User) {
-    console.log("SM SELECTED");
     this.scrumMaster.patchValue(`${user.firstName} ${user.lastName}`);
     this.scrumMasterId.patchValue(user.id);
     this.scrumMasterUser.patchValue(user);
   }
 
   onProjectOwnerBlur() {
-    console.log("PO BLUR");
     const user = this.projectOwnerUser.value;
     if (!user || this.projectOwner.value === "") {
       this.projectOwner.patchValue("");
@@ -129,7 +119,6 @@ export class AddProjectComponent implements OnInit {
   }
 
   projectOwnerSelected(user: User) {
-    console.log("PO SELECTED");
     this.projectOwner.patchValue(`${user.firstName} ${user.lastName}`);
     this.projectOwnerId.patchValue(user.id);
     this.projectOwnerUser.patchValue(user);
@@ -172,6 +161,7 @@ export class AddProjectComponent implements OnInit {
       projectOwnerUser: [null],
       developers: this.formbuilder.array([]),
     });
+    this.selectedUsers = [...this.developers.controls];
   }
 
   get title() {
