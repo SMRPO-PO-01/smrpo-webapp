@@ -8,7 +8,7 @@ import { Board } from '../../interfaces/board.interface';
 @Component({
   selector: "app-boards",
   templateUrl: "./boards.component.html",
-  styleUrls: ["./boards.component.scss"]
+  styleUrls: ["./boards.component.scss"],
 })
 export class BoardsComponent implements OnInit {
   projectId: number;
@@ -40,7 +40,7 @@ export class BoardsComponent implements OnInit {
   getTasks(project: number, state: String) {
     this.taskService
       .getTasks({ project: project.toString(), search: state })
-      .subscribe(tasks => {
+      .subscribe((tasks) => {
         this.boards.push({ title: state, tasks: tasks });
       });
   }
@@ -52,8 +52,8 @@ export class BoardsComponent implements OnInit {
     console.log(newState);
 
     this.taskService
-      .updateTask({ id: taskId, state: newState })
-      .subscribe(task => {
+      .updateTask({ id: taskId, state: newState }, this.projectId)
+      .subscribe((task) => {
         if ((task.id = taskId)) {
           if (event.previousContainer === event.container) {
             moveItemInArray(
