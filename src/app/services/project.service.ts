@@ -8,6 +8,7 @@ import { Project } from "../interfaces/project.interface";
 import { Sprint } from "../interfaces/sprint.interface";
 import { InfoSnackbarComponent } from "../snackbars/info-snackbar/info-snackbar.component";
 import { RootStore } from "../store/root.store";
+import { Story } from '../interfaces/story.interface';
 
 @Injectable({
   providedIn: "root",
@@ -34,9 +35,9 @@ export class ProjectService {
     return this.http.get<Project[]>("project/my");
   }
 
-  createSprint(sprint: Sprint) {
+  createSprint(projectId: number, sprint: Sprint) {
     return this.http
-      .post("sprint", {
+      .post(`project/${projectId}/sprint`, {
         ...sprint,
         startDate: toDateOnlyString(sprint.startDate),
         endDate: toDateOnlyString(sprint.endDate),
@@ -49,5 +50,48 @@ export class ProjectService {
           })
         )
       );
+  }
+
+  getSprintsForProject(projectId: number) {
+    return this.http.get<Sprint[]>(`project/${projectId}/sprint`);
+  }
+
+  getSprintWithStories(projectId: number, sprintId: number) {
+    return this.http.get<Sprint[]>(`project/${projectId}/sprint/${sprintId}`);
+  }
+
+  createStory(projectId: number, story: Story) {
+    return this.http
+      .post(`project/${projectId}/story`, {
+        ...story
+      })
+      .pipe(
+        tap(() =>
+          this.snackBar.openFromComponent(InfoSnackbarComponent, {
+            data: { message: "Story was successfully created!" },
+            duration: 5000,
+          })
+        )
+      );
+  }
+
+  updateStory(projectId: number, storyId: number, story: Story) {
+    return this.http
+      .put(`project/${projectId}/story`, {
+        id: storyId,
+        ...story
+      })
+      .pipe(
+        tap(() =>
+          this.snackBar.openFromComponent(InfoSnackbarComponent, {
+            data: { message: "Story was successfully updated!" },
+            duration: 5000,
+          })
+        )
+      );
+  }
+
+  getStories(projectId: number) {
+    return this.http.get<Story[]>(`project/${projectId}/story`);
   }
 }

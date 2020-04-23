@@ -32,11 +32,11 @@ export class ProjectListComponent implements OnInit {
     this.user$ = this.rootStore.userStore.user$;
   }
 
-  addSprint(project: Project) {
+  addSprint(projectId: number) {
     this.dialog
       .open(CreateSprintModalComponent, {
         data: {
-          project,
+          projectId,
         },
       })
       .afterClosed()

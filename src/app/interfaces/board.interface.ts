@@ -1,6 +1,6 @@
-import { Task } from './task.interface';
+import { Story } from './story.interface';
 
 export interface Board {
   title: String
-  tasks: Task[]
+  stories: Story[]
 }

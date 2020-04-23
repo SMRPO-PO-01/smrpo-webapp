@@ -4,6 +4,13 @@ import { ActivatedRoute } from '@angular/router';
 import { TaskService } from 'src/app/services/task.service';
 
 import { Board } from '../../interfaces/board.interface';
+import { ProjectService } from 'src/app/services/project.service';
+import { Sprint } from 'src/app/interfaces/sprint.interface';
+import { toDateOnlyString } from 'src/utils/to-date-only-string';
+import { MatDialog } from '@angular/material/dialog';
+import { StoryModalComponent } from 'src/app/modals/story-modal/story-modal.component';
+import { CreateSprintModalComponent } from 'src/app/modals/create-sprint-modal/create-sprint-modal.component';
+import { Project } from 'src/app/interfaces/project.interface';
 
 @Component({
   selector: "app-boards",
@@ -12,64 +19,88 @@ import { Board } from '../../interfaces/board.interface';
 })
 export class BoardsComponent implements OnInit {
   projectId: number;
-  boards: Board[] = [];
+  activeSprint: Sprint;
+  inactiveSprints: Sprint[];
+  backlogBoard: Board = {title: "Backlog", stories: []};
+  sprintBoard: Board = {title: "Sprint", stories: []};
+  acceptedBoard: Board = {title: "Accepted", stories: []};
 
   constructor(
     private taskService: TaskService,
-    private route: ActivatedRoute
+    private projectService: ProjectService,
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(({ id }) => {
       this.projectId = id;
-      this.initBoards();
+    });
+    this.getSprints();
+    this.getStories(this.projectId);
+  }
+
+  getSprints() {
+    this.projectService.getSprintsForProject(this.projectId).subscribe((sprints) => {
+      console.log(sprints)
+      this.inactiveSprints = sprints.filter(sprint => !this.isActiveSprint(sprint))
+      this.activeSprint = sprints.filter(sprint => this.isActiveSprint(sprint))[0]
+      if(this.activeSprint) {
+        this.sprintBoard.title = toDateOnlyString(new Date(this.activeSprint.startDate)) + " - " +  toDateOnlyString(new Date(this.activeSprint.endDate))
+        this.getActiveSprint()
+      }
     });
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    this.updateTask(event);
+  getActiveSprint() {
+    this.projectService.getSprintWithStories(this.projectId, this.activeSprint.id).subscribe((sprint) => {
+      console.log(sprint);
+    });
   }
 
-  initBoards() {
-    this.getTasks(this.projectId, "UNASSIGNED");
-    this.getTasks(this.projectId, "ASSIGNED");
-    this.getTasks(this.projectId, "ACTIVE");
-    this.getTasks(this.projectId, "DONE");
+  isActiveSprint(sprint: Sprint) {
+    const today = new Date();
+    return new Date(sprint.startDate) <= today && new Date(sprint.endDate) >= today;
   }
 
-  getTasks(project: number, state: String) {
-    this.taskService
-      .getTasks({ project: project.toString(), search: state })
-      .subscribe((tasks) => {
-        this.boards.push({ title: state, tasks: tasks });
-      });
-  }
-
-  updateTask(event: CdkDragDrop<string[]>) {
-    var taskId = event.previousContainer.data["tasks"][event.previousIndex].id;
-    var newState = event.container.data["title"];
-    console.log(taskId);
-    console.log(newState);
-
-    this.taskService
-      .updateTask({ id: taskId, state: newState }, this.projectId)
-      .subscribe((task) => {
-        if ((task.id = taskId)) {
-          if (event.previousContainer === event.container) {
-            moveItemInArray(
-              event.container.data["tasks"],
-              event.previousIndex,
-              event.currentIndex
-            );
-          } else {
-            transferArrayItem(
-              event.previousContainer.data["tasks"],
-              event.container.data["tasks"],
-              event.previousIndex,
-              event.currentIndex
-            );
-          }
+  addStory(projectId) {
+    this.dialog
+      .open(StoryModalComponent, {
+        data: {
+          projectId,
+          undefined
         }
-      });
+      })
+      .afterClosed()
+      .subscribe(console.log);
+  }
+
+  editStory(projectId, story) {
+    this.dialog
+      .open(StoryModalComponent, {
+        data: {
+          projectId,
+          story
+        },
+      })
+      .afterClosed()
+      .subscribe(console.log);
+  }
+
+  getStories(projectId) {
+    this.projectService.getStories(projectId).subscribe((stories) => {
+      this.backlogBoard.stories = stories;
+    });
+  }
+
+  addSprint(projectId) {
+    this.dialog
+      .open(CreateSprintModalComponent, {
+        data: {
+          projectId,
+        },
+      })
+      .afterClosed()
+      .subscribe(console.log);
   }
 }

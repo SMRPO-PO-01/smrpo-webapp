@@ -1,5 +1,5 @@
 export interface Sprint {
-  projectId: number;
+  id: number;
   velocity: number;
   startDate: Date;
   endDate: Date;
