@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AdminGuard } from '../guards/admin.guard';
 import { ProjectResolver } from '../resolvers/project.resolver';
+import { SprintsResolver } from '../resolvers/sprints.resolver';
 import { AddProjectComponent } from './add-project/add-project.component';
 import { AddUserComponent } from './add-user/add-user.component';
 import { BoardsComponent } from './boards/boards.component';
@@ -21,7 +22,7 @@ const routes: Routes = [
       {
         path: "project/:id",
         component: BoardsComponent,
-        resolve: { project: ProjectResolver },
+        resolve: { project: ProjectResolver, sprints: SprintsResolver },
       },
     ],
   },
@@ -45,6 +46,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [AdminGuard, ProjectResolver],
+  providers: [AdminGuard, ProjectResolver, SprintsResolver],
 })
 export class DashboardRoutingModule {}

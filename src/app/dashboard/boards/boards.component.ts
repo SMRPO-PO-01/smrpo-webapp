@@ -36,12 +36,12 @@ export class BoardsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.data.subscribe(({ project }) => {
+    this.route.data.subscribe(({ project, sprints }) => {
       this.project = project;
       this.backlogBoard.stories = this.project.backlog;
       this.sprintBoard.stories = this.project.sprint;
       this.acceptedBoard.stories = this.project.accepted;
-      this.getSprints();
+      this.setSprints(sprints);
 
       this.isScrumMaster$ = this.rootStore.userStore.user$.pipe(
         map((user) => user.id === this.project.scrumMaster.id)
@@ -49,24 +49,19 @@ export class BoardsComponent implements OnInit {
     });
   }
 
-  getSprints() {
-    this.projectService
-      .getSprintsForProject(this.project.id)
-      .subscribe((sprints) => {
-        console.log(sprints);
-        this.inactiveSprints = sprints.filter(
-          (sprint) => !this.isActiveSprint(sprint)
-        );
-        this.activeSprint = sprints.filter((sprint) =>
-          this.isActiveSprint(sprint)
-        )[0];
-        if (this.activeSprint) {
-          this.sprintBoard.title =
-            toDateOnlyString(new Date(this.activeSprint.startDate)) +
-            " - " +
-            toDateOnlyString(new Date(this.activeSprint.endDate));
-        }
-      });
+  setSprints(sprints: Sprint[]) {
+    this.inactiveSprints = sprints.filter(
+      (sprint) => !this.isActiveSprint(sprint)
+    );
+    this.activeSprint = sprints.filter((sprint) =>
+      this.isActiveSprint(sprint)
+    )[0];
+    if (this.activeSprint) {
+      this.sprintBoard.title =
+        toDateOnlyString(new Date(this.activeSprint.startDate)) +
+        " - " +
+        toDateOnlyString(new Date(this.activeSprint.endDate));
+    }
   }
 
   isActiveSprint(sprint: Sprint) {
