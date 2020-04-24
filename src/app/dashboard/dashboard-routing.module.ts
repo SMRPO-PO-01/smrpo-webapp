@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AdminGuard } from '../guards/admin.guard';
+import { ProjectResolver } from '../resolvers/project.resolver';
 import { AddProjectComponent } from './add-project/add-project.component';
 import { AddUserComponent } from './add-user/add-user.component';
 import { BoardsComponent } from './boards/boards.component';
@@ -15,13 +16,14 @@ const routes: Routes = [
     children: [
       {
         path: "",
-        component: ProjectListComponent
+        component: ProjectListComponent,
       },
       {
         path: "project/:id",
-        component: BoardsComponent
-      }
-    ]
+        component: BoardsComponent,
+        resolve: { project: ProjectResolver },
+      },
+    ],
   },
   {
     path: "admin",
@@ -30,19 +32,19 @@ const routes: Routes = [
     children: [
       {
         path: "add-user",
-        component: AddUserComponent
+        component: AddUserComponent,
       },
       {
         path: "add-project",
-        component: AddProjectComponent
-      }
-    ]
-  }
+        component: AddProjectComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [AdminGuard]
+  providers: [AdminGuard, ProjectResolver],
 })
 export class DashboardRoutingModule {}
