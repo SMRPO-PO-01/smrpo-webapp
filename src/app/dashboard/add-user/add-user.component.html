@@ -10,14 +10,17 @@
         />
         <mat-error *ngIf="usernameError">{{ usernameError }}</mat-error>
       </mat-form-field>
-
+      
       <mat-form-field appearance="standard">
+      
         <mat-label>Email</mat-label>
         <input
           matInput
           formControlName="email"
           [errorStateMatcher]="errorMatcher"
         />
+        
+
       </mat-form-field>
     </div>
 
