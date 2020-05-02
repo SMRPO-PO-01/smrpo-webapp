@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { Router } from "@angular/router";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
-import { USER_ROLE } from '../interfaces/user.interface';
-import { RootStore } from '../store/root.store';
+import { USER_ROLE } from "../interfaces/user.interface";
+import { RootStore } from "../store/root.store";
+import { MatSidenav } from "@angular/material/sidenav";
 
 @Component({
   selector: "app-dashboard",
@@ -14,7 +15,6 @@ import { RootStore } from '../store/root.store';
 export class DashboardComponent implements OnInit {
   userName$: Observable<string>;
   lastLogin$: Observable<Date>;
-
   constructor(private rootStore: RootStore, private router: Router) {}
 
   ngOnInit() {

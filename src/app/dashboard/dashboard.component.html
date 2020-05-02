@@ -1,44 +1,80 @@
-<mat-toolbar color="primary">
-  <mat-toolbar-row>
-    <span>KanBan</span>
-    <span class="example-spacer"></span>
-
-    <button mat-icon-button color="white" routerLink="/dashboard">
-      <mat-icon>home</mat-icon>
-    </button>
-
-    <div class="logged-in-user">
-      <span class="name">
-        {{ userName$ | async }}
-      </span>
-      <span class="last-login">
-        Last login: {{ (lastLogin$ | async | date: "d.M.yyyy, h:mm a") || "-" }}
-      </span>
-    </div>
-
-    <button mat-icon-button color="white" [matMenuTriggerFor]="menu">
-      <mat-icon>account_circle</mat-icon>
-    </button>
-    <mat-menu #menu="matMenu">
-      <button
-        mat-menu-item
-        routerLink="/dashboard/admin/add-user"
-        *ngIf="isAdmin"
-      >
-        Add new user
-      </button>
-      <button
-        mat-menu-item
-        routerLink="/dashboard/admin/add-project"
-        *ngIf="isAdmin"
-      >
-        Create project
-      </button>
-      <button mat-menu-item (click)="onLogout()">
-        Log out <mat-icon>exit_to_app</mat-icon>
-      </button>
-    </mat-menu>
-  </mat-toolbar-row>
+<mat-toolbar>
+    <mat-toolbar-row>
+        <button
+            mat-icon-button
+            aria-label="Toggle sidebar"
+            (click)="drawer.toggle()"
+        >
+            <mat-icon>menu</mat-icon>
+        </button>
+        <span>KanBan</span>
+        <span class="example-spacer"></span>
+        <div class="logged-in-user">
+            <span class="name">{{ userName$ | async }}</span>
+            <span class="last-login">
+                Last login: {{ (lastLogin$ | async | date: "d.M.yyyy, h:mm a") || "-" }}
+            </span>
+        </div>
+        <button
+            mat-icon-button
+            color="white"
+            [matMenuTriggerFor]="menu"
+        >
+            <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button
+                mat-menu-item
+                (click)="onLogout()"
+            >
+                <mat-icon>exit_to_app</mat-icon>
+                Log out
+            </button>
+        </mat-menu>
+    </mat-toolbar-row>
 </mat-toolbar>
-
-<router-outlet></router-outlet>
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav
+        class="sidenav"
+        appResponsiveSidenav
+        #start
+        #drawer
+        mode="side"
+        disableClose="true"
+        role="navigation"
+        opened
+    >
+        <mat-nav-list>
+            <a
+                mat-list-item
+                routerLink="/dashboard/"
+                routerLinkActive="is-active"
+                matTooltip="Info about the action"
+            >
+                <mat-icon mat-list-icon>dashboard</mat-icon>
+                <h4 mat-line>Dashboard</h4>
+            </a>
+            <a
+                mat-list-item
+                routerLink="/dashboard/admin/add-user"
+                routerLinkActive="is-active"
+                *ngIf="isAdmin"
+            >
+                <mat-icon mat-list-icon>person_add</mat-icon>
+                <h4 mat-line>Add user</h4>
+            </a>
+            <a
+                mat-list-item
+                routerLink="/dashboard/admin/add-project"
+                routerLinkActive="is-active"
+                *ngIf="isAdmin"
+            >
+                <mat-icon mat-list-icon>library_add</mat-icon>
+                <h4 mat-line>Create project</h4>
+            </a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>

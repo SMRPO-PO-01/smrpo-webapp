@@ -1,3 +1,4 @@
+@import "../../variables";
 .example-icon {
   padding: 0 14px;
 }
@@ -19,3 +20,46 @@
     font-size: 16px;
   }
 }
+
+mat-sidenav-container {
+  height: 100%;
+}
+
+mat-sidenav {
+  // background: url("src/images/fri-outside.jpg");
+  border: none;
+
+  background-color: #666666;
+
+  a {
+    color: #ffffff;
+  }
+  .is-active {
+    background-color: $primary-color;
+  }
+}
+mat-nav-list {
+  a:hover {
+    // TODO Set right color
+    background-color: #5f5e5e;
+  }
+}
+
+/*left sidenav style override*/
+mat-sidenav:not(.mat-drawer-opened) {
+  transform: translate3d(0, 0, 0) !important;
+  visibility: visible !important;
+  width: 60px !important;
+  overflow: hidden;
+  transition: ease;
+}
+mat-sidenav:not(.mat-drawer-opened) .navigation-item-label {
+  display: none !important;
+}
+mat-sidenav:not(.mat-drawer-opened) .home-button {
+  display: none !important;
+}
+
+// mat-drawer-container {
+//   height: 100%;
+// }

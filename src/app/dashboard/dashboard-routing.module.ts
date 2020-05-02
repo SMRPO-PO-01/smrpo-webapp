@@ -1,12 +1,12 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
 
-import { AdminGuard } from '../guards/admin.guard';
-import { AddProjectComponent } from './add-project/add-project.component';
-import { AddUserComponent } from './add-user/add-user.component';
-import { BoardsComponent } from './boards/boards.component';
-import { DashboardComponent } from './dashboard.component';
-import { ProjectListComponent } from './project-list/project-list.component';
+import { AdminGuard } from "../guards/admin.guard";
+import { AddProjectComponent } from "./add-project/add-project.component";
+import { AddUserComponent } from "./add-user/add-user.component";
+import { BoardsComponent } from "./boards/boards.component";
+import { DashboardComponent } from "./dashboard.component";
+import { ProjectListComponent } from "./project-list/project-list.component";
 
 const routes: Routes = [
   {
@@ -15,13 +15,13 @@ const routes: Routes = [
     children: [
       {
         path: "",
-        component: ProjectListComponent
+        component: ProjectListComponent,
       },
       {
         path: "project/:id",
-        component: BoardsComponent
-      }
-    ]
+        component: BoardsComponent,
+      },
+    ],
   },
   {
     path: "admin",
@@ -30,19 +30,19 @@ const routes: Routes = [
     children: [
       {
         path: "add-user",
-        component: AddUserComponent
+        component: AddUserComponent,
       },
       {
         path: "add-project",
-        component: AddProjectComponent
-      }
-    ]
-  }
+        component: AddProjectComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [AdminGuard]
+  providers: [AdminGuard],
 })
 export class DashboardRoutingModule {}
