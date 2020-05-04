@@ -1,16 +1,17 @@
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { TaskService } from 'src/app/services/task.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ProjectWithStories } from 'src/app/interfaces/project.interface';
+import { Sprint } from 'src/app/interfaces/sprint.interface';
+import { CreateSprintModalComponent } from 'src/app/modals/create-sprint-modal/create-sprint-modal.component';
+import { StoryModalComponent } from 'src/app/modals/story-modal/story-modal.component';
+import { ProjectService } from 'src/app/services/project.service';
+import { toDateOnlyString } from 'src/utils/to-date-only-string';
 
 import { Board } from '../../interfaces/board.interface';
-import { ProjectService } from 'src/app/services/project.service';
-import { Sprint } from 'src/app/interfaces/sprint.interface';
-import { toDateOnlyString } from 'src/utils/to-date-only-string';
-import { MatDialog } from '@angular/material/dialog';
-import { StoryModalComponent } from 'src/app/modals/story-modal/story-modal.component';
-import { CreateSprintModalComponent } from 'src/app/modals/create-sprint-modal/create-sprint-modal.component';
-import { Project } from 'src/app/interfaces/project.interface';
+import { RootStore } from '../../store/root.store';
 
 @Component({
   selector: "app-boards",
@@ -18,86 +19,91 @@ import { Project } from 'src/app/interfaces/project.interface';
   styleUrls: ["./boards.component.scss"],
 })
 export class BoardsComponent implements OnInit {
-  projectId: number;
+  project: ProjectWithStories;
   activeSprint: Sprint;
   inactiveSprints: Sprint[];
-  backlogBoard: Board = {title: "Backlog", stories: []};
-  sprintBoard: Board = {title: "Sprint", stories: []};
-  acceptedBoard: Board = {title: "Accepted", stories: []};
+  backlogBoard: Board = { title: "Backlog", stories: [] };
+  sprintBoard: Board = { title: "Sprint", stories: [] };
+  acceptedBoard: Board = { title: "Accepted", stories: [] };
+
+  isScrumMaster$: Observable<boolean>;
 
   constructor(
-    private taskService: TaskService,
+    private rootStore: RootStore,
     private projectService: ProjectService,
     private route: ActivatedRoute,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(({ id }) => {
-      this.projectId = id;
-    });
-    this.getSprints();
-    this.getStories(this.projectId);
-  }
+    this.route.data.subscribe(({ project, sprints }) => {
+      this.project = project;
+      this.backlogBoard.stories = this.project.backlog;
+      this.sprintBoard.stories = this.project.sprint;
+      this.acceptedBoard.stories = this.project.accepted;
+      this.setSprints(sprints);
 
-  getSprints() {
-    this.projectService.getSprintsForProject(this.projectId).subscribe((sprints) => {
-      console.log(sprints)
-      this.inactiveSprints = sprints.filter(sprint => !this.isActiveSprint(sprint))
-      this.activeSprint = sprints.filter(sprint => this.isActiveSprint(sprint))[0]
-      if(this.activeSprint) {
-        this.sprintBoard.title = toDateOnlyString(new Date(this.activeSprint.startDate)) + " - " +  toDateOnlyString(new Date(this.activeSprint.endDate))
-        this.getActiveSprint()
-      }
+      this.isScrumMaster$ = this.rootStore.userStore.user$.pipe(
+        map((user) => user.id === this.project.scrumMaster.id)
+      );
     });
   }
 
-  getActiveSprint() {
-    this.projectService.getSprintWithStories(this.projectId, this.activeSprint.id).subscribe((sprint) => {
-      console.log(sprint);
-    });
+  setSprints(sprints: Sprint[]) {
+    this.inactiveSprints = sprints.filter(
+      (sprint) => !this.isActiveSprint(sprint)
+    );
+    this.activeSprint = sprints.filter((sprint) =>
+      this.isActiveSprint(sprint)
+    )[0];
+    if (this.activeSprint) {
+      this.sprintBoard.title =
+        toDateOnlyString(new Date(this.activeSprint.startDate)) +
+        " - " +
+        toDateOnlyString(new Date(this.activeSprint.endDate));
+    }
   }
 
   isActiveSprint(sprint: Sprint) {
     const today = new Date();
-    return new Date(sprint.startDate) <= today && new Date(sprint.endDate) >= today;
+    return (
+      new Date(sprint.startDate) <= today && new Date(sprint.endDate) >= today
+    );
   }
 
-  addStory(projectId) {
+  addStory() {
     this.dialog
       .open(StoryModalComponent, {
         data: {
-          projectId,
-          undefined
-        }
-      })
-      .afterClosed()
-      .subscribe(console.log);
-  }
-
-  editStory(projectId, story) {
-    this.dialog
-      .open(StoryModalComponent, {
-        data: {
-          projectId,
-          story
+          projectId: this.project.id,
+          undefined,
         },
       })
       .afterClosed()
       .subscribe(console.log);
   }
 
-  getStories(projectId) {
-    this.projectService.getStories(projectId).subscribe((stories) => {
-      this.backlogBoard.stories = stories;
-    });
+  editStory(story) {
+    this.dialog
+      .open(StoryModalComponent, {
+        data: {
+          projectId: this.project.id,
+          story,
+        },
+      })
+      .afterClosed()
+      .subscribe(console.log);
   }
 
-  addSprint(projectId) {
+  addSprint() {
+    if (this.rootStore.userStore.user.id !== this.project.scrumMaster.id) {
+      return;
+    }
+
     this.dialog
       .open(CreateSprintModalComponent, {
         data: {
-          projectId,
+          projectId: this.project.id,
         },
       })
       .afterClosed()
