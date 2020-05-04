@@ -1,0 +1,15 @@
+.story-form {
+  display: flex;
+  flex-direction: column;
+  min-width: 400px;
+
+  .title {
+    font-size: 18px;
+    margin-bottom: 25px;
+  }
+
+  .error-msg {
+    font-size: 12px;
+    max-width: 200px;
+  }
+}

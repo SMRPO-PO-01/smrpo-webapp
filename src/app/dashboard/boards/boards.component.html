@@ -1,11 +1,74 @@
 <div class="board-container" cdkDropListGroup>
-    <div class="board" *ngFor="let board of boards; let i = index" cdkDropList [cdkDropListData]="board" (cdkDropListDropped)="drop($event)">
-        <div class="title">{{board.title}}</div>
-        <div class="cards">
-            <mat-card *ngFor="let task of board.tasks" cdkDrag>
-                <mat-card-title>{{task.title}}</mat-card-title>
-                <mat-card-content>{{task.description}}</mat-card-content>
-            </mat-card>
-        </div>
+  <div class="board" cdkDropList [cdkDropListData]="backlogBoard">
+    <div class="title">{{ backlogBoard.title }}</div>
+    <div class="cards">
+      <mat-card
+        class="create-story"
+        (click)="addStory(); $event.stopPropagation()"
+      >
+        <mat-card-content
+          ><mat-icon>add_outline</mat-icon> Create new story</mat-card-content
+        >
+      </mat-card>
+      <mat-card *ngFor="let story of backlogBoard.stories" cdkDrag>
+        <button
+          mat-icon-button
+          color="white"
+          (click)="editStory(story); $event.stopPropagation()"
+        >
+          <mat-icon>settings</mat-icon>
+        </button>
+        <mat-card-title>{{ story.title }}</mat-card-title>
+        <mat-card-content>{{ story.description }}</mat-card-content>
+      </mat-card>
     </div>
+  </div>
+  <div
+    *ngIf="activeSprint"
+    class="board"
+    cdkDropList
+    [cdkDropListData]="sprintBoard"
+  >
+    <div class="title">
+      Sprint: <span>{{ sprintBoard.title }}</span>
+    </div>
+    <div class="cards">
+      <mat-card *ngFor="let story of sprintBoard.stories" cdkDrag>
+        <button mat-icon-button color="white">
+          <mat-icon>settings</mat-icon>
+        </button>
+        <mat-card-title>{{ story.title }}</mat-card-title>
+        <mat-card-content>{{ story.description }}</mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <div
+    *ngIf="!activeSprint"
+    class="board missing-sprint"
+    [ngStyle]="(isScrumMaster$ | async) ? {} : { pointerEvents: 'none' }"
+    (click)="addSprint(); $event.stopPropagation()"
+  >
+    <div class="title">Sprint</div>
+    <div class="cards" *ngIf="isScrumMaster$ | async; else notScrumMaster">
+      There is no currently active sprint. Add new sprint!
+      <mat-icon>add_circle_outline</mat-icon>
+    </div>
+    <ng-template #notScrumMaster>
+      <div class="cards">
+        There is no currently active sprint.
+      </div>
+    </ng-template>
+  </div>
+  <div class="board" cdkDropList [cdkDropListData]="acceptedBoard">
+    <div class="title">{{ acceptedBoard.title }}</div>
+    <div class="cards">
+      <mat-card *ngFor="let story of acceptedBoard.stories" cdkDrag>
+        <button mat-icon-button color="white">
+          <mat-icon>settings</mat-icon>
+        </button>
+        <mat-card-title>{{ story.title }}</mat-card-title>
+        <mat-card-content>{{ story.description }}</mat-card-content>
+      </mat-card>
+    </div>
+  </div>
 </div>

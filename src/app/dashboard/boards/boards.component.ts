@@ -1,9 +1,17 @@
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { TaskService } from 'src/app/services/task.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ProjectWithStories } from 'src/app/interfaces/project.interface';
+import { Sprint } from 'src/app/interfaces/sprint.interface';
+import { CreateSprintModalComponent } from 'src/app/modals/create-sprint-modal/create-sprint-modal.component';
+import { StoryModalComponent } from 'src/app/modals/story-modal/story-modal.component';
+import { ProjectService } from 'src/app/services/project.service';
+import { toDateOnlyString } from 'src/utils/to-date-only-string';
 
 import { Board } from '../../interfaces/board.interface';
+import { RootStore } from '../../store/root.store';
 
 @Component({
   selector: "app-boards",
@@ -11,65 +19,94 @@ import { Board } from '../../interfaces/board.interface';
   styleUrls: ["./boards.component.scss"],
 })
 export class BoardsComponent implements OnInit {
-  projectId: number;
-  boards: Board[] = [];
+  project: ProjectWithStories;
+  activeSprint: Sprint;
+  inactiveSprints: Sprint[];
+  backlogBoard: Board = { title: "Backlog", stories: [] };
+  sprintBoard: Board = { title: "Sprint", stories: [] };
+  acceptedBoard: Board = { title: "Accepted", stories: [] };
+
+  isScrumMaster$: Observable<boolean>;
 
   constructor(
-    private taskService: TaskService,
-    private route: ActivatedRoute
+    private rootStore: RootStore,
+    private projectService: ProjectService,
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(({ id }) => {
-      this.projectId = id;
-      this.initBoards();
+    this.route.data.subscribe(({ project, sprints }) => {
+      this.project = project;
+      this.backlogBoard.stories = this.project.backlog;
+      this.sprintBoard.stories = this.project.sprint;
+      this.acceptedBoard.stories = this.project.accepted;
+      this.setSprints(sprints);
+
+      this.isScrumMaster$ = this.rootStore.userStore.user$.pipe(
+        map((user) => user.id === this.project.scrumMaster.id)
+      );
     });
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    this.updateTask(event);
+  setSprints(sprints: Sprint[]) {
+    this.inactiveSprints = sprints.filter(
+      (sprint) => !this.isActiveSprint(sprint)
+    );
+    this.activeSprint = sprints.filter((sprint) =>
+      this.isActiveSprint(sprint)
+    )[0];
+    if (this.activeSprint) {
+      this.sprintBoard.title =
+        toDateOnlyString(new Date(this.activeSprint.startDate)) +
+        " - " +
+        toDateOnlyString(new Date(this.activeSprint.endDate));
+    }
   }
 
-  initBoards() {
-    this.getTasks(this.projectId, "UNASSIGNED");
-    this.getTasks(this.projectId, "ASSIGNED");
-    this.getTasks(this.projectId, "ACTIVE");
-    this.getTasks(this.projectId, "DONE");
+  isActiveSprint(sprint: Sprint) {
+    const today = new Date();
+    return (
+      new Date(sprint.startDate) <= today && new Date(sprint.endDate) >= today
+    );
   }
 
-  getTasks(project: number, state: String) {
-    this.taskService
-      .getTasks({ project: project.toString(), search: state })
-      .subscribe((tasks) => {
-        this.boards.push({ title: state, tasks: tasks });
-      });
+  addStory() {
+    this.dialog
+      .open(StoryModalComponent, {
+        data: {
+          projectId: this.project.id,
+          undefined,
+        },
+      })
+      .afterClosed()
+      .subscribe(console.log);
   }
 
-  updateTask(event: CdkDragDrop<string[]>) {
-    var taskId = event.previousContainer.data["tasks"][event.previousIndex].id;
-    var newState = event.container.data["title"];
-    console.log(taskId);
-    console.log(newState);
+  editStory(story) {
+    this.dialog
+      .open(StoryModalComponent, {
+        data: {
+          projectId: this.project.id,
+          story,
+        },
+      })
+      .afterClosed()
+      .subscribe(console.log);
+  }
 
-    this.taskService
-      .updateTask({ id: taskId, state: newState }, this.projectId)
-      .subscribe((task) => {
-        if ((task.id = taskId)) {
-          if (event.previousContainer === event.container) {
-            moveItemInArray(
-              event.container.data["tasks"],
-              event.previousIndex,
-              event.currentIndex
-            );
-          } else {
-            transferArrayItem(
-              event.previousContainer.data["tasks"],
-              event.container.data["tasks"],
-              event.previousIndex,
-              event.currentIndex
-            );
-          }
-        }
-      });
+  addSprint() {
+    if (this.rootStore.userStore.user.id !== this.project.scrumMaster.id) {
+      return;
+    }
+
+    this.dialog
+      .open(CreateSprintModalComponent, {
+        data: {
+          projectId: this.project.id,
+        },
+      })
+      .afterClosed()
+      .subscribe(console.log);
   }
 }

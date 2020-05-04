@@ -1,13 +1,14 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { map, tap } from "rxjs/operators";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { tap } from 'rxjs/operators';
 
-import { toDateOnlyString } from "../../utils/to-date-only-string";
-import { Project } from "../interfaces/project.interface";
-import { Sprint } from "../interfaces/sprint.interface";
-import { InfoSnackbarComponent } from "../snackbars/info-snackbar/info-snackbar.component";
-import { RootStore } from "../store/root.store";
+import { toDateOnlyString } from '../../utils/to-date-only-string';
+import { Project, ProjectWithStories } from '../interfaces/project.interface';
+import { Sprint } from '../interfaces/sprint.interface';
+import { Story } from '../interfaces/story.interface';
+import { InfoSnackbarComponent } from '../snackbars/info-snackbar/info-snackbar.component';
+import { RootStore } from '../store/root.store';
 
 @Injectable({
   providedIn: "root",
@@ -34,9 +35,13 @@ export class ProjectService {
     return this.http.get<Project[]>("project/my");
   }
 
-  createSprint(sprint: Sprint) {
+  getById(id: number) {
+    return this.http.get<ProjectWithStories>(`project/${id}`);
+  }
+
+  createSprint(projectId: number, sprint: Sprint) {
     return this.http
-      .post("sprint", {
+      .post(`project/${projectId}/sprint`, {
         ...sprint,
         startDate: toDateOnlyString(sprint.startDate),
         endDate: toDateOnlyString(sprint.endDate),
@@ -49,5 +54,48 @@ export class ProjectService {
           })
         )
       );
+  }
+
+  getSprintsForProject(projectId: number) {
+    return this.http.get<Sprint[]>(`project/${projectId}/sprint`);
+  }
+
+  getSprintWithStories(projectId: number, sprintId: number) {
+    return this.http.get<Sprint[]>(`project/${projectId}/sprint/${sprintId}`);
+  }
+
+  createStory(projectId: number, story: Story) {
+    return this.http
+      .post(`project/${projectId}/story`, {
+        ...story,
+      })
+      .pipe(
+        tap(() =>
+          this.snackBar.openFromComponent(InfoSnackbarComponent, {
+            data: { message: "Story was successfully created!" },
+            duration: 5000,
+          })
+        )
+      );
+  }
+
+  updateStory(projectId: number, storyId: number, story: Story) {
+    return this.http
+      .put(`project/${projectId}/story`, {
+        id: storyId,
+        ...story,
+      })
+      .pipe(
+        tap(() =>
+          this.snackBar.openFromComponent(InfoSnackbarComponent, {
+            data: { message: "Story was successfully updated!" },
+            duration: 5000,
+          })
+        )
+      );
+  }
+
+  getStories(projectId: number) {
+    return this.http.get<Story[]>(`project/${projectId}/story`);
   }
 }

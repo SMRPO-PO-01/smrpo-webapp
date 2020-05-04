@@ -21,7 +21,7 @@ export class CreateSprintModalComponent implements OnInit {
   private loading = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data: { project: Project },
+    @Inject(MAT_DIALOG_DATA) private data: { projectId: number },
     private dialogRef: MatDialogRef<CreateSprintModalComponent>,
     private formBuilder: FormBuilder,
     private projectService: ProjectService
@@ -29,7 +29,7 @@ export class CreateSprintModalComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      projectId: this.data.project.id,
+      projectId: this.data.projectId,
       startDate: ["", Validators.required],
       endDate: ["", Validators.required],
       velocity: [
@@ -46,7 +46,8 @@ export class CreateSprintModalComponent implements OnInit {
 
     this.loading = true;
     delete this.errorMsg;
-    this.projectService.createSprint(this.form.value).subscribe(
+    console.log(this.data.projectId);
+    this.projectService.createSprint(this.data.projectId, this.form.value).subscribe(
       res => {
         this.dialogRef.close(res);
       },
