@@ -1,5 +1,5 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AdminGuard } from '../guards/admin.guard';
 import { ProjectResolver } from '../resolvers/project.resolver';
@@ -24,20 +24,15 @@ const routes: Routes = [
         component: BoardsComponent,
         resolve: { project: ProjectResolver, sprints: SprintsResolver },
       },
-    ],
-  },
-  {
-    path: "admin",
-    component: DashboardComponent,
-    canActivate: [AdminGuard],
-    children: [
       {
-        path: "add-user",
+        path: "admin/add-user",
         component: AddUserComponent,
+        canActivate: [AdminGuard],
       },
       {
-        path: "add-project",
+        path: "admin/add-project",
         component: AddProjectComponent,
+        canActivate: [AdminGuard],
       },
     ],
   },
