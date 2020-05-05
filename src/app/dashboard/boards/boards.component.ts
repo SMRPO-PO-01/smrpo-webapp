@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ProjectWithStories } from 'src/app/interfaces/project.interface';
-import { Sprint } from 'src/app/interfaces/sprint.interface';
-import { CreateSprintModalComponent } from 'src/app/modals/create-sprint-modal/create-sprint-modal.component';
-import { StoryModalComponent } from 'src/app/modals/story-modal/story-modal.component';
-import { ProjectService } from 'src/app/services/project.service';
-import { toDateOnlyString } from 'src/utils/to-date-only-string';
+import { Component, OnInit } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { ActivatedRoute } from "@angular/router";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { ProjectWithStories } from "src/app/interfaces/project.interface";
+import { Sprint } from "src/app/interfaces/sprint.interface";
+import { CreateSprintModalComponent } from "src/app/modals/create-sprint-modal/create-sprint-modal.component";
+import { StoryModalComponent } from "src/app/modals/story-modal/story-modal.component";
+import { ProjectService } from "src/app/services/project.service";
+import { toDateOnlyString } from "src/utils/to-date-only-string";
 
-import { Board } from '../../interfaces/board.interface';
-import { RootStore } from '../../store/root.store';
+import { Board } from "../../interfaces/board.interface";
+import { RootStore } from "../../store/root.store";
+import { ShowStoryDetailsModalComponent } from "src/app/modals/show-story-details-modal/show-story-details-modal.component";
 
 @Component({
   selector: "app-boards",
@@ -47,6 +48,20 @@ export class BoardsComponent implements OnInit {
         map((user) => user.id === this.project.scrumMaster.id)
       );
     });
+  }
+
+  openDetails(story) {
+    this.dialog
+      .open(ShowStoryDetailsModalComponent, {
+        height: "800px",
+        width: "1000px",
+        data: {
+          projectId: this.project.id,
+          story: story,
+        },
+      })
+      .afterClosed()
+      .subscribe(console.log);
   }
 
   setSprints(sprints: Sprint[]) {
