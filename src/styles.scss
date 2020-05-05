@@ -36,8 +36,6 @@ body {
 //   input: mat-typography-level(inherit, 1.125, 400, "Roboto", 1.5px),
 // );
 
-// Foreground Elements
-
 // Light Theme Text
 $dark-text: #000000;
 $dark-primary-text: rgba($dark-text, 0.87);
@@ -177,6 +175,30 @@ $mat-primary: (
       darker: $dark-primary-text,
     ),
 );
+
+// Custom scroll bar
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-darker-color);
+}
+
 $theme-primary: mat-palette($mat-primary, main, lighter, darker);
 
 mat-card-title {
