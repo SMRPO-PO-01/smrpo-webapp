@@ -56,12 +56,12 @@ export class BoardsComponent implements OnInit {
         height: "800px",
         width: "1000px",
         data: {
-          projectId: this.project.id,
+          project: this.project,
           story: story,
         },
       })
       .afterClosed()
-      .subscribe(console.log);
+      .subscribe();
   }
 
   setSprints(sprints: Sprint[]) {

@@ -44,8 +44,8 @@ export class TaskService {
     //   },
     // ]);
   }
-  createTask(data: any) {
-    return this.http.post<Task>(`project/${data.project}/task`, {
+  createTask(projectId: number, data: any) {
+    return this.http.post<Task>(`project/${projectId}/task`, {
       params: data,
     });
   }
