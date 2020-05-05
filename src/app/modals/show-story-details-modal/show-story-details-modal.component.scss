@@ -71,6 +71,8 @@ mat-card-content {
     }
 
     .cards {
+      max-height: 800px;
+      overflow: auto;
       padding: 15px;
     }
 

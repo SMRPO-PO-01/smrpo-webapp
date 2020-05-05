@@ -12,6 +12,7 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
+import { InfoSnackbarComponent } from "src/app/snackbars/info-snackbar/info-snackbar.component";
 @Component({
   selector: "app-show-story-details-modal",
   templateUrl: "./show-story-details-modal.component.html",
@@ -47,15 +48,26 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     this.user = this.whoAmI();
     this.isProjectOwner = this.user.id == this.project.projectOwner.id;
     this.isScrumMaster = this.user.id == this.project.scrumMaster.id;
-    // this.isDeveloper = this.user.id in this.project.developers;
     this.isDeveloper = this.project.developers.some(
       (user) => user.id == this.user.id
     );
-    console.log("is developer:" + this.isDeveloper);
-    console.log("is isProjectOwner:" + this.isProjectOwner);
-    console.log("is isScrumMaster:" + this.isScrumMaster);
+  }
 
-    // if
+  getUser(task: Task) {
+    if (task.state == undefined || task.state == "UNASSIGNED") {
+      return "None";
+    }
+    if (task.id == this.project.projectOwner.id) {
+      return `${this.project.projectOwner.firstName} ${this.project.projectOwner.lastName} (${this.project.projectOwner.username})`;
+    } else if (task.id == this.project.scrumMaster.id) {
+      return `${this.project.scrumMaster.firstName} ${this.project.scrumMaster.lastName} (${this.project.scrumMaster.username})`;
+    }
+
+    this.project.developers.forEach((developer) => {
+      if (developer.id == task.id) {
+        return `${developer.firstName} ${developer.lastName} (${developer.username})`;
+      }
+    });
   }
 
   whoAmI() {
@@ -64,9 +76,33 @@ export class ShowStoryDetailsModalComponent implements OnInit {
 
   getTasks() {
     this.taskService.getTasks(this.projectId, this.story).subscribe((tasks) => {
-      console.log(tasks);
       this.tasks = tasks;
     });
+  }
+
+  deleteTask(task: Task) {
+    console.log(task);
+
+    this.taskService.deleteTask(this.projectId, task.id).subscribe(
+      (res) => {
+        this.snackBar.openFromComponent(InfoSnackbarComponent, {
+          data: {
+            message: res,
+          },
+          duration: 5000,
+        });
+      },
+      (err) => {
+        console.log(err);
+
+        this.snackBar.openFromComponent(WarningSnackbarComponent, {
+          data: {
+            message: err.body.message,
+          },
+          duration: 5000,
+        });
+      }
+    );
   }
 
   addTask() {
@@ -79,7 +115,11 @@ export class ShowStoryDetailsModalComponent implements OnInit {
           },
         })
         .afterClosed()
-        .subscribe();
+        .subscribe((res) => {
+          if (res != undefined) {
+            this.getTasks();
+          }
+        });
     } else {
       this.snackBar.openFromComponent(WarningSnackbarComponent, {
         data: {

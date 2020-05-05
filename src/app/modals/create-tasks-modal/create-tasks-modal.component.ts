@@ -21,6 +21,7 @@ export class CreateTasksModalComponent implements OnInit {
   project: Project;
   developerFilteredOptions: User[];
   private loading = false;
+  errorMsg: string;
   constructor(
     @Inject(MAT_DIALOG_DATA)
     private data: { project: Project; storyId: number },
@@ -43,26 +44,18 @@ export class CreateTasksModalComponent implements OnInit {
       title: ["", Validators.required],
       state: ["UNASSIGNED"],
       description: [""],
-      time: ["", [Validators.required, Validators.min(1), Validators.max(10)]],
-      assignee: [""],
-      assigneeId: [null],
-      assigneeUser: [null],
+      size: ["", [Validators.required, Validators.min(1), Validators.max(10)]],
+      user: [""],
+      userId: [null],
+      userUser: [null],
     });
   }
-  /**
- * projectId: this.data.projectId,
-        title: ["", Validators.required],
-        description: ["", Validators.required],
-        acceptanceTests: ["", Validators.required],
-        priority: ["", Validators.required],
-        businessValue: ["", [Validators.required, Validators.min(1), Validators.max(10)]],
- */
+
   createTask() {
     if (this.form.invalid || this.loading) {
       this.form.markAllAsTouched();
       return;
     }
-    console.log(this.form.value);
 
     this.loading = true;
     this.taskService.createTask(this.project.id, this.form.value).subscribe(
@@ -70,46 +63,43 @@ export class CreateTasksModalComponent implements OnInit {
         this.dialogRef.close(res);
       },
       (err) => {
-        console.log(err);
         if (err.status === 409) {
-          // this.errorMsg = err.body.message;
-
+          this.errorMsg = err.body.message;
           this.loading = false;
         }
       }
     );
   }
 
-  onAssigneeBlur() {
-    const user = this.assigneeUser.value;
+  onUserBlur() {
+    const user = this.userUser.value;
 
-    if (!user || this.assignee.value === "") {
-      this.assignee.patchValue("");
-      this.assigneeId.patchValue(null);
-      this.assigneeUser.patchValue(null);
+    if (!user || this.user.value === "") {
+      this.user.patchValue("");
+      this.userId.patchValue(null);
+      this.userUser.patchValue(null);
     } else {
-      this.assignee.patchValue(
+      this.user.patchValue(
         `${user.firstName} ${user.lastName} (${user.username})`
       );
     }
   }
 
-  assigneeSelected(user: User) {
-    console.log(user);
-    this.assignee.patchValue(
+  userSelected(user: User) {
+    this.user.patchValue(
       `${user.firstName} ${user.lastName} (${user.username})`
     );
-    this.assigneeId.patchValue(user.id);
-    this.assigneeUser.patchValue(user);
+    this.userId.patchValue(user.id);
+    this.userUser.patchValue(user);
   }
 
-  get assignee() {
-    return this.form.get("assignee");
+  get user() {
+    return this.form.get("user");
   }
-  get assigneeId() {
-    return this.form.get("assigneeId");
+  get userId() {
+    return this.form.get("userId");
   }
-  get assigneeUser() {
-    return this.form.get("assigneeUser");
+  get userUser() {
+    return this.form.get("userUser");
   }
 }

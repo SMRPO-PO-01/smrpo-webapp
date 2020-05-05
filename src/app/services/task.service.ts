@@ -30,24 +30,20 @@ export class TaskService {
         },
       }),
     });
-    // return of([
-    //   {
-    //     id: 14,
-    //     title: "my title",
-    //     description: "",
-    //     state: "UNASSIGNED",
-    //     createdAt: "2020-05-05T09:48:30.346Z",
-    //     projectId: 24,
-    //     userId: null,
-    //     storyId: 1,
-    //     size: null,
-    //   },
-    // ]);
   }
-  createTask(projectId: number, data: any) {
-    return this.http.post<Task>(`project/${projectId}/task`, {
-      params: data,
+
+  deleteTask(projectId: number, taskId: number) {
+    return this.http.delete<Task>(`project/${projectId}/task`, {
+      params: new HttpParams({
+        fromObject: {
+          id: taskId.toString(),
+        },
+      }),
     });
+  }
+
+  createTask(projectId: number, data: any) {
+    return this.http.post<Task>(`project/${projectId}/task`, data);
   }
   updateTask(data: any, projectId: number) {
     return this.http.put<Task>(`project/${projectId}/task`, data);

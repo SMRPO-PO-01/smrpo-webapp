@@ -33,7 +33,7 @@
                 <button
                   mat-icon-button
                   color="white"
-                  (click)="editTask(task); $event.stopPropagation()"
+                  (click)="deleteTask(task); $event.stopPropagation()"
                 >
                   <mat-icon>delete</mat-icon>
                 </button>
@@ -49,9 +49,12 @@
                 ({{ task.id }}) {{ task.title }}
               </mat-card-title>
               <mat-card-content>
-                <div>Description: {{ task.description }}</div>
+                <div>
+                  Description:
+                  {{ task.description ? task.description : "None" }}
+                </div>
                 <div>State: {{ task.state }}</div>
-                <div>UserId: {{ task.userId }}</div>
+                <div>User: {{ getUser(task) }}</div>
                 <div>Size: {{ task.size }}</div>
               </mat-card-content>
             </mat-card>
