@@ -58,6 +58,7 @@ export class BoardsComponent implements OnInit {
         data: {
           project: this.project,
           story: story,
+          activeSprint: this.activeSprint,
         },
       })
       .afterClosed()

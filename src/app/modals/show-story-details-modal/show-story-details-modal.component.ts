@@ -13,6 +13,7 @@ import { map } from "rxjs/operators";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
 import { InfoSnackbarComponent } from "src/app/snackbars/info-snackbar/info-snackbar.component";
+import { Sprint } from "src/app/interfaces/sprint.interface";
 @Component({
   selector: "app-show-story-details-modal",
   templateUrl: "./show-story-details-modal.component.html",
@@ -22,13 +23,15 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   isScrumMaster: boolean;
   isProjectOwner: boolean;
   isDeveloper: boolean;
+  activeSprint: Sprint;
   user: User;
   story: Story;
   project: Project;
   projectId: number;
   tasks: Task[];
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data: { project: Project; story: Story },
+    @Inject(MAT_DIALOG_DATA)
+    private data: { project: Project; story: Story; activeSprint: Sprint },
     private taskService: TaskService,
     private dialog: MatDialog,
     private rootStore: RootStore,
@@ -37,9 +40,12 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     this.story = data.story;
     this.project = data.project;
     this.projectId = data.project.id;
+    this.activeSprint = data.activeSprint;
   }
 
   ngOnInit(): void {
+    console.log(this.activeSprint);
+
     this.getTasks();
 
     this.getUserRole();
