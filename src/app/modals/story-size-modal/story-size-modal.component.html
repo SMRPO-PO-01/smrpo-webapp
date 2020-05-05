@@ -1,0 +1,27 @@
+<form autocomplete="off" class="story-form" [formGroup]="form">
+  <div class="title">{{ newSize ? "Insert Size" : "Edit Size" }}</div>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Size</mat-label>
+    <input
+      type="number"
+      matInput
+      min="1"
+      max="15"
+      step="1"
+      formControlName="size"
+    />
+    <mat-error>Input a number between 1 and 15</mat-error>
+  </mat-form-field>
+  <mat-error class="error-msg">{{ errorMsg }}</mat-error>
+
+  <button
+    mat-raised-button
+    color="primary"
+    style="margin-top: 10px;"
+    [disabled]="form.invalid"
+    (click)="saveStory()"
+  >
+    {{ newSize ? "Insert" : "Update" }}
+  </button>
+</form>

@@ -1,5 +1,19 @@
 <div class="project-container">
-  <mat-card-title class="story-details">{{ story.title }}</mat-card-title>
+  <mat-card-title class="story-details"
+    >{{ story.title }}
+    <div class="edit-buttons">
+      <button
+        *ngIf="isStoryInProductBackLog"
+        mat-icon-button
+        matTooltip="Edit size"
+        matTooltipPosition="below"
+        color="black"
+        (click)="editTime(story); $event.stopPropagation()"
+      >
+        <mat-icon>schedule</mat-icon>
+      </button>
+    </div></mat-card-title
+  >
   <mat-tab-group>
     <mat-tab label="Details">
       <mat-card-content>
@@ -9,16 +23,22 @@
         </div>
         <div class="group">
           <div class="group-title">Acceptance Tests:</div>
-          <div class="tests">{{ story.acceptanceTests }}</div>
+          <div class="group-content">{{ story.acceptanceTests }}</div>
         </div>
         <div class="last-group">
-          <div class="group first">
+          <div class="group wrap">
             <div class="group-title">Priority:</div>
-            <div class="priority">{{ story.priority }}</div>
+            <div class="group-content">{{ story.priority }}</div>
           </div>
-          <div class="group second">
+          <div class="group wrap">
             <div class="group-title">Bussiness Value:</div>
-            <div class="bussiness-value">{{ story.businessValue }}</div>
+            <div class="group-content">{{ story.businessValue }}</div>
+          </div>
+          <div class="group wrap">
+            <div class="group-title">Size:</div>
+            <div class="group-content">
+              {{ story.size ? story.size : "None" }}
+            </div>
           </div>
         </div>
       </mat-card-content>
@@ -34,6 +54,8 @@
                   mat-icon-button
                   color="white"
                   (click)="deleteTask(task); $event.stopPropagation()"
+                  matTooltip="Edit task"
+                  matTooltipPosition="below"
                 >
                   <mat-icon>delete</mat-icon>
                 </button>
@@ -41,6 +63,8 @@
                   mat-icon-button
                   color="white"
                   (click)="editTask(task); $event.stopPropagation()"
+                  matTooltip="Delete task"
+                  matTooltipPosition="below"
                 >
                   <mat-icon>edit</mat-icon>
                 </button>
@@ -58,8 +82,14 @@
                 <div>Size: {{ task.size }}</div>
               </mat-card-content>
             </mat-card>
+
             <mat-card
-              *ngIf="activeSprint && !story.accepted"
+              *ngIf="
+                areTasksEmpty &&
+                isStoryInSprint &&
+                activeSprint &&
+                ((isDeveloper$ | async) || (isScrumMaster$ | async))
+              "
               class="create-story"
               (click)="addTask(); $event.stopPropagation()"
             >
