@@ -1,10 +1,12 @@
 import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
 import { Story } from "src/app/interfaces/story.interface";
+
 import { Task } from "src/app/interfaces/task.interface";
 import { TaskService } from "../../services/task.service";
 import { CreateTasksModalComponent } from "../create-tasks-modal/create-tasks-modal.component";
 import { Project } from "src/app/interfaces/project.interface";
+
 import { RootStore } from "src/app/store/root.store";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -12,8 +14,10 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
 import { InfoSnackbarComponent } from "src/app/snackbars/info-snackbar/info-snackbar.component";
 import { Sprint } from "src/app/interfaces/sprint.interface";
+
 import { User } from "src/app/interfaces/user.interface";
 import { StorySizeModalComponent } from "../story-size-modal/story-size-modal.component";
+
 
 @Component({
   selector: "app-show-story-details-modal",
@@ -21,15 +25,18 @@ import { StorySizeModalComponent } from "../story-size-modal/story-size-modal.co
   styleUrls: ["./show-story-details-modal.component.scss"],
 })
 export class ShowStoryDetailsModalComponent implements OnInit {
+
   isScrumMaster$: Observable<boolean>;
   isProjectOwner$: Observable<boolean>;
   isDeveloper$: Observable<boolean>;
+
   activeSprint: Sprint;
   user: User;
   story: Story;
   project: Project;
   projectId: number;
   tasks: Task[];
+
   sprintStories: Story[];
   board: string;
   areTasksEmpty: boolean = true;
@@ -44,6 +51,8 @@ export class ShowStoryDetailsModalComponent implements OnInit {
       board: string;
       activeSprint: Sprint;
     },
+
+
     private taskService: TaskService,
     private dialog: MatDialog,
     private rootStore: RootStore,
@@ -53,6 +62,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     this.project = data.project;
     this.projectId = data.project.id;
     this.activeSprint = data.activeSprint;
+
     this.board = data.board;
   }
 
@@ -92,6 +102,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     );
     this.isDeveloper$ = this.rootStore.userStore.user$.pipe(
       map((u) => this.project.developers.some((user) => user.id == u.id))
+
     );
   }
 
@@ -118,6 +129,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
 
   getTasks() {
     this.taskService.getTasks(this.projectId, this.story).subscribe((tasks) => {
+
       if (tasks === undefined) {
         this.areTasksEmpty = false;
         console.log(this.tasks);
@@ -157,6 +169,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
 
   addTask() {
     if (this.isScrumMaster$ || this.isDeveloper$) {
+
       this.dialog
         .open(CreateTasksModalComponent, {
           data: {

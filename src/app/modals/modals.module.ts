@@ -14,6 +14,7 @@ import { StoryModalComponent } from "./story-modal/story-modal.component";
 import { CreateTasksModalComponent } from "./create-tasks-modal/create-tasks-modal.component";
 import { ShowStoryDetailsModalComponent } from "./show-story-details-modal/show-story-details-modal.component";
 import { MaterialModule } from "../dashboard/material";
+
 import { StorySizeModalComponent } from './story-size-modal/story-size-modal.component';
 
 @NgModule({
@@ -22,7 +23,9 @@ import { StorySizeModalComponent } from './story-size-modal/story-size-modal.com
     StoryModalComponent,
     CreateTasksModalComponent,
     ShowStoryDetailsModalComponent,
+
     StorySizeModalComponent,
+
   ],
   imports: [
     CommonModule,

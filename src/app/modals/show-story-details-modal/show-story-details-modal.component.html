@@ -1,4 +1,5 @@
 <div class="project-container">
+
   <mat-card-title class="story-details"
     >{{ story.title }}
     <div class="edit-buttons">
@@ -14,6 +15,7 @@
       </button>
     </div></mat-card-title
   >
+
   <mat-tab-group>
     <mat-tab label="Details">
       <mat-card-content>
@@ -23,6 +25,7 @@
         </div>
         <div class="group">
           <div class="group-title">Acceptance Tests:</div>
+
           <div class="group-content">{{ story.acceptanceTests }}</div>
         </div>
         <div class="last-group">
@@ -39,6 +42,7 @@
             <div class="group-content">
               {{ story.size ? story.size : "None" }}
             </div>
+
           </div>
         </div>
       </mat-card-content>
@@ -54,8 +58,10 @@
                   mat-icon-button
                   color="white"
                   (click)="deleteTask(task); $event.stopPropagation()"
+
                   matTooltip="Edit task"
                   matTooltipPosition="below"
+
                 >
                   <mat-icon>delete</mat-icon>
                 </button>
@@ -63,8 +69,10 @@
                   mat-icon-button
                   color="white"
                   (click)="editTask(task); $event.stopPropagation()"
+
                   matTooltip="Delete task"
                   matTooltipPosition="below"
+
                 >
                   <mat-icon>edit</mat-icon>
                 </button>
@@ -83,6 +91,7 @@
               </mat-card-content>
             </mat-card>
 
+
             <mat-card
               *ngIf="
                 areTasksEmpty &&
@@ -90,6 +99,7 @@
                 activeSprint &&
                 ((isDeveloper$ | async) || (isScrumMaster$ | async))
               "
+
               class="create-story"
               (click)="addTask(); $event.stopPropagation()"
             >

@@ -1,4 +1,5 @@
 @import "../../../variables";
+
 .story-details {
   position: relative;
   .edit-buttons {
@@ -13,6 +14,7 @@ mat-card-content {
   .group {
     padding: 1em;
     margin: 1em;
+
     box-sizing: border-box;
     background-color: $lightgray;
     box-shadow: $material-shadow;
@@ -26,6 +28,7 @@ mat-card-content {
     // background-color: $lightgray;
     height: 15em;
     padding: 1em;
+
     font-size: 15px;
   }
   .group-content {
@@ -40,6 +43,7 @@ mat-card-content {
       height: auto;
       float: left;
       margin-right: 1px;
+
     }
   }
 }
@@ -109,6 +113,7 @@ mat-card-content {
       position: absolute;
       right: 5%;
     }
+
 
     mat-card-title {
       background: $task-title;

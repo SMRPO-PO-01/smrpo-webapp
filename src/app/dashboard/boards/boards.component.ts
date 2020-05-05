@@ -13,7 +13,9 @@ import { toDateOnlyString } from "src/utils/to-date-only-string";
 import { Board } from "../../interfaces/board.interface";
 import { RootStore } from "../../store/root.store";
 import { ShowStoryDetailsModalComponent } from "src/app/modals/show-story-details-modal/show-story-details-modal.component";
+
 import { Story } from "src/app/interfaces/story.interface";
+
 
 @Component({
   selector: "app-boards",
@@ -59,13 +61,16 @@ export class BoardsComponent implements OnInit {
         data: {
           project: this.project,
           story: story,
+
           board: this.getBoardOfStory(story),
+
           activeSprint: this.activeSprint,
         },
       })
       .afterClosed()
       .subscribe();
   }
+
 
   getBoardOfStory(story: Story) {
     if (
