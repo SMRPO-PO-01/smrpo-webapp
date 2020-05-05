@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { Router } from "@angular/router";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import { USER_ROLE } from "../interfaces/user.interface";
-import { RootStore } from "../store/root.store";
-import { MatSidenav } from "@angular/material/sidenav";
+import { USER_ROLE } from '../interfaces/user.interface';
+import { RootStore } from '../store/root.store';
 
 @Component({
   selector: "app-dashboard",
@@ -15,6 +14,9 @@ import { MatSidenav } from "@angular/material/sidenav";
 export class DashboardComponent implements OnInit {
   userName$: Observable<string>;
   lastLogin$: Observable<Date>;
+
+  isSidebarOpen = true;
+
   constructor(private rootStore: RootStore, private router: Router) {}
 
   ngOnInit() {
@@ -35,6 +37,10 @@ export class DashboardComponent implements OnInit {
   onLogout() {
     this.rootStore.userStore.clearSettings();
     this.router.navigate(["/auth", "login"]);
+  }
+
+  onToggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
 
   get isAdmin() {
