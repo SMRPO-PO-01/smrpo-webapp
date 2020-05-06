@@ -77,16 +77,16 @@
               <mat-card-content class="flex">
                 <div>
                   <div>
-                    Description:
+                    <b>Description:</b>
                     {{ task.description ? task.description : "None" }}
                   </div>
-                  <div>State: {{ task.state }}</div>
-                  <div>Size: {{ task.size }}</div>
+                  <div><b>State:</b> {{ task.state }}</div>
+                  <div><b>Size:</b> {{ task.size }}</div>
                 </div>
 
                 <div style="padding-right: 50px;">
                   <div>
-                    <span>User: {{ getUser(task) }}</span>
+                    <span><b>User:</b> {{ getUser(task) }}</span>
                     <button
                       *ngIf="canAcceptTask(task)"
                       mat-icon-button
@@ -116,6 +116,16 @@
                       style="color: #66bb6a;"
                     >
                       <mat-icon>done_all</mat-icon>
+                    </button>
+                    <button
+                      *ngIf="task.undo"
+                      mat-icon-button
+                      (click)="undoFinishedTask(task)"
+                      matTooltip="Undo"
+                      matTooltipPosition="below"
+                      style="color: #019cb1;"
+                    >
+                      <mat-icon>undo</mat-icon>
                     </button>
                   </div>
                 </div>

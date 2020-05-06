@@ -14,4 +14,6 @@ export interface Task {
   projectId: number;
   userId: number;
   size: number;
+
+  undo?: boolean;
 }

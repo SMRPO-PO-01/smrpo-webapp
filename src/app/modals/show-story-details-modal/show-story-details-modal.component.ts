@@ -160,6 +160,13 @@ export class ShowStoryDetailsModalComponent implements OnInit {
 
   finishTask(task: Task) {
     task.state = TASK_STATE.DONE;
+    task.undo = true;
+    this.taskService.updateTask(task, this.projectId).subscribe(console.log);
+  }
+
+  undoFinishedTask(task: Task) {
+    task.state = TASK_STATE.ASSIGNED;
+    task.undo = false;
     this.taskService.updateTask(task, this.projectId).subscribe(console.log);
   }
 
