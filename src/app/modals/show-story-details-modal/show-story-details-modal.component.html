@@ -1,5 +1,4 @@
 <div class="project-container">
-
   <mat-card-title class="story-details"
     >{{ story.title }}
     <div class="edit-buttons">
@@ -42,7 +41,6 @@
             <div class="group-content">
               {{ story.size ? story.size : "None" }}
             </div>
-
           </div>
         </div>
       </mat-card-content>
@@ -58,10 +56,8 @@
                   mat-icon-button
                   color="white"
                   (click)="deleteTask(task); $event.stopPropagation()"
-
-                  matTooltip="Edit task"
+                  matTooltip="Delete task"
                   matTooltipPosition="below"
-
                 >
                   <mat-icon>delete</mat-icon>
                 </button>
@@ -69,10 +65,8 @@
                   mat-icon-button
                   color="white"
                   (click)="editTask(task); $event.stopPropagation()"
-
-                  matTooltip="Delete task"
+                  matTooltip="Edit task"
                   matTooltipPosition="below"
-
                 >
                   <mat-icon>edit</mat-icon>
                 </button>
@@ -80,17 +74,53 @@
               <mat-card-title>
                 ({{ task.id }}) {{ task.title }}
               </mat-card-title>
-              <mat-card-content>
+              <mat-card-content class="flex">
                 <div>
-                  Description:
-                  {{ task.description ? task.description : "None" }}
+                  <div>
+                    Description:
+                    {{ task.description ? task.description : "None" }}
+                  </div>
+                  <div>State: {{ task.state }}</div>
+                  <div>Size: {{ task.size }}</div>
                 </div>
-                <div>State: {{ task.state }}</div>
-                <div>User: {{ getUser(task) }}</div>
-                <div>Size: {{ task.size }}</div>
+
+                <div style="padding-right: 50px;">
+                  <div>
+                    <span>User: {{ getUser(task) }}</span>
+                    <button
+                      *ngIf="canAcceptTask(task)"
+                      mat-icon-button
+                      (click)="acceptTask(task)"
+                      matTooltip="Accept task"
+                      matTooltipPosition="below"
+                      style="color: #66bb6a;"
+                    >
+                      <mat-icon>done</mat-icon>
+                    </button>
+                    <button
+                      *ngIf="canRejectTask(task)"
+                      mat-icon-button
+                      (click)="rejectTask(task)"
+                      matTooltip="Reject task"
+                      matTooltipPosition="below"
+                      style="color: red;"
+                    >
+                      <mat-icon>clear</mat-icon>
+                    </button>
+                    <button
+                      *ngIf="canFinishTask(task)"
+                      mat-icon-button
+                      (click)="finishTask(task)"
+                      matTooltip="Mark as done"
+                      matTooltipPosition="below"
+                      style="color: #66bb6a;"
+                    >
+                      <mat-icon>done_all</mat-icon>
+                    </button>
+                  </div>
+                </div>
               </mat-card-content>
             </mat-card>
-
 
             <mat-card
               *ngIf="
@@ -99,7 +129,6 @@
                 activeSprint &&
                 ((isDeveloper$ | async) || (isScrumMaster$ | async))
               "
-
               class="create-story"
               (click)="addTask(); $event.stopPropagation()"
             >

@@ -1,23 +1,19 @@
-import { Component, OnInit, Inject, ViewChild } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
-import { Story } from "src/app/interfaces/story.interface";
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Project } from 'src/app/interfaces/project.interface';
+import { Sprint } from 'src/app/interfaces/sprint.interface';
+import { Story } from 'src/app/interfaces/story.interface';
+import { Task, TASK_STATE } from 'src/app/interfaces/task.interface';
+import { User } from 'src/app/interfaces/user.interface';
+import { WarningSnackbarComponent } from 'src/app/snackbars/warning-snackbar/warning-snackbar.component';
+import { RootStore } from 'src/app/store/root.store';
 
-import { Task } from "src/app/interfaces/task.interface";
-import { TaskService } from "../../services/task.service";
-import { CreateTasksModalComponent } from "../create-tasks-modal/create-tasks-modal.component";
-import { Project } from "src/app/interfaces/project.interface";
-
-import { RootStore } from "src/app/store/root.store";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
-import { InfoSnackbarComponent } from "src/app/snackbars/info-snackbar/info-snackbar.component";
-import { Sprint } from "src/app/interfaces/sprint.interface";
-
-import { User } from "src/app/interfaces/user.interface";
-import { StorySizeModalComponent } from "../story-size-modal/story-size-modal.component";
-
+import { TaskService } from '../../services/task.service';
+import { CreateTasksModalComponent } from '../create-tasks-modal/create-tasks-modal.component';
+import { StorySizeModalComponent } from '../story-size-modal/story-size-modal.component';
 
 @Component({
   selector: "app-show-story-details-modal",
@@ -25,7 +21,6 @@ import { StorySizeModalComponent } from "../story-size-modal/story-size-modal.co
   styleUrls: ["./show-story-details-modal.component.scss"],
 })
 export class ShowStoryDetailsModalComponent implements OnInit {
-
   isScrumMaster$: Observable<boolean>;
   isProjectOwner$: Observable<boolean>;
   isDeveloper$: Observable<boolean>;
@@ -51,7 +46,6 @@ export class ShowStoryDetailsModalComponent implements OnInit {
       board: string;
       activeSprint: Sprint;
     },
-
 
     private taskService: TaskService,
     private dialog: MatDialog,
@@ -102,34 +96,75 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     );
     this.isDeveloper$ = this.rootStore.userStore.user$.pipe(
       map((u) => this.project.developers.some((user) => user.id == u.id))
-
     );
   }
 
   getUser(task: Task) {
-    if (task.state == undefined || task.state == "UNASSIGNED") {
-      return "None";
-    }
-    if (task.id == this.project.projectOwner.id) {
-      return `${this.project.projectOwner.firstName} ${this.project.projectOwner.lastName} (${this.project.projectOwner.username})`;
-    } else if (task.id == this.project.scrumMaster.id) {
-      return `${this.project.scrumMaster.firstName} ${this.project.scrumMaster.lastName} (${this.project.scrumMaster.username})`;
-    }
-
-    this.project.developers.forEach((developer) => {
-      if (developer.id == task.id) {
-        return `${developer.firstName} ${developer.lastName} (${developer.username})`;
+    if (task.userId) {
+      const user = this.project.developers.find(
+        (dev) => dev.id === task.userId
+      );
+      if (user) {
+        return `${user.firstName} ${user.lastName}`;
       }
-    });
+    }
+    return "None";
   }
 
   whoAmI() {
     return this.rootStore.userStore.user;
   }
 
+  canAcceptTask(task: Task) {
+    const me = this.rootStore.userStore.user;
+
+    // only developers can accept tasks
+    if (this.project.developers.every((dev) => dev.id !== me.id)) {
+      return false;
+    }
+
+    if (task.state !== TASK_STATE.UNASSIGNED) {
+      return false;
+    }
+
+    return !task.userId || task.userId === me.id;
+  }
+
+  canRejectTask(task: Task) {
+    return (
+      task.state !== TASK_STATE.DONE &&
+      task.userId === this.rootStore.userStore.user.id
+    );
+  }
+
+  canFinishTask(task: Task) {
+    return (
+      [TASK_STATE.ASSIGNED, TASK_STATE.ACTIVE].includes(task.state) &&
+      task.userId === this.rootStore.userStore.user.id
+    );
+  }
+
+  acceptTask(task: Task) {
+    task.userId = this.rootStore.userStore.user.id;
+    task.state = TASK_STATE.ASSIGNED;
+
+    this.taskService.updateTask(task, this.projectId).subscribe();
+  }
+
+  rejectTask(task: Task) {
+    task.userId = null;
+    task.state = TASK_STATE.UNASSIGNED;
+
+    this.taskService.updateTask(task, this.projectId).subscribe();
+  }
+
+  finishTask(task: Task) {
+    task.state = TASK_STATE.DONE;
+    this.taskService.updateTask(task, this.projectId).subscribe(console.log);
+  }
+
   getTasks() {
     this.taskService.getTasks(this.projectId, this.story).subscribe((tasks) => {
-
       if (tasks === undefined) {
         this.areTasksEmpty = false;
         console.log(this.tasks);
@@ -169,7 +204,6 @@ export class ShowStoryDetailsModalComponent implements OnInit {
 
   addTask() {
     if (this.isScrumMaster$ || this.isDeveloper$) {
-
       this.dialog
         .open(CreateTasksModalComponent, {
           data: {
