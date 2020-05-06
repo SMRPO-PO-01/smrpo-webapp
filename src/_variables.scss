@@ -5,7 +5,8 @@ $white: #ffffff;
 
 $red: #f44336;
 $material-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-  0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 
 $primary-color: #ffa726;
 $main-green: #43a047;
@@ -13,3 +14,8 @@ $main-blue: #019cb1;
 $mat-card-title-main: linear-gradient(60deg, #00acc1, #019cb1);
 $mat-card-title: linear-gradient(60deg, #66bb6a, #43a047);
 $task-title: linear-gradient(to right, #ffa726, #fd9a05);
+
+$task-done: linear-gradient(to right, #3f681c, #639e2f);
+$task-active: linear-gradient(to right, #20bf55, #01baef);
+$task-assigned: linear-gradient(to right, #fbb034, #ffdd00);
+$task-unassigned: linear-gradient(to right, #c04c32, #dd5739);

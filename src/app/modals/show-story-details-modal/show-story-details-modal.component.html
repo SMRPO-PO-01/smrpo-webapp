@@ -71,7 +71,7 @@
                   <mat-icon>edit</mat-icon>
                 </button>
               </div>
-              <mat-card-title>
+              <mat-card-title [ngClass]="task.state">
                 ({{ task.id }}) {{ task.title }}
               </mat-card-title>
               <mat-card-content class="flex">

@@ -134,6 +134,22 @@ mat-card-content {
       background: $task-title;
       font-size: 15px;
 
+      &.UNASSIGNED {
+        background: $task-unassigned;
+      }
+
+      &.ASSIGNED {
+        background: $task-assigned;
+      }
+
+      &.ACTIVE {
+        background: $task-active;
+      }
+
+      &.DONE {
+        background: $task-done;
+      }
+
       &:hover {
         cursor: pointer;
       }
