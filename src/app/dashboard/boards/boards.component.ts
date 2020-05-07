@@ -191,18 +191,23 @@ export class BoardsComponent implements OnInit {
   }
 
   storyFromBacklogDrag() {
+    if (this.rootStore.userStore.user.id !== this.project.scrumMaster.id) {
+      this.sprintBoard.dropDisabled = true;
+    }
     this.acceptedBoard.dropDisabled = true;
   }
 
   storyFromBacklogDropped(story: Story, event: CdkDragDrop<Story[]>) {
-    this.acceptedBoard.dropDisabled = false;
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
-    } else if (event.container.id === "sprint") {
+    } else if (
+      !this.sprintBoard.dropDisabled &&
+      event.container.id === "sprint"
+    ) {
       story.unsaved = true;
       transferArrayItem(
         event.previousContainer.data,
@@ -211,6 +216,9 @@ export class BoardsComponent implements OnInit {
         event.currentIndex
       );
     }
+
+    this.acceptedBoard.dropDisabled = false;
+    this.sprintBoard.dropDisabled = false;
   }
 
   storyFromSprintDrag(story: Story) {

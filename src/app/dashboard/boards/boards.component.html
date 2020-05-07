@@ -20,7 +20,7 @@
       <mat-card
         *ngFor="let story of backlogBoard.stories"
         cdkDrag
-        [cdkDragDisabled]="story.size === null || !(isScrumMaster$ | async)"
+        [cdkDragDisabled]="story.size === null"
         (cdkDragDropped)="storyFromBacklogDropped(story, $event)"
         (cdkDragStarted)="storyFromBacklogDrag()"
       >
