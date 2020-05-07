@@ -135,6 +135,8 @@
         *ngFor="let story of acceptedBoard.stories"
         cdkDrag
         [class.unsaved]="story.unsaved"
+        (cdkDragDropped)="storyFromAcceptedDropped(story, $event)"
+        (cdkDragStarted)="storyFromAcceptedDrag(story)"
       >
         <!--         <button
           mat-icon-button
@@ -149,6 +151,16 @@
         }}</mat-card-title>
         <mat-card-content>{{ story.description }}</mat-card-content>
       </mat-card>
+
+      <button
+        *ngIf="someUnsavedStories(acceptedBoard.stories)"
+        class="add-to-sprint-btn"
+        mat-flat-button
+        color="primary"
+        (click)="acceptStories(acceptedBoard.stories)"
+      >
+        Accept selected stories
+      </button>
     </div>
   </div>
 </div>

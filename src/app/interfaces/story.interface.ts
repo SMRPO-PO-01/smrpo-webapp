@@ -5,7 +5,7 @@ export interface Story {
   acceptanceTests: String;
   priority: String;
   businessValue: number;
-  accepted: String;
+  accepted: boolean;
   board: String;
   size: number;
   allTasksCompleted: boolean;
