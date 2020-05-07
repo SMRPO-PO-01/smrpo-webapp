@@ -51,7 +51,14 @@
   >
     <div class="title">
       Sprint: <span>{{ sprintBoard.title }}</span>
-      <span style="float: right;">
+      <span
+        style="float: right;"
+        [ngStyle]="
+          sumSizes(sprintBoard.stories) > activeSprint.velocity
+            ? { color: 'red' }
+            : {}
+        "
+      >
         {{ sumSizes(sprintBoard.stories) }}/{{ activeSprint.velocity }}
       </span>
     </div>
@@ -82,6 +89,16 @@
         class="add-to-sprint-btn"
         mat-flat-button
         color="primary"
+        [ngStyle]="
+          sumSizes(sprintBoard.stories) > activeSprint.velocity
+            ? { opacity: 0.5, cursor: 'default' }
+            : {}
+        "
+        [matTooltip]="
+          sumSizes(sprintBoard.stories) > activeSprint.velocity
+            ? 'Story sizes sum is greater than sprint velocity'
+            : ''
+        "
         (click)="addStoriesToSprint(sprintBoard.stories)"
       >
         Add selected stories to sprint

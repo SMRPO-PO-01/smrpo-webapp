@@ -269,8 +269,8 @@ export class BoardsComponent implements OnInit {
           .open(RejectStoryModalComponent, {})
           .afterClosed()
           .subscribe((res) => {
+            story.unsaved = false;
             if (res) {
-              story.unsaved = false;
               story.rejectReason = res.reason;
               this.projectService
                 .updateStory(this.project.id, story.id, {
@@ -278,6 +278,13 @@ export class BoardsComponent implements OnInit {
                   rejectReason: story.rejectReason,
                 } as any)
                 .subscribe();
+            } else {
+              transferArrayItem(
+                event.container.data,
+                event.previousContainer.data,
+                event.currentIndex,
+                event.previousIndex
+              );
             }
           });
       }
@@ -289,6 +296,9 @@ export class BoardsComponent implements OnInit {
   }
 
   addStoriesToSprint(stories: Story[]) {
+    if (this.sumSizes(stories) > this.activeSprint.velocity) {
+      return;
+    }
     this.projectService
       .addStoriesToSprint(
         this.project.id,
