@@ -1,5 +1,7 @@
+import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -24,9 +26,13 @@ export class BoardsComponent implements OnInit {
   project: ProjectWithStories;
   activeSprint: Sprint;
   inactiveSprints: Sprint[];
-  backlogBoard: Board = { title: "Backlog", stories: [] };
-  sprintBoard: Board = { title: "Sprint", stories: [] };
-  acceptedBoard: Board = { title: "Accepted", stories: [] };
+  backlogBoard: Board = { title: "Backlog", stories: [], dropDisabled: false };
+  sprintBoard: Board = { title: "Sprint", stories: [], dropDisabled: false };
+  acceptedBoard: Board = {
+    title: "Accepted",
+    stories: [],
+    dropDisabled: false,
+  };
 
   isScrumMaster$: Observable<boolean>;
 
@@ -34,21 +40,47 @@ export class BoardsComponent implements OnInit {
     private rootStore: RootStore,
     private projectService: ProjectService,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.route.data.subscribe(({ project, sprints }) => {
       this.project = project;
       this.backlogBoard.stories = this.project.backlog;
+      this.backlogBoard.stories.forEach((story) => (story.board = "Backlog"));
       this.sprintBoard.stories = this.project.sprint;
+      this.sprintBoard.stories.forEach((story) => (story.board = "Sprint"));
       this.acceptedBoard.stories = this.project.accepted;
+      this.acceptedBoard.stories.forEach((story) => (story.board = "Accepted"));
       this.setSprints(sprints);
 
       this.isScrumMaster$ = this.rootStore.userStore.user$.pipe(
         map((user) => user.id === this.project.scrumMaster.id)
       );
     });
+  }
+
+  drop(event: CdkDragDrop<number[]>) {
+    console.log(event);
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+  }
+
+  fromSprintPredicate(item: CdkDrag<Story>) {
+    return item.data.board === "Sprint";
   }
 
   openDetails(story) {
@@ -144,5 +176,77 @@ export class BoardsComponent implements OnInit {
       })
       .afterClosed()
       .subscribe(console.log);
+  }
+
+  sumSizes(stories: Story[]) {
+    return stories.reduce((a, b) => a + b.size, 0);
+  }
+
+  storyFromBacklogDrag() {
+    this.acceptedBoard.dropDisabled = true;
+  }
+
+  storyFromBacklogDropped(story: Story, event: CdkDragDrop<Story[]>) {
+    this.acceptedBoard.dropDisabled = false;
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else if (event.container.id === "sprint") {
+      story.unsaved = true;
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+  }
+
+  storyFromSprintDrag(story: Story) {
+    if (story.unsaved) {
+      this.acceptedBoard.dropDisabled = true;
+    }
+  }
+
+  storyFromSprintDropped(story: Story, event: CdkDragDrop<Story[]>) {
+    this.acceptedBoard.dropDisabled = false;
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else if (event.container.id === "backlog") {
+      if (story.unsaved) {
+        story.unsaved = false;
+        transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+      }
+    }
+  }
+
+  someUnsavedStories(stories: Story[]) {
+    return stories.some((story) => story.unsaved);
+  }
+
+  addStoriesToSprint(stories: Story[]) {
+    this.projectService
+      .addStoriesToSprint(
+        this.project.id,
+        this.activeSprint.id,
+        stories.filter((story) => story.unsaved)
+      )
+      .subscribe(() => {
+        stories.forEach((story) => {
+          story.unsaved = false;
+        });
+      });
   }
 }

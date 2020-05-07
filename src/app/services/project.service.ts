@@ -1,14 +1,14 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { tap } from "rxjs/operators";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { tap } from 'rxjs/operators';
 
-import { toDateOnlyString } from "../../utils/to-date-only-string";
-import { Project, ProjectWithStories } from "../interfaces/project.interface";
-import { Sprint } from "../interfaces/sprint.interface";
-import { Story } from "../interfaces/story.interface";
-import { InfoSnackbarComponent } from "../snackbars/info-snackbar/info-snackbar.component";
-import { RootStore } from "../store/root.store";
+import { toDateOnlyString } from '../../utils/to-date-only-string';
+import { Project, ProjectWithStories } from '../interfaces/project.interface';
+import { Sprint } from '../interfaces/sprint.interface';
+import { Story } from '../interfaces/story.interface';
+import { InfoSnackbarComponent } from '../snackbars/info-snackbar/info-snackbar.component';
+import { RootStore } from '../store/root.store';
 
 @Injectable({
   providedIn: "root",
@@ -97,5 +97,12 @@ export class ProjectService {
 
   getStories(projectId: number) {
     return this.http.get<Story[]>(`project/${projectId}/story`);
+  }
+
+  addStoriesToSprint(projectId: number, sprintId: number, stories: Story[]) {
+    return this.http.put<Sprint>(`project/${projectId}/sprint/add-stories`, {
+      sprintId,
+      stories: stories.map((story) => story.id),
+    });
   }
 }
