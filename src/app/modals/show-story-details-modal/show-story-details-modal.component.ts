@@ -116,6 +116,9 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   }
 
   canAcceptTask(task: Task) {
+    if (!this.isStoryInSprint) {
+      return false;
+    }
     const me = this.rootStore.userStore.user;
 
     // only developers can accept tasks
@@ -132,6 +135,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
 
   canRejectTask(task: Task) {
     return (
+      this.isStoryInSprint &&
       task.state !== TASK_STATE.DONE &&
       task.userId === this.rootStore.userStore.user.id
     );
@@ -139,6 +143,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
 
   canFinishTask(task: Task) {
     return (
+      this.isStoryInSprint &&
       [TASK_STATE.ASSIGNED, TASK_STATE.ACTIVE].includes(task.state) &&
       task.userId === this.rootStore.userStore.user.id
     );
