@@ -369,4 +369,23 @@ export class BoardsComponent implements OnInit {
       });
     });
   }
+
+  myRoles() {
+    const roles = [];
+    if (this.project.scrumMaster.id === this.rootStore.userStore.user.id) {
+      roles.push("Scrum master");
+    }
+    if (this.project.projectOwner.id === this.rootStore.userStore.user.id) {
+      roles.push("Project owner");
+    }
+    if (
+      this.project.developers.some(
+        (dev) => dev.id === this.rootStore.userStore.user.id
+      )
+    ) {
+      roles.push("Developer");
+    }
+
+    return roles.join(", ");
+  }
 }

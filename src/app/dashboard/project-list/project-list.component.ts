@@ -30,4 +30,23 @@ export class ProjectListComponent implements OnInit {
 
     this.user$ = this.rootStore.userStore.user$;
   }
+
+  myRoles(project) {
+    const roles = [];
+    if (project.scrumMaster.id === this.rootStore.userStore.user.id) {
+      roles.push("Scrum master");
+    }
+    if (project.projectOwner.id === this.rootStore.userStore.user.id) {
+      roles.push("Project owner");
+    }
+    if (
+      project.developers.some(
+        (dev) => dev.id === this.rootStore.userStore.user.id
+      )
+    ) {
+      roles.push("Developer");
+    }
+
+    return roles.join(", ");
+  }
 }

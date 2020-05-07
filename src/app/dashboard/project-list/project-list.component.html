@@ -11,6 +11,10 @@
       >
         <div>
           <div class="project-title">{{ project.title }}</div>
+          <div class="roles">
+            <span>My roles:</span>
+            {{ myRoles(project) }}
+          </div>
           <div class="project-members">
             Developers: {{ project.developers.length }}
           </div>
