@@ -243,7 +243,7 @@ export class BoardsComponent implements OnInit {
         event.currentIndex
       );
     } else if (
-      !this.sprintBoard.dropDisabled &&
+      !this.backlogBoard.dropDisabled &&
       event.container.id === "backlog"
     ) {
       if (story.unsaved) {
@@ -301,7 +301,7 @@ export class BoardsComponent implements OnInit {
     }
 
     this.acceptedBoard.dropDisabled = false;
-    this.sprintBoard.dropDisabled = false;
+    this.backlogBoard.dropDisabled = false;
   }
 
   storyFromAcceptedDrag(story: Story) {
