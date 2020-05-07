@@ -150,7 +150,7 @@
         </button> -->
         <mat-card-title (click)="openDetails(story)">
           {{ story.title }}
-          <span style="float: right;">Size: {{ story.size }}</span>
+          <span style="float: right;">Size: {{ story.size || "-" }}</span>
         </mat-card-title>
         <mat-card-content>{{ story.description }}</mat-card-content>
       </mat-card>
