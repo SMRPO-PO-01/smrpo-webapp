@@ -61,8 +61,19 @@
 }
 
 mat-card {
-  margin-bottom: 10px;
+  padding: 0;
+  margin-bottom: 15px;
   position: relative;
+  overflow: hidden;
+  cursor: grab;
+
+  &.cdk-drag-disabled {
+    cursor: not-allowed;
+
+    mat-card-title {
+      background: $gray;
+    }
+  }
 
   button {
     position: absolute;
@@ -72,6 +83,7 @@ mat-card {
 
   mat-card-title {
     font-size: 15px;
+    border-radius: 0;
     &:hover {
       cursor: pointer;
     }
@@ -81,6 +93,7 @@ mat-card {
     max-height: 50px;
     overflow: hidden;
     position: relative;
+    padding: 15px;
 
     &::after {
       position: absolute;

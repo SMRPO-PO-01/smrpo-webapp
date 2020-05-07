@@ -6,7 +6,6 @@ export interface Story {
   priority: String;
   businessValue: number;
   accepted: String;
-
+  board: String;
   size: number;
-
 }

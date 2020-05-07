@@ -15,6 +15,8 @@ import { RootStore } from "../../store/root.store";
 import { ShowStoryDetailsModalComponent } from "src/app/modals/show-story-details-modal/show-story-details-modal.component";
 
 import { Story } from "src/app/interfaces/story.interface";
+import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag } from '@angular/cdk/drag-drop';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -36,21 +38,42 @@ export class BoardsComponent implements OnInit {
     private rootStore: RootStore,
     private projectService: ProjectService,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.route.data.subscribe(({ project, sprints }) => {
       this.project = project;
       this.backlogBoard.stories = this.project.backlog;
+      this.backlogBoard.stories.forEach(story => story.board = "Backlog")
       this.sprintBoard.stories = this.project.sprint;
+      this.sprintBoard.stories.forEach(story => story.board = "Sprint")
       this.acceptedBoard.stories = this.project.accepted;
+      this.acceptedBoard.stories.forEach(story => story.board = "Accepted")
       this.setSprints(sprints);
 
       this.isScrumMaster$ = this.rootStore.userStore.user$.pipe(
         map((user) => user.id === this.project.scrumMaster.id)
       );
     });
+  }
+
+  drop(event: CdkDragDrop<number[]>) {
+    console.log(event.previousContainer.data);
+    console.log(event.container.data);
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+    }
+  }
+
+  fromSprintPredicate(item: CdkDrag<Story>) {
+    return item.data.board === "Sprint";
   }
 
   openDetails(story) {

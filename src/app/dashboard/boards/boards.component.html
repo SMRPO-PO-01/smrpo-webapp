@@ -1,5 +1,5 @@
 <div class="board-container" cdkDropListGroup>
-  <div class="board" cdkDropList [cdkDropListData]="backlogBoard">
+  <div class="board" cdkDropList [cdkDropListData]="backlogBoard.stories" (cdkDropListDropped)="drop($event)">
     <div class="title">{{ backlogBoard.title }}</div>
     <div class="cards">
       <mat-card
@@ -10,7 +10,7 @@
           ><mat-icon>add_outline</mat-icon> Create new story</mat-card-content
         >
       </mat-card>
-      <mat-card *ngFor="let story of backlogBoard.stories" cdkDrag>
+      <mat-card *ngFor="let story of backlogBoard.stories" cdkDrag [cdkDragDisabled]="story.size === null">
         <button
           mat-icon-button
           color="white"
@@ -31,7 +31,8 @@
     *ngIf="activeSprint"
     class="board"
     cdkDropList
-    [cdkDropListData]="sprintBoard"
+    [cdkDropListData]="sprintBoard.stories"
+    (cdkDropListDropped)="drop($event)"
   >
     <div class="title">
       Sprint: <span>{{ sprintBoard.title }}</span>
@@ -70,7 +71,7 @@
       </div>
     </ng-template>
   </div>
-  <div class="board" cdkDropList [cdkDropListData]="acceptedBoard">
+  <div class="board" cdkDropList [cdkDropListData]="acceptedBoard.stories" (cdkDropListDropped)="drop($event)">
     <div class="title">{{ acceptedBoard.title }}</div>
     <div class="cards">
       <mat-card *ngFor="let story of acceptedBoard.stories" cdkDrag>
