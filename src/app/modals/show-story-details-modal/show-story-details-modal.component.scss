@@ -177,6 +177,7 @@ mat-card-content {
     }
 
     &.create-story {
+      padding-top: 15px;
       color: $gray;
       border: 2px dashed $gray;
       box-shadow: none;

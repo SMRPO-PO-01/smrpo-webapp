@@ -3,7 +3,7 @@
     >{{ story.title }}
     <div class="edit-buttons">
       <button
-        *ngIf="isStoryInProductBackLog"
+        *ngIf="isStoryInProductBackLog && (isScrumMaster$ | async)"
         mat-icon-button
         matTooltip="Edit size"
         matTooltipPosition="below"
@@ -50,6 +50,22 @@
       <div class="tasks">
         <div class="board">
           <div class="cards">
+            <mat-card
+              *ngIf="
+                areTasksEmpty &&
+                isStoryInSprint &&
+                activeSprint &&
+                ((isDeveloper$ | async) || (isScrumMaster$ | async))
+              "
+              class="create-story"
+              (click)="addTask(); $event.stopPropagation()"
+            >
+              <mat-card-content>
+                <mat-icon>add_outline</mat-icon>
+                Create new task
+              </mat-card-content>
+            </mat-card>
+
             <mat-card *ngFor="let task of tasks">
               <div class="edit-buttons">
                 <button
@@ -129,22 +145,6 @@
                     </button>
                   </div>
                 </div>
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card
-              *ngIf="
-                areTasksEmpty &&
-                isStoryInSprint &&
-                activeSprint &&
-                ((isDeveloper$ | async) || (isScrumMaster$ | async))
-              "
-              class="create-story"
-              (click)="addTask(); $event.stopPropagation()"
-            >
-              <mat-card-content>
-                <mat-icon>add_outline</mat-icon>
-                Create new task
               </mat-card-content>
             </mat-card>
           </div>

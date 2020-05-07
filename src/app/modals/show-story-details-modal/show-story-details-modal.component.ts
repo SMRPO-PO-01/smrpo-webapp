@@ -75,7 +75,8 @@ export class ShowStoryDetailsModalComponent implements OnInit {
       })
       .afterClosed()
       .subscribe((res) => {
-        if (res != undefined) {
+        if (res) {
+          this.story.size = res.size;
           this.getTasks();
         }
       });

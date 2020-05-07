@@ -9,6 +9,7 @@
     <div class="title">{{ backlogBoard.title }}</div>
     <div class="cards">
       <mat-card
+        *ngIf="(isScrumMaster$ | async) || (isProjectOwner$ | async)"
         class="create-story"
         (click)="addStory(); $event.stopPropagation()"
       >
@@ -19,11 +20,11 @@
       <mat-card
         *ngFor="let story of backlogBoard.stories"
         cdkDrag
-        [cdkDragDisabled]="story.size === null"
+        [cdkDragDisabled]="story.size === null || !(isScrumMaster$ | async)"
         (cdkDragDropped)="storyFromBacklogDropped(story, $event)"
         (cdkDragStarted)="storyFromBacklogDrag()"
       >
-        <button
+        <!--         <button
           mat-icon-button
           color="white"
           (click)="editStory(story); $event.stopPropagation()"
@@ -31,7 +32,7 @@
           matTooltipPosition="below"
         >
           <mat-icon>settings</mat-icon>
-        </button>
+        </button> -->
         <mat-card-title (click)="openDetails(story)">{{
           story.title
         }}</mat-card-title>
@@ -61,14 +62,14 @@
         (cdkDragDropped)="storyFromSprintDropped(story, $event)"
         (cdkDragStarted)="storyFromSprintDrag(story)"
       >
-        <button
+        <!--         <button
           mat-icon-button
           color="white"
           matTooltip="Edit story"
           matTooltipPosition="below"
         >
           <mat-icon>settings</mat-icon>
-        </button>
+        </button> -->
         <mat-card-title (click)="openDetails(story)">{{
           story.title
         }}</mat-card-title>
@@ -113,14 +114,14 @@
     <div class="title">{{ acceptedBoard.title }}</div>
     <div class="cards">
       <mat-card *ngFor="let story of acceptedBoard.stories" cdkDrag>
-        <button
+        <!--         <button
           mat-icon-button
           color="white"
           matTooltip="Edit story"
           matTooltipPosition="below"
         >
           <mat-icon>settings</mat-icon>
-        </button>
+        </button> -->
         <mat-card-title (click)="openDetails(story)">{{
           story.title
         }}</mat-card-title>
