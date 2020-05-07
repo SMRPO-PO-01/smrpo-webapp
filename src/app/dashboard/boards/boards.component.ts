@@ -1,21 +1,19 @@
-import { Component, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
-import { ActivatedRoute } from "@angular/router";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { ProjectWithStories } from "src/app/interfaces/project.interface";
-import { Sprint } from "src/app/interfaces/sprint.interface";
-import { CreateSprintModalComponent } from "src/app/modals/create-sprint-modal/create-sprint-modal.component";
-import { StoryModalComponent } from "src/app/modals/story-modal/story-modal.component";
-import { ProjectService } from "src/app/services/project.service";
-import { toDateOnlyString } from "src/utils/to-date-only-string";
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ProjectWithStories } from 'src/app/interfaces/project.interface';
+import { Sprint } from 'src/app/interfaces/sprint.interface';
+import { Story } from 'src/app/interfaces/story.interface';
+import { CreateSprintModalComponent } from 'src/app/modals/create-sprint-modal/create-sprint-modal.component';
+import { ShowStoryDetailsModalComponent } from 'src/app/modals/show-story-details-modal/show-story-details-modal.component';
+import { StoryModalComponent } from 'src/app/modals/story-modal/story-modal.component';
+import { ProjectService } from 'src/app/services/project.service';
+import { toDateOnlyString } from 'src/utils/to-date-only-string';
 
-import { Board } from "../../interfaces/board.interface";
-import { RootStore } from "../../store/root.store";
-import { ShowStoryDetailsModalComponent } from "src/app/modals/show-story-details-modal/show-story-details-modal.component";
-
-import { Story } from "src/app/interfaces/story.interface";
-
+import { Board } from '../../interfaces/board.interface';
+import { RootStore } from '../../store/root.store';
 
 @Component({
   selector: "app-boards",
@@ -71,7 +69,6 @@ export class BoardsComponent implements OnInit {
       .subscribe();
   }
 
-
   getBoardOfStory(story: Story) {
     if (
       this.sprintBoard.stories &&
@@ -105,9 +102,9 @@ export class BoardsComponent implements OnInit {
 
   isActiveSprint(sprint: Sprint) {
     const today = new Date();
-    return (
-      new Date(sprint.startDate) <= today && new Date(sprint.endDate) >= today
-    );
+    const endDate = new Date(sprint.endDate);
+    endDate.setDate(endDate.getDate() + 1);
+    return new Date(sprint.startDate) <= today && endDate >= today;
   }
 
   addStory() {

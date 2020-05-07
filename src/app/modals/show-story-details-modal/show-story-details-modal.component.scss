@@ -2,6 +2,7 @@
 
 .story-details {
   position: relative;
+
   .edit-buttons {
     color: #000000;
     display: inline;
@@ -10,6 +11,7 @@
     bottom: 5%;
   }
 }
+
 mat-card-content {
   .group {
     padding: 1em;
@@ -19,11 +21,13 @@ mat-card-content {
     background-color: $lightgray;
     box-shadow: $material-shadow;
   }
+
   .group-title {
     font-size: 20px;
     color: #979797;
     padding: 5px;
   }
+
   .description {
     // background-color: $lightgray;
     height: 15em;
@@ -31,12 +35,14 @@ mat-card-content {
 
     font-size: 15px;
   }
+
   .group-content {
     // background-color: $lightgray;
     height: 2em;
     padding: 1em;
     font-size: 15px;
   }
+
   .last-group {
     .wrap {
       width: 31.3%;
@@ -61,9 +67,11 @@ mat-card-content {
     border-radius: 5px;
     margin-right: 30px;
     transition: all 0.3s ease;
+
     .story-details {
       cursor: pointer;
     }
+
     .title {
       font-size: 16px;
       padding: 15px;
@@ -72,9 +80,14 @@ mat-card-content {
     }
 
     .cards {
-      max-height: 800px;
+      max-height: 635px;
       overflow: auto;
       padding: 15px;
+
+      .flex {
+        display: flex;
+        justify-content: space-between;
+      }
     }
 
     &.missing-sprint {
@@ -105,9 +118,12 @@ mat-card-content {
       }
     }
   }
+
   mat-card {
-    margin-bottom: 10px;
+    padding: 0 0 16px;
+    margin-bottom: 20px;
     position: relative;
+
     .edit-buttons {
       display: inline;
       position: absolute;
@@ -116,8 +132,37 @@ mat-card-content {
 
 
     mat-card-title {
-      background: $task-title;
       font-size: 15px;
+      padding-left: 30px;
+      background: #e7e7e7;
+      color: black;
+
+      &::before {
+        content: "";
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        left: 9px;
+        top: 18px;
+        border-radius: 50%;
+      }
+
+      &.UNASSIGNED::before {
+        background: $task-unassigned;
+      }
+
+      &.ASSIGNED::before {
+        background: $task-assigned;
+      }
+
+      &.ACTIVE::before {
+        background: $task-active;
+      }
+
+      &.DONE::before {
+        background: $task-done;
+      }
+
       &:hover {
         cursor: pointer;
       }
@@ -125,6 +170,7 @@ mat-card-content {
 
     mat-card-content {
       // max-height: 50px;
+      padding: 0 16px;
       overflow: hidden;
       position: relative;
       height: 100%;
@@ -140,6 +186,7 @@ mat-card-content {
       &:hover {
         box-shadow: $material-shadow;
       }
+
       mat-icon {
         width: 18px;
         height: 18px;

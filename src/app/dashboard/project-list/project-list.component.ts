@@ -1,12 +1,11 @@
-import { Component, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { User } from 'src/app/interfaces/user.interface';
+import { RootStore } from 'src/app/store/root.store';
 
-import { Project } from "../../interfaces/project.interface";
-import { CreateSprintModalComponent } from "../../modals/create-sprint-modal/create-sprint-modal.component";
-import { ProjectService } from "../../services/project.service";
-import { Observable } from "rxjs";
-import { User } from "src/app/interfaces/user.interface";
-import { RootStore } from "src/app/store/root.store";
+import { Project } from '../../interfaces/project.interface';
+import { ProjectService } from '../../services/project.service';
 
 @Component({
   selector: "app-project-list",
@@ -30,16 +29,5 @@ export class ProjectListComponent implements OnInit {
     });
 
     this.user$ = this.rootStore.userStore.user$;
-  }
-
-  addSprint(projectId: number) {
-    this.dialog
-      .open(CreateSprintModalComponent, {
-        data: {
-          projectId,
-        },
-      })
-      .afterClosed()
-      .subscribe(console.log);
   }
 }
