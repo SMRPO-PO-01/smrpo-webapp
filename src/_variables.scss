@@ -15,7 +15,7 @@ $mat-card-title-main: linear-gradient(60deg, #00acc1, #019cb1);
 $mat-card-title: linear-gradient(60deg, #66bb6a, #43a047);
 $task-title: linear-gradient(to right, #ffa726, #fd9a05);
 
-$task-done: linear-gradient(to right, #3f681c, #639e2f);
-$task-active: linear-gradient(to right, #20bf55, #01baef);
-$task-assigned: linear-gradient(to right, #fbb034, #ffdd00);
-$task-unassigned: linear-gradient(to right, #c04c32, #dd5739);
+$task-done: #3f681c;
+$task-active: #20bf55;
+$task-assigned: #fbb034;
+$task-unassigned: #c04c32;

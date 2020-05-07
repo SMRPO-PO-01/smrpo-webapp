@@ -120,7 +120,8 @@ mat-card-content {
   }
 
   mat-card {
-    margin-bottom: 10px;
+    padding: 0 0 16px;
+    margin-bottom: 20px;
     position: relative;
 
     .edit-buttons {
@@ -131,22 +132,34 @@ mat-card-content {
 
 
     mat-card-title {
-      background: $task-title;
       font-size: 15px;
+      padding-left: 30px;
+      background: #e7e7e7;
+      color: black;
 
-      &.UNASSIGNED {
+      &::before {
+        content: "";
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        left: 9px;
+        top: 18px;
+        border-radius: 50%;
+      }
+
+      &.UNASSIGNED::before {
         background: $task-unassigned;
       }
 
-      &.ASSIGNED {
+      &.ASSIGNED::before {
         background: $task-assigned;
       }
 
-      &.ACTIVE {
+      &.ACTIVE::before {
         background: $task-active;
       }
 
-      &.DONE {
+      &.DONE::before {
         background: $task-done;
       }
 
@@ -157,6 +170,7 @@ mat-card-content {
 
     mat-card-content {
       // max-height: 50px;
+      padding: 0 16px;
       overflow: hidden;
       position: relative;
       height: 100%;
