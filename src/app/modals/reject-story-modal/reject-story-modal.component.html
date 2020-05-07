@@ -1,0 +1,21 @@
+<div class="title">Reject story</div>
+
+<mat-form-field class="example-full-width" style="width: 300px;">
+  <mat-label>Reason (optional)</mat-label>
+  <textarea matInput [(ngModel)]="reason"></textarea>
+</mat-form-field>
+
+<div class="btn-row">
+  <button mat-raised-button (click)="close()">
+    Cancel
+  </button>
+
+  <button
+    mat-raised-button
+    color="primary"
+    style="margin-left: 20px;"
+    (click)="rejectStory()"
+  >
+    Reject story
+  </button>
+</div>

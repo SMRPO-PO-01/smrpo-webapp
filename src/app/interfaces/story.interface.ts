@@ -8,6 +8,8 @@ export interface Story {
   accepted: String;
   board: String;
   size: number;
+  allTasksCompleted: boolean;
+  rejectReason: string;
 
   unsaved?: boolean;
 }

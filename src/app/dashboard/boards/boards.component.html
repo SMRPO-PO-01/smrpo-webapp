@@ -20,6 +20,7 @@
       <mat-card
         *ngFor="let story of backlogBoard.stories"
         cdkDrag
+        [class.unsaved]="story.unsaved"
         [cdkDragDisabled]="story.size === null"
         (cdkDragDropped)="storyFromBacklogDropped(story, $event)"
         (cdkDragStarted)="storyFromBacklogDrag()"
@@ -113,7 +114,11 @@
   >
     <div class="title">{{ acceptedBoard.title }}</div>
     <div class="cards">
-      <mat-card *ngFor="let story of acceptedBoard.stories" cdkDrag>
+      <mat-card
+        *ngFor="let story of acceptedBoard.stories"
+        cdkDrag
+        [class.unsaved]="story.unsaved"
+      >
         <!--         <button
           mat-icon-button
           color="white"

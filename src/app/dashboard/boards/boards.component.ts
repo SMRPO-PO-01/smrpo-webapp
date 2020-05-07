@@ -15,6 +15,7 @@ import { ProjectService } from 'src/app/services/project.service';
 import { toDateOnlyString } from 'src/utils/to-date-only-string';
 
 import { Board } from '../../interfaces/board.interface';
+import { RejectStoryModalComponent } from '../../modals/reject-story-modal/reject-story-modal.component';
 import { RootStore } from '../../store/root.store';
 
 @Component({
@@ -224,6 +225,13 @@ export class BoardsComponent implements OnInit {
   storyFromSprintDrag(story: Story) {
     if (story.unsaved) {
       this.acceptedBoard.dropDisabled = true;
+    } else if (
+      this.rootStore.userStore.user.id !== this.project.projectOwner.id
+    ) {
+      this.acceptedBoard.dropDisabled = true;
+      this.backlogBoard.dropDisabled = true;
+    } else if (!story.allTasksCompleted) {
+      this.acceptedBoard.dropDisabled = true;
     }
   }
 
@@ -235,7 +243,10 @@ export class BoardsComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
-    } else if (event.container.id === "backlog") {
+    } else if (
+      !this.sprintBoard.dropDisabled &&
+      event.container.id === "backlog"
+    ) {
       if (story.unsaved) {
         story.unsaved = false;
         transferArrayItem(
@@ -244,6 +255,31 @@ export class BoardsComponent implements OnInit {
           event.previousIndex,
           event.currentIndex
         );
+      } else {
+        // REJECT STORY
+        story.unsaved = true;
+        transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+
+        this.dialog
+          .open(RejectStoryModalComponent, {})
+          .afterClosed()
+          .subscribe((res) => {
+            if (res) {
+              story.unsaved = false;
+              story.rejectReason = res.reason;
+              this.projectService
+                .updateStory(this.project.id, story.id, {
+                  reject: true,
+                  rejectReason: story.rejectReason,
+                } as any)
+                .subscribe();
+            }
+          });
       }
     }
   }
