@@ -26,9 +26,13 @@ export class BoardsComponent implements OnInit {
   project: ProjectWithStories;
   activeSprint: Sprint;
   inactiveSprints: Sprint[];
-  backlogBoard: Board = { title: "Backlog", stories: [] };
-  sprintBoard: Board = { title: "Sprint", stories: [] };
-  acceptedBoard: Board = { title: "Accepted", stories: [] };
+  backlogBoard: Board = { title: "Backlog", stories: [], dropDisabled: false };
+  sprintBoard: Board = { title: "Sprint", stories: [], dropDisabled: false };
+  acceptedBoard: Board = {
+    title: "Accepted",
+    stories: [],
+    dropDisabled: false,
+  };
 
   isScrumMaster$: Observable<boolean>;
 
@@ -58,8 +62,7 @@ export class BoardsComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<number[]>) {
-    console.log(event.previousContainer.data);
-    console.log(event.container.data);
+    console.log(event);
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -173,5 +176,77 @@ export class BoardsComponent implements OnInit {
       })
       .afterClosed()
       .subscribe(console.log);
+  }
+
+  sumSizes(stories: Story[]) {
+    return stories.reduce((a, b) => a + b.size, 0);
+  }
+
+  storyFromBacklogDrag() {
+    this.acceptedBoard.dropDisabled = true;
+  }
+
+  storyFromBacklogDropped(story: Story, event: CdkDragDrop<Story[]>) {
+    this.acceptedBoard.dropDisabled = false;
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else if (event.container.id === "sprint") {
+      story.unsaved = true;
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+  }
+
+  storyFromSprintDrag(story: Story) {
+    if (story.unsaved) {
+      this.acceptedBoard.dropDisabled = true;
+    }
+  }
+
+  storyFromSprintDropped(story: Story, event: CdkDragDrop<Story[]>) {
+    this.acceptedBoard.dropDisabled = false;
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else if (event.container.id === "backlog") {
+      if (story.unsaved) {
+        story.unsaved = false;
+        transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+      }
+    }
+  }
+
+  someUnsavedStories(stories: Story[]) {
+    return stories.some((story) => story.unsaved);
+  }
+
+  addStoriesToSprint(stories: Story[]) {
+    this.projectService
+      .addStoriesToSprint(
+        this.project.id,
+        this.activeSprint.id,
+        stories.filter((story) => story.unsaved)
+      )
+      .subscribe(() => {
+        stories.forEach((story) => {
+          story.unsaved = false;
+        });
+      });
   }
 }

@@ -8,4 +8,6 @@ export interface Story {
   accepted: String;
   board: String;
   size: number;
+
+  unsaved?: boolean;
 }
