@@ -35,6 +35,7 @@ export class BoardsComponent implements OnInit {
   };
 
   isScrumMaster$: Observable<boolean>;
+  isProjectOwner$: Observable<boolean>;
 
   constructor(
     private rootStore: RootStore,
@@ -57,6 +58,9 @@ export class BoardsComponent implements OnInit {
 
       this.isScrumMaster$ = this.rootStore.userStore.user$.pipe(
         map((user) => user.id === this.project.scrumMaster.id)
+      );
+      this.isProjectOwner$ = this.rootStore.userStore.user$.pipe(
+        map((user) => user.id == this.project.projectOwner.id)
       );
     });
   }
@@ -148,7 +152,11 @@ export class BoardsComponent implements OnInit {
         },
       })
       .afterClosed()
-      .subscribe(console.log);
+      .subscribe((story) => {
+        if (story) {
+          this.backlogBoard.stories.push(story);
+        }
+      });
   }
 
   editStory(story) {
