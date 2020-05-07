@@ -16,6 +16,7 @@ import { ShowStoryDetailsModalComponent } from "./show-story-details-modal/show-
 import { MaterialModule } from "../dashboard/material";
 
 import { StorySizeModalComponent } from './story-size-modal/story-size-modal.component';
+import { RejectStoryModalComponent } from './reject-story-modal/reject-story-modal.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,8 @@ import { StorySizeModalComponent } from './story-size-modal/story-size-modal.com
     ShowStoryDetailsModalComponent,
 
     StorySizeModalComponent,
+
+    RejectStoryModalComponent,
 
   ],
   imports: [

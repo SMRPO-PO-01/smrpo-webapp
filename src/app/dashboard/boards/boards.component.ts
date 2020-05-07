@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ProjectWithStories } from 'src/app/interfaces/project.interface';
 import { Sprint } from 'src/app/interfaces/sprint.interface';
@@ -15,6 +15,7 @@ import { ProjectService } from 'src/app/services/project.service';
 import { toDateOnlyString } from 'src/utils/to-date-only-string';
 
 import { Board } from '../../interfaces/board.interface';
+import { RejectStoryModalComponent } from '../../modals/reject-story-modal/reject-story-modal.component';
 import { RootStore } from '../../store/root.store';
 
 @Component({
@@ -191,18 +192,23 @@ export class BoardsComponent implements OnInit {
   }
 
   storyFromBacklogDrag() {
+    if (this.rootStore.userStore.user.id !== this.project.scrumMaster.id) {
+      this.sprintBoard.dropDisabled = true;
+    }
     this.acceptedBoard.dropDisabled = true;
   }
 
   storyFromBacklogDropped(story: Story, event: CdkDragDrop<Story[]>) {
-    this.acceptedBoard.dropDisabled = false;
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
-    } else if (event.container.id === "sprint") {
+    } else if (
+      !this.sprintBoard.dropDisabled &&
+      event.container.id === "sprint"
+    ) {
       story.unsaved = true;
       transferArrayItem(
         event.previousContainer.data,
@@ -211,23 +217,35 @@ export class BoardsComponent implements OnInit {
         event.currentIndex
       );
     }
+
+    this.acceptedBoard.dropDisabled = false;
+    this.sprintBoard.dropDisabled = false;
   }
 
   storyFromSprintDrag(story: Story) {
     if (story.unsaved) {
       this.acceptedBoard.dropDisabled = true;
+    } else if (
+      this.rootStore.userStore.user.id !== this.project.projectOwner.id
+    ) {
+      this.acceptedBoard.dropDisabled = true;
+      this.backlogBoard.dropDisabled = true;
+    } else if (!story.allTasksCompleted) {
+      this.acceptedBoard.dropDisabled = true;
     }
   }
 
   storyFromSprintDropped(story: Story, event: CdkDragDrop<Story[]>) {
-    this.acceptedBoard.dropDisabled = false;
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
-    } else if (event.container.id === "backlog") {
+    } else if (
+      !this.sprintBoard.dropDisabled &&
+      event.container.id === "backlog"
+    ) {
       if (story.unsaved) {
         story.unsaved = false;
         transferArrayItem(
@@ -236,8 +254,82 @@ export class BoardsComponent implements OnInit {
           event.previousIndex,
           event.currentIndex
         );
+      } else {
+        // REJECT STORY
+        story.unsaved = true;
+        transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+
+        this.dialog
+          .open(RejectStoryModalComponent, {})
+          .afterClosed()
+          .subscribe((res) => {
+            story.unsaved = false;
+            if (res) {
+              story.rejectReason = res.reason;
+              this.projectService
+                .updateStory(this.project.id, story.id, {
+                  reject: true,
+                  rejectReason: story.rejectReason,
+                } as any)
+                .subscribe();
+            } else {
+              transferArrayItem(
+                event.container.data,
+                event.previousContainer.data,
+                event.currentIndex,
+                event.previousIndex
+              );
+            }
+          });
       }
+    } else if (
+      !this.acceptedBoard.dropDisabled &&
+      event.container.id === "accepted"
+    ) {
+      story.unsaved = true;
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
     }
+
+    this.acceptedBoard.dropDisabled = false;
+    this.sprintBoard.dropDisabled = false;
+  }
+
+  storyFromAcceptedDrag(story: Story) {
+    this.backlogBoard.dropDisabled = true;
+    if (!story.unsaved) {
+      this.sprintBoard.dropDisabled = true;
+    }
+  }
+
+  storyFromAcceptedDropped(story: Story, event: CdkDragDrop<Story[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else if (story.unsaved && event.container.id === "sprint") {
+      story.unsaved = false;
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+
+    this.backlogBoard.dropDisabled = false;
+    this.sprintBoard.dropDisabled = false;
   }
 
   someUnsavedStories(stories: Story[]) {
@@ -245,6 +337,9 @@ export class BoardsComponent implements OnInit {
   }
 
   addStoriesToSprint(stories: Story[]) {
+    if (this.sumSizes(stories) > this.activeSprint.velocity) {
+      return;
+    }
     this.projectService
       .addStoriesToSprint(
         this.project.id,
@@ -256,5 +351,22 @@ export class BoardsComponent implements OnInit {
           story.unsaved = false;
         });
       });
+  }
+
+  acceptStories(stories: Story[]) {
+    forkJoin(
+      stories
+        .filter((story) => story.unsaved)
+        .map((story) =>
+          this.projectService.updateStory(this.project.id, story.id, {
+            accepted: true,
+          } as any)
+        )
+    ).subscribe(() => {
+      stories.forEach((story) => {
+        story.unsaved = false;
+        story.accepted = true;
+      });
+    });
   }
 }
