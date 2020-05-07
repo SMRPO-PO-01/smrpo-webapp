@@ -298,6 +298,7 @@ export class BoardsComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
+
     }
 
     this.acceptedBoard.dropDisabled = false;
@@ -309,6 +310,27 @@ export class BoardsComponent implements OnInit {
     if (!story.unsaved) {
       this.sprintBoard.dropDisabled = true;
     }
+  }
+
+  storyFromAcceptedDropped(story: Story, event: CdkDragDrop<Story[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else if (story.unsaved && event.container.id === "sprint") {
+      story.unsaved = false;
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+
+    this.backlogBoard.dropDisabled = false;
+    this.sprintBoard.dropDisabled = false;
   }
 
   storyFromAcceptedDropped(story: Story, event: CdkDragDrop<Story[]>) {
@@ -368,5 +390,24 @@ export class BoardsComponent implements OnInit {
         story.accepted = true;
       });
     });
+  }
+
+  myRoles() {
+    const roles = [];
+    if (this.project.scrumMaster.id === this.rootStore.userStore.user.id) {
+      roles.push("Scrum master");
+    }
+    if (this.project.projectOwner.id === this.rootStore.userStore.user.id) {
+      roles.push("Project owner");
+    }
+    if (
+      this.project.developers.some(
+        (dev) => dev.id === this.rootStore.userStore.user.id
+      )
+    ) {
+      roles.push("Developer");
+    }
+
+    return roles.join(", ");
   }
 }

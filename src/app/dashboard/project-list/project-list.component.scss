@@ -18,6 +18,18 @@
     &:hover {
       background: $lightgray;
     }
+
+    .project-title {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .roles {
+
+      span {
+        font-weight: 500;
+      }
+    }
   }
 }
 
