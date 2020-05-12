@@ -1,105 +1,114 @@
 <div class="add-project-container">
-  <form class="add-project-form" autocomplete="off" [formGroup]="form">
-    <div>
-      <mat-form-field appearance="standard">
-        <mat-label>Project name</mat-label>
-        <input
-          matInput
-          formControlName="title"
-          [errorStateMatcher]="errorMatcher"
-        />
-        <mat-error *ngIf="title?.errors?.invalidTitle">{{
+    <form
+        class="add-project-form"
+        autocomplete="off"
+        [formGroup]="form"
+    >
+        <div>
+            <mat-form-field appearance="standard">
+                <mat-label>Project name</mat-label>
+                <input
+                    matInput
+                    formControlName="title"
+                    [errorStateMatcher]="errorMatcher"
+                >
+                <mat-error *ngIf="title?.errors?.invalidTitle">
+                    {{
           title.errors.invalidTitle
-        }}</mat-error>
-      </mat-form-field>
-      
-      <mat-form-field>
-        <mat-label>Scrum Master</mat-label>
-        <input
-          type="text"
-          matInput
-          formControlName="scrumMaster"
-          [errorStateMatcher]="errorMatcher"
-          [matAutocomplete]="autoMaster"
-          #autoInput
-          (blur)="onScrumMasterBlur()"
-        />
-        <mat-autocomplete
-          #autoMaster="matAutocomplete"
-          (optionSelected)="scrumMasterSelected($event.option.value)"
-        >
-          <mat-option
-            *ngFor="let master of scrumFilteredOptions | async"
-            [value]="master"
-          >
-            {{ master.firstName }} {{ master.lastName }} ({{ master.username }})
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Project owner</mat-label>
-        <input
-          type="text"
-          matInput
-          formControlName="projectOwner"
-          [errorStateMatcher]="errorMatcher"
-          [matAutocomplete]="autoOwner"
-          #autoInput
-          (blur)="onProjectOwnerBlur()"
-        />
-        <mat-autocomplete
-          #autoOwner="matAutocomplete"
-          (optionSelected)="projectOwnerSelected($event.option.value)"
-        >
-          <mat-option
-            *ngFor="let master of ownerFilteredOptions | async"
-            [value]="master"
-          >
-            {{ master.firstName }} {{ master.lastName }} ({{ master.username }})
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      
-      <mat-form-field>
-        <mat-label>Users</mat-label>
-        <input
-          type="text"
-          matInput
-          [formControl]="myControl"
-          [matAutocomplete]="autoDevelopers"
-          #autoInput
-        />
-        <mat-autocomplete
-          #autoDevelopers="matAutocomplete"
-          (optionSelected)="addUser($event.option.value); autoInput.blur()"
-        >
-          <mat-option
-            *ngFor="let option of filteredOptions | async"
-            [value]="option"
-          >
-            {{ option.firstName }} {{ option.lastName }} ({{ option.username }})
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <app-users-on-project
-        [users]="selectedUsers"
-        (onRemove)="removeUser($event)"
-      ></app-users-on-project>
-      <br />
-      <button
-        mat-raised-button
-        color="primary"
-        style="margin-top: 10px;"
-        [disabled]="form.invalid"
-        (click)="sendData()"
-      >
-        <span
-          matTooltipPosition="right"
-          [matTooltip]="form.getError('error')"
-          [matTooltipDisabled]="!form.hasError('error')"
-          >Create project</span
-        >
-      </button>
-    </div>
-  </form>
+        }}
+                </mat-error>
+            </mat-form-field>
+
+
+            <mat-form-field>
+                <mat-label>Scrum Master</mat-label>
+                <input
+                    type="text"
+                    matInput
+                    formControlName="scrumMaster"
+                    [errorStateMatcher]="errorMatcher"
+                    [matAutocomplete]="autoMaster"
+                    #autoInput
+                    (blur)="onScrumMasterBlur()"
+                >
+                <mat-autocomplete
+                    #autoMaster="matAutocomplete"
+                    (optionSelected)="scrumMasterSelected($event.option.value)"
+                >
+                    <mat-option
+                        *ngFor="let master of scrumFilteredOptions | async"
+                        [value]="master"
+                    >
+                        {{ master.firstName }} {{ master.lastName }} ({{ master.username }})
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Project owner</mat-label>
+                <input
+                    type="text"
+                    matInput
+                    formControlName="projectOwner"
+                    [errorStateMatcher]="errorMatcher"
+                    [matAutocomplete]="autoOwner"
+                    #autoInput
+                    (blur)="onProjectOwnerBlur()"
+                >
+                <mat-autocomplete
+                    #autoOwner="matAutocomplete"
+                    (optionSelected)="projectOwnerSelected($event.option.value)"
+                >
+                    <mat-option
+                        *ngFor="let master of ownerFilteredOptions | async"
+                        [value]="master"
+                    >
+                        {{ master.firstName }} {{ master.lastName }} ({{ master.username }})
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+
+
+            <mat-form-field>
+                <mat-label>Developers</mat-label>
+                <input
+                    type="text"
+                    matInput
+                    [formControl]="myControl"
+                    [matAutocomplete]="autoDevelopers"
+                    #autoInput
+                >
+                <mat-autocomplete
+                    #autoDevelopers="matAutocomplete"
+                    (optionSelected)="addUser($event.option.value); autoInput.blur()"
+                >
+                    <mat-option
+                        *ngFor="let option of filteredOptions | async"
+                        [value]="option"
+                    >
+                        {{ option.firstName }} {{ option.lastName }} ({{ option.username }})
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <app-users-on-project
+                [users]="selectedUsers"
+                (onRemove)="removeUser($event)"
+            ></app-users-on-project>
+            <br>
+            <button
+                mat-raised-button
+                color="primary"
+                style="margin-top: 10px;"
+                [disabled]="form.invalid"
+                (click)="sendData()"
+            >
+                <span
+                    matTooltipPosition="right"
+                    [matTooltip]="form.getError('error')"
+                    [matTooltipDisabled]="!form.hasError('error')"
+                >
+                    Create project
+                </span>
+            </button>
+        </div>
+    </form>
 </div>

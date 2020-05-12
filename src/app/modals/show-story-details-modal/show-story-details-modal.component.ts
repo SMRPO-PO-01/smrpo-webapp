@@ -1,19 +1,19 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Project } from 'src/app/interfaces/project.interface';
-import { Sprint } from 'src/app/interfaces/sprint.interface';
-import { Story } from 'src/app/interfaces/story.interface';
-import { Task, TASK_STATE } from 'src/app/interfaces/task.interface';
-import { User } from 'src/app/interfaces/user.interface';
-import { WarningSnackbarComponent } from 'src/app/snackbars/warning-snackbar/warning-snackbar.component';
-import { RootStore } from 'src/app/store/root.store';
+import { Component, Inject, OnInit } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { Project } from "src/app/interfaces/project.interface";
+import { Sprint } from "src/app/interfaces/sprint.interface";
+import { Story } from "src/app/interfaces/story.interface";
+import { Task, TASK_STATE } from "src/app/interfaces/task.interface";
+import { User } from "src/app/interfaces/user.interface";
+import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
+import { RootStore } from "src/app/store/root.store";
 
-import { TaskService } from '../../services/task.service';
-import { CreateTasksModalComponent } from '../create-tasks-modal/create-tasks-modal.component';
-import { StorySizeModalComponent } from '../story-size-modal/story-size-modal.component';
+import { TaskService } from "../../services/task.service";
+import { CreateTasksModalComponent } from "../create-tasks-modal/create-tasks-modal.component";
+import { StorySizeModalComponent } from "../story-size-modal/story-size-modal.component";
 
 @Component({
   selector: "app-show-story-details-modal",
@@ -85,6 +85,10 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   storyInSprint() {
     this.isStoryInSprint = this.board == "Sprint";
     this.isStoryInProductBackLog = this.board == "Backlog";
+    console.log(this.board);
+
+    console.log(this.isStoryInProductBackLog);
+
     this.isStoryInAccepted = this.board == "Accepted";
   }
 
