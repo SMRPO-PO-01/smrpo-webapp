@@ -14,7 +14,7 @@ import { RootStore } from "src/app/store/root.store";
 import { TaskService } from "../../services/task.service";
 import { CreateTasksModalComponent } from "../create-tasks-modal/create-tasks-modal.component";
 import { StorySizeModalComponent } from "../story-size-modal/story-size-modal.component";
-
+import { InfoSnackbarComponent } from "src/app/snackbars/info-snackbar/info-snackbar.component";
 @Component({
   selector: "app-show-story-details-modal",
   templateUrl: "./show-story-details-modal.component.html",
@@ -85,9 +85,6 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   storyInSprint() {
     this.isStoryInSprint = this.board == "Sprint";
     this.isStoryInProductBackLog = this.board == "Backlog";
-    console.log(this.board);
-
-    console.log(this.isStoryInProductBackLog);
 
     this.isStoryInAccepted = this.board == "Accepted";
   }
@@ -184,7 +181,6 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     this.taskService.getTasks(this.projectId, this.story).subscribe((tasks) => {
       if (tasks === undefined) {
         this.areTasksEmpty = false;
-        console.log(this.tasks);
       }
       this.tasks = tasks;
     });
@@ -195,28 +191,24 @@ export class ShowStoryDetailsModalComponent implements OnInit {
    * @todo Finish
    */
   deleteTask(task: Task) {
-    console.log(task);
-
-    // this.taskService.deleteTask(this.projectId, task.id).subscribe(
-    //   (res) => {
-    //     this.snackBar.openFromComponent(InfoSnackbarComponent, {
-    //       data: {
-    //         message: res,
-    //       },
-    //       duration: 5000,
-    //     });
-    //   },
-    //   (err) => {
-    //     console.log(err);
-
-    //     this.snackBar.openFromComponent(WarningSnackbarComponent, {
-    //       data: {
-    //         message: err.body.message,
-    //       },
-    //       duration: 5000,
-    //     });
-    //   }
-    // );
+    this.taskService.deleteTask(this.projectId, task.id).subscribe(
+      (res) => {
+        this.snackBar.openFromComponent(InfoSnackbarComponent, {
+          data: {
+            message: "Task deleted successfully!",
+          },
+          duration: 5000,
+        });
+      },
+      (err) => {
+        this.snackBar.openFromComponent(WarningSnackbarComponent, {
+          data: {
+            message: err.body.message,
+          },
+          duration: 5000,
+        });
+      }
+    );
   }
 
   addTask() {

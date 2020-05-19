@@ -54,7 +54,6 @@ export class BoardsComponent implements OnInit {
   ngOnInit(): void {
     this.route.data.subscribe(({ project, sprints }) => {
       this.project = project;
-      console.log(this.project);
 
       this.backlogBoard.stories = this.project.backlog;
       if (this.backlogBoard.stories) {
@@ -82,7 +81,6 @@ export class BoardsComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<number[]>) {
-    console.log(event);
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -122,9 +120,6 @@ export class BoardsComponent implements OnInit {
   }
 
   getBoardOfStory(story: Story) {
-    console.log(story);
-    console.log(this.backlogBoard.stories);
-
     if (
       this.sprintBoard.stories &&
       this.sprintBoard.stories.some((s) => s.id == story.id)

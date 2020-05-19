@@ -1,15 +1,15 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 
-import { CUSTOM_VALIDATORS } from '../../../utils/custom-validators';
-import { Project } from '../../interfaces/project.interface';
-import { ProjectService } from '../../services/project.service';
+import { CUSTOM_VALIDATORS } from "../../../utils/custom-validators";
+import { Project } from "../../interfaces/project.interface";
+import { ProjectService } from "../../services/project.service";
 
 @Component({
   selector: "app-create-sprint-modal",
   templateUrl: "./create-sprint-modal.component.html",
-  styleUrls: ["./create-sprint-modal.component.scss"]
+  styleUrls: ["./create-sprint-modal.component.scss"],
 })
 export class CreateSprintModalComponent implements OnInit {
   form: FormGroup;
@@ -34,8 +34,8 @@ export class CreateSprintModalComponent implements OnInit {
       endDate: ["", Validators.required],
       velocity: [
         null,
-        [Validators.required, Validators.min(1), CUSTOM_VALIDATORS.isInt]
-      ]
+        [Validators.required, Validators.min(1), CUSTOM_VALIDATORS.isInt],
+      ],
     });
   }
 
@@ -46,18 +46,19 @@ export class CreateSprintModalComponent implements OnInit {
 
     this.loading = true;
     delete this.errorMsg;
-    console.log(this.data.projectId);
-    this.projectService.createSprint(this.data.projectId, this.form.value).subscribe(
-      res => {
-        this.dialogRef.close(res);
-      },
-      err => {
-        if (err.status === 409) {
-          this.errorMsg = err.body.message;
-          this.loading = false;
+    this.projectService
+      .createSprint(this.data.projectId, this.form.value)
+      .subscribe(
+        (res) => {
+          this.dialogRef.close(res);
+        },
+        (err) => {
+          if (err.status === 409) {
+            this.errorMsg = err.body.message;
+            this.loading = false;
+          }
         }
-      }
-    );
+      );
   }
 
   get minEndDate() {

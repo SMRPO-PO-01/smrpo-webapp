@@ -74,6 +74,5 @@ export class StorySizeModalComponent implements OnInit {
           }
         }
       );
-    console.log(this.form.value);
   }
 }
