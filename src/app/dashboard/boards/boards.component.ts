@@ -1,22 +1,27 @@
-import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
-import { forkJoin, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ProjectWithStories } from 'src/app/interfaces/project.interface';
-import { Sprint } from 'src/app/interfaces/sprint.interface';
-import { Story } from 'src/app/interfaces/story.interface';
-import { CreateSprintModalComponent } from 'src/app/modals/create-sprint-modal/create-sprint-modal.component';
-import { ShowStoryDetailsModalComponent } from 'src/app/modals/show-story-details-modal/show-story-details-modal.component';
-import { StoryModalComponent } from 'src/app/modals/story-modal/story-modal.component';
-import { ProjectService } from 'src/app/services/project.service';
-import { toDateOnlyString } from 'src/utils/to-date-only-string';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from "@angular/cdk/drag-drop";
+import { Component, OnInit } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { ActivatedRoute } from "@angular/router";
+import { forkJoin, Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { ProjectWithStories } from "src/app/interfaces/project.interface";
+import { Sprint } from "src/app/interfaces/sprint.interface";
+import { Story } from "src/app/interfaces/story.interface";
+import { CreateSprintModalComponent } from "src/app/modals/create-sprint-modal/create-sprint-modal.component";
+import { ShowStoryDetailsModalComponent } from "src/app/modals/show-story-details-modal/show-story-details-modal.component";
+import { StoryModalComponent } from "src/app/modals/story-modal/story-modal.component";
+import { ProjectService } from "src/app/services/project.service";
+import { toDateOnlyString } from "src/utils/to-date-only-string";
 
-import { Board } from '../../interfaces/board.interface';
-import { RejectStoryModalComponent } from '../../modals/reject-story-modal/reject-story-modal.component';
-import { RootStore } from '../../store/root.store';
+import { Board } from "../../interfaces/board.interface";
+import { RejectStoryModalComponent } from "../../modals/reject-story-modal/reject-story-modal.component";
+import { RootStore } from "../../store/root.store";
 
 @Component({
   selector: "app-boards",
@@ -49,12 +54,22 @@ export class BoardsComponent implements OnInit {
   ngOnInit(): void {
     this.route.data.subscribe(({ project, sprints }) => {
       this.project = project;
+      console.log(this.project);
+
       this.backlogBoard.stories = this.project.backlog;
-      this.backlogBoard.stories.forEach((story) => (story.board = "Backlog"));
+      if (this.backlogBoard.stories) {
+        this.backlogBoard.stories.forEach((story) => (story.board = "Backlog"));
+      }
       this.sprintBoard.stories = this.project.sprint;
-      this.sprintBoard.stories.forEach((story) => (story.board = "Sprint"));
-      this.acceptedBoard.stories = this.project.accepted;
-      this.acceptedBoard.stories.forEach((story) => (story.board = "Accepted"));
+      if (this.sprintBoard.stories) {
+        this.sprintBoard.stories.forEach((story) => (story.board = "Sprint"));
+      }
+      if (this.acceptedBoard.stories) {
+        this.acceptedBoard.stories = this.project.accepted;
+        this.acceptedBoard.stories.forEach(
+          (story) => (story.board = "Accepted")
+        );
+      }
       this.setSprints(sprints);
 
       this.isScrumMaster$ = this.rootStore.userStore.user$.pipe(
@@ -107,6 +122,9 @@ export class BoardsComponent implements OnInit {
   }
 
   getBoardOfStory(story: Story) {
+    console.log(story);
+    console.log(this.backlogBoard.stories);
+
     if (
       this.sprintBoard.stories &&
       this.sprintBoard.stories.some((s) => s.id == story.id)
