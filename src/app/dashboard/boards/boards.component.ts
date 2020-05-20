@@ -122,9 +122,6 @@ export class BoardsComponent implements OnInit {
   }
 
   getBoardOfStory(story: Story) {
-    console.log(story);
-    console.log(this.backlogBoard.stories);
-
     if (
       this.sprintBoard.stories &&
       this.sprintBoard.stories.some((s) => s.id == story.id)

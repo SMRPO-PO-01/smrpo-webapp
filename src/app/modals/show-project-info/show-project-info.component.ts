@@ -179,10 +179,14 @@ export class ShowProjectInfoComponent implements OnInit {
       })
       .afterClosed()
       .subscribe((res: Project) => {
-        this.project.title = res.title;
-        this.project.projectOwner = res.projectOwner;
-        this.project.scrumMaster = res.scrumMaster;
-        this.project.developers = res.developers;
+
+        if (res) {
+          this.project.title = res.title;
+          this.project.projectOwner = res.projectOwner;
+          this.project.scrumMaster = res.scrumMaster;
+          this.project.developers = res.developers;
+        }
+
       });
   }
 
