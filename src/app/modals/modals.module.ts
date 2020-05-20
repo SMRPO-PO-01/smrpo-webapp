@@ -20,7 +20,9 @@ import { RejectStoryModalComponent } from "./reject-story-modal/reject-story-mod
 import { ShowProjectInfoComponent } from "./show-project-info/show-project-info.component";
 import { NgApexchartsModule } from "ng-apexcharts";
 import { AddProjectModalComponent } from "./add-project-modal/add-project-modal.component";
-import { UsersOnProjectModalComponent } from './users-on-project-modal/users-on-project-modal.component';
+import { UsersOnProjectModalComponent } from "./users-on-project-modal/users-on-project-modal.component";
+import { EditUserModalComponent } from "./edit-user-modal/edit-user-modal.component";
+import { DeleteUserModalComponent } from "./delete-user-modal/delete-user-modal.component";
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { UsersOnProjectModalComponent } from './users-on-project-modal/users-on-
     ShowProjectInfoComponent,
     AddProjectModalComponent,
     UsersOnProjectModalComponent,
+    EditUserModalComponent,
+    DeleteUserModalComponent,
   ],
   imports: [
     CommonModule,

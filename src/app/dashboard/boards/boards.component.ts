@@ -23,6 +23,7 @@ import { Board } from "../../interfaces/board.interface";
 import { RejectStoryModalComponent } from "../../modals/reject-story-modal/reject-story-modal.component";
 import { RootStore } from "../../store/root.store";
 import { ShowProjectInfoComponent } from "src/app/modals/show-project-info/show-project-info.component";
+import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
 
 @Component({
   selector: "app-boards",
@@ -121,6 +122,9 @@ export class BoardsComponent implements OnInit {
   }
 
   getBoardOfStory(story: Story) {
+    console.log(story);
+    console.log(this.backlogBoard.stories);
+
     if (
       this.sprintBoard.stories &&
       this.sprintBoard.stories.some((s) => s.id == story.id)
@@ -230,6 +234,13 @@ export class BoardsComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
+    } else {
+      this.snackBar.openFromComponent(WarningSnackbarComponent, {
+        data: {
+          message: "Only Scrum Master can move stories from Backlog!",
+        },
+        duration: 5000,
+      });
     }
 
     this.acceptedBoard.dropDisabled = false;
@@ -312,6 +323,32 @@ export class BoardsComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
+    } else {
+      if (story.unsaved) {
+        this.snackBar.openFromComponent(WarningSnackbarComponent, {
+          data: {
+            message: "Cannot move story from Backlog directly to Accepted!",
+          },
+          duration: 5000,
+        });
+      } else if (
+        this.rootStore.userStore.user.id !== this.project.projectOwner.id
+      ) {
+        this.snackBar.openFromComponent(WarningSnackbarComponent, {
+          data: {
+            message:
+              "Only user with role Project Owner can move stories from sprint!",
+          },
+          duration: 5000,
+        });
+      } else if (!story.allTasksCompleted) {
+        this.snackBar.openFromComponent(WarningSnackbarComponent, {
+          data: {
+            message: "Cannot accept story with unfinished tasks!",
+          },
+          duration: 5000,
+        });
+      }
     }
 
     this.acceptedBoard.dropDisabled = false;
@@ -340,6 +377,13 @@ export class BoardsComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
+    } else {
+      this.snackBar.openFromComponent(WarningSnackbarComponent, {
+        data: {
+          message: "Cannot move already accepted stories!",
+        },
+        duration: 5000,
+      });
     }
 
     this.backlogBoard.dropDisabled = false;
