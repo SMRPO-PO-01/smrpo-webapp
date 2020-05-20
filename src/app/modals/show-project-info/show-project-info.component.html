@@ -1,0 +1,65 @@
+<div class="project-container">
+  <mat-card-title class="project-details">
+    {{ project.title }}
+    <div class="edit-buttons">
+      <button
+        *ngIf="(isAdmin$ | async) || (isScrumMaster$ | async)"
+        mat-icon-button
+        matTooltip="Edit project"
+        matTooltipPosition="below"
+        color="black"
+        (click)="editProject(project); $event.stopPropagation()"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+  </mat-card-title>
+
+  <mat-card-content>
+    <div class="group">
+      <div class="group-title">Project Owner:</div>
+      <div class="group-content">
+        {{ project.projectOwner.firstName }}
+        {{ project.projectOwner.lastName }} ({{
+          project.projectOwner.username
+        }})
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-title">Scrum Master:</div>
+
+      <div class="group-content">
+        {{ project.scrumMaster.firstName }}
+        {{ project.scrumMaster.lastName }} ({{ project.scrumMaster.username }})
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-title">Developers:</div>
+      <div class="group-content" *ngFor="let developer of project.developers">
+        {{ developer.firstName }} {{ developer.lastName }} ({{
+          developer.username
+        }})
+      </div>
+    </div>
+    <div class="last-group">
+      <div class="group wrap">
+        <div class="group-title">Project Stories</div>
+        <apx-chart
+          [series]="storiesOptions.series"
+          [chart]="storiesOptions.chart"
+          [labels]="storiesOptions.labels"
+          [responsive]="storiesOptions.responsive"
+        ></apx-chart>
+      </div>
+      <div class="group wrap">
+        <div class="group-title">Project Tasks</div>
+        <apx-chart
+          [series]="tasksOptions.series"
+          [chart]="tasksOptions.chart"
+          [labels]="tasksOptions.labels"
+          [responsive]="tasksOptions.responsive"
+        ></apx-chart>
+      </div>
+    </div>
+  </mat-card-content>
+</div>

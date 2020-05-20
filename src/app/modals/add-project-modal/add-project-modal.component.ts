@@ -1,21 +1,32 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
-import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
-import { User } from 'src/app/interfaces/user.interface';
-import { AdminService } from 'src/app/services/admin.service';
-import { ProjectService } from 'src/app/services/project.service';
-import { WarningSnackbarComponent } from 'src/app/snackbars/warning-snackbar/warning-snackbar.component';
-
-import { CustomErrorStateMatcher } from '../../../utils/custom-error-state-matcher';
+import { Component, OnInit, Inject } from "@angular/core";
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Observable } from "rxjs";
+import { debounceTime, map, startWith, switchMap } from "rxjs/operators";
+import { User } from "src/app/interfaces/user.interface";
+import { AdminService } from "src/app/services/admin.service";
+import { ProjectService } from "src/app/services/project.service";
+import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
+import { CustomErrorStateMatcher } from "src/utils/custom-error-state-matcher";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { Project } from "src/app/interfaces/project.interface";
+import { InfoSnackbarComponent } from "src/app/snackbars/info-snackbar/info-snackbar.component";
 
 @Component({
-  selector: "app-add-project",
-  templateUrl: "./add-project.component.html",
-  styleUrls: ["./add-project.component.scss"],
+  selector: "app-add-project-modal",
+  templateUrl: "./add-project-modal.component.html",
+  styleUrls: ["./add-project-modal.component.scss"],
 })
-export class AddProjectComponent implements OnInit {
+export class AddProjectModalComponent implements OnInit {
+  project: Project;
+
   form: FormGroup;
   myControl = new FormControl();
 
@@ -28,11 +39,15 @@ export class AddProjectComponent implements OnInit {
   selectedUsers: AbstractControl[] = [];
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) private data: { project: Project },
+    private dialogRef: MatDialogRef<AddProjectModalComponent>,
     private formbuilder: FormBuilder,
     private adminService: AdminService,
     private projectService: ProjectService,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    this.project = data.project;
+  }
 
   ngOnInit(): void {
     this.buildForm();
@@ -72,13 +87,19 @@ export class AddProjectComponent implements OnInit {
     }
 
     this.projectService
-      .createProject({
+      .updateProject({
         ...this.form.value,
         developers: this.developers.value.map((d) => d.id),
       })
       .subscribe(
-        () => {
-          this.buildForm();
+        (res) => {
+          this.snackBar.openFromComponent(InfoSnackbarComponent, {
+            data: {
+              message: "Project updated successfully",
+            },
+            duration: 5000,
+          });
+          this.dialogRef.close(res);
         },
         (error) => {
           if (error.status === 409) {
@@ -152,14 +173,25 @@ export class AddProjectComponent implements OnInit {
 
   private buildForm() {
     this.form = this.formbuilder.group({
-      title: ["", Validators.required],
-      scrumMaster: ["", Validators.required],
-      scrumMasterId: [null],
-      scrumMasterUser: [null],
-      projectOwner: ["", Validators.required],
-      projectOwnerId: [null],
-      projectOwnerUser: [null],
-      developers: this.formbuilder.array([]),
+      id: [this.project.id],
+      title: [this.project.title, Validators.required],
+      scrumMaster: [
+        `${this.project.scrumMaster.firstName} ${this.project.scrumMaster.lastName}`,
+        Validators.required,
+      ],
+      scrumMasterId: [this.project.scrumMaster.id],
+      scrumMasterUser: [this.project.scrumMaster],
+      projectOwner: [
+        `${this.project.projectOwner.firstName} ${this.project.projectOwner.lastName}`,
+        Validators.required,
+      ],
+      projectOwnerId: [this.project.projectOwner.id],
+      projectOwnerUser: [this.project.projectOwner],
+      developers: this.formbuilder.array(
+        this.project.developers.map((developer) =>
+          this.formbuilder.group({ user: developer, id: developer.id })
+        )
+      ),
     });
     this.selectedUsers = [...this.developers.controls];
   }

@@ -1,0 +1,40 @@
+@import "../../../variables";
+
+.add-user-container {
+
+  .add-user-form {
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px;
+
+    .mat-form-field {
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+  }
+
+  .btns-row {
+    display: flex;
+    flex-direction: row-reverse;
+
+    button {
+      margin-left: 20px;
+    }
+  }
+
+  .edit-password {
+    padding-left: 20px;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: 100ms ease-in-out;
+
+    &:hover {
+      color: $primary-color;
+    }
+  }
+}
+
+.mat-icon {
+  font-size: 20px;
+}

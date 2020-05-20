@@ -7,7 +7,6 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { HttpRequestInterceptor } from "./interceptors/http-request.interceptor";
-import { WarningSnackbarComponent } from "./snackbars/warning-snackbar/warning-snackbar.component";
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,15 +15,15 @@ import { WarningSnackbarComponent } from "./snackbars/warning-snackbar/warning-s
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpRequestInterceptor,
-      multi: true
-    }
+      multi: true,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

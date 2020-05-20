@@ -165,8 +165,16 @@ mat-card {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-
 .add-to-sprint-btn {
   position: absolute;
   margin-left: 54px;
+}
+
+#info-button {
+  position: absolute;
+  right: 3%;
+  mat-icon {
+    font-size: auto;
+    vertical-align: top;
+  }
 }

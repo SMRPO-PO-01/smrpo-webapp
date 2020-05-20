@@ -20,9 +20,10 @@
         class="create-story"
         (click)="addStory(); $event.stopPropagation()"
       >
-        <mat-card-content
-          ><mat-icon>add_outline</mat-icon> Create new story</mat-card-content
-        >
+        <mat-card-content>
+          <mat-icon>add_outline</mat-icon>
+          Create new story
+        </mat-card-content>
       </mat-card>
       <mat-card
         *ngFor="let story of backlogBoard.stories"
@@ -32,15 +33,6 @@
         (cdkDragDropped)="storyFromBacklogDropped(story, $event)"
         (cdkDragStarted)="storyFromBacklogDrag()"
       >
-        <!--         <button
-          mat-icon-button
-          color="white"
-          (click)="editStory(story); $event.stopPropagation()"
-          matTooltip="Edit story"
-          matTooltipPosition="below"
-        >
-          <mat-icon>settings</mat-icon>
-        </button> -->
         <mat-card-title (click)="openDetails(story)">
           {{ story.title }}
           <span style="float: right;">Size: {{ story.size || "-" }}</span>
@@ -58,7 +50,8 @@
     [cdkDropListDisabled]="sprintBoard.dropDisabled"
   >
     <div class="title">
-      Sprint: <span>{{ sprintBoard.title }}</span>
+      Sprint:
+      <span>{{ sprintBoard.title }}</span>
       <span
         style="float: right;"
         [ngStyle]="
@@ -78,7 +71,7 @@
         (cdkDragDropped)="storyFromSprintDropped(story, $event)"
         (cdkDragStarted)="storyFromSprintDrag(story)"
       >
-        <!--         <button
+        <!-- <button
           mat-icon-button
           color="white"
           matTooltip="Edit story"
@@ -92,7 +85,6 @@
         </mat-card-title>
         <mat-card-content>{{ story.description }}</mat-card-content>
       </mat-card>
-
       <button
         *ngIf="someUnsavedStories(sprintBoard.stories)"
         class="add-to-sprint-btn"
@@ -126,9 +118,7 @@
       <mat-icon>add_circle_outline</mat-icon>
     </div>
     <ng-template #notScrumMaster>
-      <div class="cards">
-        There is no currently active sprint.
-      </div>
+      <div class="cards">There is no currently active sprint.</div>
     </ng-template>
   </div>
   <div
@@ -147,7 +137,7 @@
         (cdkDragDropped)="storyFromAcceptedDropped(story, $event)"
         (cdkDragStarted)="storyFromAcceptedDrag(story)"
       >
-        <!--         <button
+        <!-- <button
           mat-icon-button
           color="white"
           matTooltip="Edit story"
@@ -161,7 +151,6 @@
         </mat-card-title>
         <mat-card-content>{{ story.description }}</mat-card-content>
       </mat-card>
-
       <button
         *ngIf="someUnsavedStories(acceptedBoard.stories)"
         class="add-to-sprint-btn"
@@ -172,5 +161,18 @@
         Accept selected stories
       </button>
     </div>
+  </div>
+  <div>
+    <button
+      id="info-button"
+      mat-fab
+      (click)="openProjectInfo()"
+      color="primary"
+      matTooltip="Project info"
+      matTooltipPosition="left"
+      aria-label="Example icon button with a delete icon"
+    >
+      <mat-icon>info</mat-icon>
+    </button>
   </div>
 </div>

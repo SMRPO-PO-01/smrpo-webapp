@@ -12,6 +12,8 @@ import { DashboardComponent } from './dashboard.component';
 import { MaterialModule } from './material';
 import { ProjectListComponent } from './project-list/project-list.component';
 import { UsersOnProjectComponent } from './users-on-project/users-on-project.component';
+import { EditUsersComponent } from './edit-users/edit-users.component';
+import { MyAccountComponent } from './my-account/my-account.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { UsersOnProjectComponent } from './users-on-project/users-on-project.com
     ProjectListComponent,
     BoardsComponent,
     AddProjectComponent,
-    UsersOnProjectComponent
+    UsersOnProjectComponent,
+    EditUsersComponent,
+    MyAccountComponent
   ],
   imports: [
     CommonModule,
