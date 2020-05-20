@@ -13,6 +13,7 @@ import { MaterialModule } from './material';
 import { ProjectListComponent } from './project-list/project-list.component';
 import { UsersOnProjectComponent } from './users-on-project/users-on-project.component';
 import { EditUsersComponent } from './edit-users/edit-users.component';
+import { MyAccountComponent } from './my-account/my-account.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { EditUsersComponent } from './edit-users/edit-users.component';
     BoardsComponent,
     AddProjectComponent,
     UsersOnProjectComponent,
-    EditUsersComponent
+    EditUsersComponent,
+    MyAccountComponent
   ],
   imports: [
     CommonModule,
