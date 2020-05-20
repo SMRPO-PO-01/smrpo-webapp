@@ -1,27 +1,23 @@
-import {
-  CdkDrag,
-  CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem,
-} from "@angular/cdk/drag-drop";
-import { Component, OnInit } from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { ActivatedRoute } from "@angular/router";
-import { forkJoin, Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { ProjectWithStories } from "src/app/interfaces/project.interface";
-import { Sprint } from "src/app/interfaces/sprint.interface";
-import { Story } from "src/app/interfaces/story.interface";
-import { CreateSprintModalComponent } from "src/app/modals/create-sprint-modal/create-sprint-modal.component";
-import { ShowStoryDetailsModalComponent } from "src/app/modals/show-story-details-modal/show-story-details-modal.component";
-import { StoryModalComponent } from "src/app/modals/story-modal/story-modal.component";
-import { ProjectService } from "src/app/services/project.service";
-import { toDateOnlyString } from "src/utils/to-date-only-string";
+import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
+import { forkJoin, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ProjectWithStories } from 'src/app/interfaces/project.interface';
+import { Sprint } from 'src/app/interfaces/sprint.interface';
+import { Story } from 'src/app/interfaces/story.interface';
+import { CreateSprintModalComponent } from 'src/app/modals/create-sprint-modal/create-sprint-modal.component';
+import { ShowStoryDetailsModalComponent } from 'src/app/modals/show-story-details-modal/show-story-details-modal.component';
+import { StoryModalComponent } from 'src/app/modals/story-modal/story-modal.component';
+import { ProjectService } from 'src/app/services/project.service';
+import { toDateOnlyString } from 'src/utils/to-date-only-string';
 
-import { Board } from "../../interfaces/board.interface";
-import { RejectStoryModalComponent } from "../../modals/reject-story-modal/reject-story-modal.component";
-import { RootStore } from "../../store/root.store";
+import { Board } from '../../interfaces/board.interface';
+import { RejectStoryModalComponent } from '../../modals/reject-story-modal/reject-story-modal.component';
+import { WarningSnackbarComponent } from '../../snackbars/warning-snackbar/warning-snackbar.component';
+import { RootStore } from '../../store/root.store';
 
 @Component({
   selector: "app-boards",
@@ -234,6 +230,13 @@ export class BoardsComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
+    } else {
+      this.snackBar.openFromComponent(WarningSnackbarComponent, {
+        data: {
+          message: "Only Scrum Master can move stories from Backlog!",
+        },
+        duration: 5000,
+      });
     }
 
     this.acceptedBoard.dropDisabled = false;
@@ -316,6 +319,32 @@ export class BoardsComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
+    } else {
+      if (story.unsaved) {
+        this.snackBar.openFromComponent(WarningSnackbarComponent, {
+          data: {
+            message: "Cannot move story from Backlog directly to Accepted!",
+          },
+          duration: 5000,
+        });
+      } else if (
+        this.rootStore.userStore.user.id !== this.project.projectOwner.id
+      ) {
+        this.snackBar.openFromComponent(WarningSnackbarComponent, {
+          data: {
+            message:
+              "Only user with role Project Owner can move stories from sprint!",
+          },
+          duration: 5000,
+        });
+      } else if (!story.allTasksCompleted) {
+        this.snackBar.openFromComponent(WarningSnackbarComponent, {
+          data: {
+            message: "Cannot accept story with unfinished tasks!",
+          },
+          duration: 5000,
+        });
+      }
     }
 
     this.acceptedBoard.dropDisabled = false;
@@ -344,6 +373,13 @@ export class BoardsComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
+    } else {
+      this.snackBar.openFromComponent(WarningSnackbarComponent, {
+        data: {
+          message: "Cannot move already accepted stories!",
+        },
+        duration: 5000,
+      });
     }
 
     this.backlogBoard.dropDisabled = false;

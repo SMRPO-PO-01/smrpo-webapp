@@ -1,19 +1,19 @@
-import { Component, Inject, OnInit } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { Project } from "src/app/interfaces/project.interface";
-import { Sprint } from "src/app/interfaces/sprint.interface";
-import { Story } from "src/app/interfaces/story.interface";
-import { Task, TASK_STATE } from "src/app/interfaces/task.interface";
-import { User } from "src/app/interfaces/user.interface";
-import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
-import { RootStore } from "src/app/store/root.store";
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ProjectWithStories } from 'src/app/interfaces/project.interface';
+import { Sprint } from 'src/app/interfaces/sprint.interface';
+import { Story } from 'src/app/interfaces/story.interface';
+import { Task, TASK_STATE } from 'src/app/interfaces/task.interface';
+import { User } from 'src/app/interfaces/user.interface';
+import { WarningSnackbarComponent } from 'src/app/snackbars/warning-snackbar/warning-snackbar.component';
+import { RootStore } from 'src/app/store/root.store';
 
-import { TaskService } from "../../services/task.service";
-import { CreateTasksModalComponent } from "../create-tasks-modal/create-tasks-modal.component";
-import { StorySizeModalComponent } from "../story-size-modal/story-size-modal.component";
+import { TaskService } from '../../services/task.service';
+import { CreateTasksModalComponent } from '../create-tasks-modal/create-tasks-modal.component';
+import { StorySizeModalComponent } from '../story-size-modal/story-size-modal.component';
 
 @Component({
   selector: "app-show-story-details-modal",
@@ -28,7 +28,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   activeSprint: Sprint;
   user: User;
   story: Story;
-  project: Project;
+  project: ProjectWithStories;
   projectId: number;
   tasks: Task[];
 
@@ -41,7 +41,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA)
     private data: {
-      project: Project;
+      project: ProjectWithStories;
       story: Story;
       board: string;
       activeSprint: Sprint;
@@ -172,12 +172,18 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     task.state = TASK_STATE.DONE;
     task.undo = true;
     this.taskService.updateTask(task, this.projectId).subscribe(console.log);
+    this.story.allTasksCompleted = this.tasks.every(
+      (task) => task.state === TASK_STATE.DONE
+    );
   }
 
   undoFinishedTask(task: Task) {
     task.state = TASK_STATE.ASSIGNED;
     task.undo = false;
     this.taskService.updateTask(task, this.projectId).subscribe(console.log);
+    this.story.allTasksCompleted = this.tasks.every(
+      (task) => task.state === TASK_STATE.DONE
+    );
   }
 
   getTasks() {
@@ -187,6 +193,9 @@ export class ShowStoryDetailsModalComponent implements OnInit {
         console.log(this.tasks);
       }
       this.tasks = tasks;
+      this.story.allTasksCompleted = tasks.every(
+        (task) => task.state === TASK_STATE.DONE
+      );
     });
   }
   /**
