@@ -22,6 +22,7 @@ import { toDateOnlyString } from "src/utils/to-date-only-string";
 import { Board } from "../../interfaces/board.interface";
 import { RejectStoryModalComponent } from "../../modals/reject-story-modal/reject-story-modal.component";
 import { RootStore } from "../../store/root.store";
+import { ShowProjectInfoComponent } from "src/app/modals/show-project-info/show-project-info.component";
 
 @Component({
   selector: "app-boards",
@@ -400,5 +401,18 @@ export class BoardsComponent implements OnInit {
     }
 
     return roles.join(", ");
+  }
+
+  openProjectInfo() {
+    this.dialog
+      .open(ShowProjectInfoComponent, {
+        height: "800px",
+        width: "1000px",
+        data: {
+          project: this.project,
+        },
+      })
+      .afterClosed()
+      .subscribe(console.log);
   }
 }

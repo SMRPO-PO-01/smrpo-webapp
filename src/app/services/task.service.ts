@@ -17,7 +17,7 @@ export class TaskService {
 
   getTasks(
     projectId: number,
-    story: Story,
+    story: Story = undefined,
     search = "",
     page = 1,
     perPage = 100,
@@ -30,7 +30,7 @@ export class TaskService {
           perPage: perPage.toString(),
           search,
           user,
-          story: story.id.toString(),
+          story: story ? story.id.toString() : "",
         },
       }),
     });

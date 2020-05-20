@@ -1,0 +1,48 @@
+@import "../../../variables";
+
+.project-details {
+  position: relative;
+
+  .edit-buttons {
+    color: #000000;
+    display: inline;
+    position: absolute;
+    right: 5%;
+    bottom: 5%;
+  }
+}
+
+mat-card-content {
+  overflow: auto;
+  max-height: 690px;
+  .group {
+    padding: 1em;
+    margin: 1em;
+
+    box-sizing: border-box;
+    background-color: $lightgray;
+    box-shadow: $material-shadow;
+  }
+
+  .group-title {
+    font-size: 20px;
+    color: #979797;
+    padding: 5px;
+  }
+
+  .group-content {
+    // background-color: $lightgray;
+    height: 2em;
+    padding: 5px;
+    font-size: 17px;
+  }
+
+  .last-group {
+    .wrap {
+      width: 47%;
+      height: 50%;
+      float: left;
+      // margin-right: 1px;
+    }
+  }
+}
