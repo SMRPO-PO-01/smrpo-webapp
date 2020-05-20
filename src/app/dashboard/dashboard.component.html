@@ -59,6 +59,15 @@
       </a>
       <a
         mat-list-item
+        routerLink="/dashboard/admin/edit-users"
+        routerLinkActive="is-active"
+        *ngIf="isAdmin"
+      >
+        <mat-icon mat-list-icon>people</mat-icon>
+        <h4 mat-line>Edit users</h4>
+      </a>
+      <a
+        mat-list-item
         routerLink="/dashboard/admin/add-project"
         routerLinkActive="is-active"
         *ngIf="isAdmin"

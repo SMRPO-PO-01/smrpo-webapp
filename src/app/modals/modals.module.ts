@@ -17,6 +17,8 @@ import { MaterialModule } from "../dashboard/material";
 
 import { StorySizeModalComponent } from './story-size-modal/story-size-modal.component';
 import { RejectStoryModalComponent } from './reject-story-modal/reject-story-modal.component';
+import { EditUserModalComponent } from './edit-user-modal/edit-user-modal.component';
+import { DeleteUserModalComponent } from './delete-user-modal/delete-user-modal.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,10 @@ import { RejectStoryModalComponent } from './reject-story-modal/reject-story-mod
     StorySizeModalComponent,
 
     RejectStoryModalComponent,
+
+    EditUserModalComponent,
+
+    DeleteUserModalComponent,
 
   ],
   imports: [
