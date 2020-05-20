@@ -15,10 +15,14 @@ import { CreateTasksModalComponent } from "./create-tasks-modal/create-tasks-mod
 import { ShowStoryDetailsModalComponent } from "./show-story-details-modal/show-story-details-modal.component";
 import { MaterialModule } from "../dashboard/material";
 
-import { StorySizeModalComponent } from './story-size-modal/story-size-modal.component';
-import { RejectStoryModalComponent } from './reject-story-modal/reject-story-modal.component';
-import { EditUserModalComponent } from './edit-user-modal/edit-user-modal.component';
-import { DeleteUserModalComponent } from './delete-user-modal/delete-user-modal.component';
+import { StorySizeModalComponent } from "./story-size-modal/story-size-modal.component";
+import { RejectStoryModalComponent } from "./reject-story-modal/reject-story-modal.component";
+import { ShowProjectInfoComponent } from "./show-project-info/show-project-info.component";
+import { NgApexchartsModule } from "ng-apexcharts";
+import { AddProjectModalComponent } from "./add-project-modal/add-project-modal.component";
+import { UsersOnProjectModalComponent } from "./users-on-project-modal/users-on-project-modal.component";
+import { EditUserModalComponent } from "./edit-user-modal/edit-user-modal.component";
+import { DeleteUserModalComponent } from "./delete-user-modal/delete-user-modal.component";
 
 @NgModule({
   declarations: [
@@ -26,15 +30,13 @@ import { DeleteUserModalComponent } from './delete-user-modal/delete-user-modal.
     StoryModalComponent,
     CreateTasksModalComponent,
     ShowStoryDetailsModalComponent,
-
     StorySizeModalComponent,
-
     RejectStoryModalComponent,
-
+    ShowProjectInfoComponent,
+    AddProjectModalComponent,
+    UsersOnProjectModalComponent,
     EditUserModalComponent,
-
     DeleteUserModalComponent,
-
   ],
   imports: [
     CommonModule,
@@ -48,6 +50,7 @@ import { DeleteUserModalComponent } from './delete-user-modal/delete-user-modal.
     MatInputModule,
     MatButtonModule,
     MatSelectModule,
+    NgApexchartsModule,
   ],
 })
 export class ModalsModule {}

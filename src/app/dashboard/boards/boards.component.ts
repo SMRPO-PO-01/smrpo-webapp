@@ -1,23 +1,29 @@
-import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
-import { forkJoin, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ProjectWithStories } from 'src/app/interfaces/project.interface';
-import { Sprint } from 'src/app/interfaces/sprint.interface';
-import { Story } from 'src/app/interfaces/story.interface';
-import { CreateSprintModalComponent } from 'src/app/modals/create-sprint-modal/create-sprint-modal.component';
-import { ShowStoryDetailsModalComponent } from 'src/app/modals/show-story-details-modal/show-story-details-modal.component';
-import { StoryModalComponent } from 'src/app/modals/story-modal/story-modal.component';
-import { ProjectService } from 'src/app/services/project.service';
-import { toDateOnlyString } from 'src/utils/to-date-only-string';
+import {
+  CdkDrag,
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from "@angular/cdk/drag-drop";
+import { Component, OnInit } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { ActivatedRoute } from "@angular/router";
+import { forkJoin, Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { ProjectWithStories } from "src/app/interfaces/project.interface";
+import { Sprint } from "src/app/interfaces/sprint.interface";
+import { Story } from "src/app/interfaces/story.interface";
+import { CreateSprintModalComponent } from "src/app/modals/create-sprint-modal/create-sprint-modal.component";
+import { ShowStoryDetailsModalComponent } from "src/app/modals/show-story-details-modal/show-story-details-modal.component";
+import { StoryModalComponent } from "src/app/modals/story-modal/story-modal.component";
+import { ProjectService } from "src/app/services/project.service";
+import { toDateOnlyString } from "src/utils/to-date-only-string";
 
-import { Board } from '../../interfaces/board.interface';
-import { RejectStoryModalComponent } from '../../modals/reject-story-modal/reject-story-modal.component';
-import { WarningSnackbarComponent } from '../../snackbars/warning-snackbar/warning-snackbar.component';
-import { RootStore } from '../../store/root.store';
+import { Board } from "../../interfaces/board.interface";
+import { RejectStoryModalComponent } from "../../modals/reject-story-modal/reject-story-modal.component";
+import { RootStore } from "../../store/root.store";
+import { ShowProjectInfoComponent } from "src/app/modals/show-project-info/show-project-info.component";
+import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
 
 @Component({
   selector: "app-boards",
@@ -50,7 +56,6 @@ export class BoardsComponent implements OnInit {
   ngOnInit(): void {
     this.route.data.subscribe(({ project, sprints }) => {
       this.project = project;
-      console.log(this.project);
 
       this.backlogBoard.stories = this.project.backlog;
       if (this.backlogBoard.stories) {
@@ -78,7 +83,6 @@ export class BoardsComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<number[]>) {
-    console.log(event);
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -441,5 +445,18 @@ export class BoardsComponent implements OnInit {
     }
 
     return roles.join(", ");
+  }
+
+  openProjectInfo() {
+    this.dialog
+      .open(ShowProjectInfoComponent, {
+        height: "800px",
+        width: "1000px",
+        data: {
+          project: this.project,
+        },
+      })
+      .afterClosed()
+      .subscribe(console.log);
   }
 }

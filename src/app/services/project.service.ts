@@ -1,14 +1,15 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { tap } from 'rxjs/operators';
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { tap } from "rxjs/operators";
 
-import { toDateOnlyString } from '../../utils/to-date-only-string';
-import { Project, ProjectWithStories } from '../interfaces/project.interface';
-import { Sprint } from '../interfaces/sprint.interface';
-import { Story } from '../interfaces/story.interface';
-import { InfoSnackbarComponent } from '../snackbars/info-snackbar/info-snackbar.component';
-import { RootStore } from '../store/root.store';
+import { toDateOnlyString } from "../../utils/to-date-only-string";
+import { Project, ProjectWithStories } from "../interfaces/project.interface";
+import { Sprint } from "../interfaces/sprint.interface";
+import { Story } from "../interfaces/story.interface";
+import { InfoSnackbarComponent } from "../snackbars/info-snackbar/info-snackbar.component";
+import { RootStore } from "../store/root.store";
+import { User } from "../interfaces/user.interface";
 
 @Injectable({
   providedIn: "root",
@@ -29,6 +30,10 @@ export class ProjectService {
         })
       )
     );
+  }
+
+  updateProject(project: Project) {
+    return this.http.put(`project/${project.id}`, project);
   }
 
   getMyProjects() {

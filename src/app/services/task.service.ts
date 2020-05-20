@@ -9,7 +9,6 @@ import { tap } from "rxjs/operators";
 import { InfoSnackbarComponent } from "../snackbars/info-snackbar/info-snackbar.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 
-
 @Injectable({
   providedIn: "root",
 })
@@ -18,7 +17,7 @@ export class TaskService {
 
   getTasks(
     projectId: number,
-    story: Story,
+    story: Story = undefined,
     search = "",
     page = 1,
     perPage = 100,
@@ -31,24 +30,17 @@ export class TaskService {
           perPage: perPage.toString(),
           search,
           user,
-          story: story.id.toString(),
+          story: story ? story.id.toString() : "",
         },
       }),
     });
   }
 
   deleteTask(projectId: number, taskId: number) {
-    return this.http.delete<Task>(`project/${projectId}/task`, {
-      params: new HttpParams({
-        fromObject: {
-          id: taskId.toString(),
-        },
-      }),
-    });
+    return this.http.delete<Task>(`project/${projectId}/task/${taskId}`);
   }
 
   createTask(projectId: number, data: any) {
-
     return this.http.post<Task>(`project/${projectId}/task`, data).pipe(
       tap(() =>
         this.snackBar.openFromComponent(InfoSnackbarComponent, {
@@ -57,7 +49,6 @@ export class TaskService {
         })
       )
     );
-
   }
   updateTask(data: any, projectId: number) {
     return this.http.put<Task>(`project/${projectId}/task`, data);

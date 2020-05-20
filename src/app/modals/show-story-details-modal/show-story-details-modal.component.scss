@@ -2,7 +2,7 @@
 
 .story-details {
   position: relative;
-
+  overflow: hidden;
   .edit-buttons {
     color: #000000;
     display: inline;
@@ -13,10 +13,11 @@
 }
 
 mat-card-content {
+  overflow: auto;
+  max-height: 690px;
   .group {
     padding: 1em;
     margin: 1em;
-
     box-sizing: border-box;
     background-color: $lightgray;
     box-shadow: $material-shadow;
@@ -30,15 +31,14 @@ mat-card-content {
 
   .description {
     // background-color: $lightgray;
-    height: 15em;
+    height: auto;
     padding: 1em;
-
     font-size: 15px;
   }
 
   .group-content {
     // background-color: $lightgray;
-    height: 2em;
+    height: auto;
     padding: 1em;
     font-size: 15px;
   }
@@ -49,7 +49,6 @@ mat-card-content {
       height: auto;
       float: left;
       margin-right: 1px;
-
     }
   }
 }
@@ -75,7 +74,6 @@ mat-card-content {
     .title {
       font-size: 16px;
       padding: 15px;
-
       color: white;
     }
 
@@ -129,7 +127,6 @@ mat-card-content {
       position: absolute;
       right: 5%;
     }
-
 
     mat-card-title {
       font-size: 15px;
