@@ -19,6 +19,10 @@
       <mat-icon>account_circle</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
+      <button mat-menu-item routerLink="/dashboard/my-account">
+        <mat-icon>person</mat-icon>
+        My account
+      </button>
       <button mat-menu-item (click)="onLogout()">
         <mat-icon>exit_to_app</mat-icon>
         Log out

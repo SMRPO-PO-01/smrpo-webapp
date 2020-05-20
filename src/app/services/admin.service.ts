@@ -5,12 +5,17 @@ import { tap } from 'rxjs/operators';
 
 import { User } from '../interfaces/user.interface';
 import { InfoSnackbarComponent } from '../snackbars/info-snackbar/info-snackbar.component';
+import { RootStore } from '../store/root.store';
 
 @Injectable({
   providedIn: "root",
 })
 export class AdminService {
-  constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
+  constructor(
+    private http: HttpClient,
+    private snackBar: MatSnackBar,
+    private rootStore: RootStore
+  ) {}
 
   createUser(data: User) {
     return this.http.post<User>("admin/add-user", data).pipe(
@@ -37,7 +42,10 @@ export class AdminService {
 
   editUser(user: User) {
     return this.http.put<User>("admin/edit-user/" + user.id, user).pipe(
-      tap(() => {
+      tap((user) => {
+        if (user.id === this.rootStore.userStore.user.id) {
+          this.rootStore.userStore.setUser(user);
+        }
         this.snackBar.openFromComponent(InfoSnackbarComponent, {
           data: { message: "User was edited successfully!" },
           duration: 5000,
