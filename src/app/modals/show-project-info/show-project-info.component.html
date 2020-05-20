@@ -3,6 +3,7 @@
     {{ project.title }}
     <div class="edit-buttons">
       <button
+        *ngIf="(isAdmin$ | async) || (isScrumMaster$ | async)"
         mat-icon-button
         matTooltip="Edit project"
         matTooltipPosition="below"

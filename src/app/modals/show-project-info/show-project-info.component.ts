@@ -18,6 +18,10 @@ import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/war
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { AddProjectComponent } from "src/app/dashboard/add-project/add-project.component";
 import { AddProjectModalComponent } from "../add-project-modal/add-project-modal.component";
+import { RootStore } from "src/app/store/root.store";
+import { USER_ROLE } from "src/app/interfaces/user.interface";
+import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -38,12 +42,14 @@ export class ShowProjectInfoComponent implements OnInit {
   project: ProjectWithStories;
   areTasksEmpty: boolean = true;
   tasks: Task[];
-
+  isScrumMaster$: Observable<boolean>;
+  isAdmin$: Observable<boolean>;
   constructor(
     @Inject(MAT_DIALOG_DATA)
     private data: {
       project: ProjectWithStories;
     },
+    private rootStore: RootStore,
     private taskService: TaskService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog
@@ -53,7 +59,14 @@ export class ShowProjectInfoComponent implements OnInit {
     this.loadTasksChart();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.isScrumMaster$ = this.rootStore.userStore.user$.pipe(
+      map((user) => user.id === this.project.scrumMaster.id)
+    );
+    this.isAdmin$ = this.rootStore.userStore.user$.pipe(
+      map((user) => user.role === USER_ROLE.ADMIN)
+    );
+  }
 
   loadProjectStoriesChart() {
     this.storiesOptions = {
@@ -165,10 +178,15 @@ export class ShowProjectInfoComponent implements OnInit {
         },
       })
       .afterClosed()
-      .subscribe((res) => {
-        if (res) {
-          console.log(res);
-        }
+      .subscribe((res: Project) => {
+        this.project.title = res.title;
+        this.project.projectOwner = res.projectOwner;
+        this.project.scrumMaster = res.scrumMaster;
+        this.project.developers = res.developers;
       });
   }
+
+  // get isAdmin() {
+  //   return this.rootStore.userStore.user.role === USER_ROLE.ADMIN;
+  // }
 }

@@ -11,6 +11,9 @@
     bottom: 5%;
   }
 }
+mat-card-title {
+  background: $main-blue;
+}
 
 mat-card-content {
   overflow: auto;

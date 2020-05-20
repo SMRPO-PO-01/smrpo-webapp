@@ -15,8 +15,9 @@ import { AdminService } from "src/app/services/admin.service";
 import { ProjectService } from "src/app/services/project.service";
 import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
 import { CustomErrorStateMatcher } from "src/utils/custom-error-state-matcher";
-import { MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { Project } from "src/app/interfaces/project.interface";
+import { InfoSnackbarComponent } from "src/app/snackbars/info-snackbar/info-snackbar.component";
 
 @Component({
   selector: "app-add-project-modal",
@@ -39,6 +40,7 @@ export class AddProjectModalComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: { project: Project },
+    private dialogRef: MatDialogRef<AddProjectModalComponent>,
     private formbuilder: FormBuilder,
     private adminService: AdminService,
     private projectService: ProjectService,
@@ -56,7 +58,7 @@ export class AddProjectModalComponent implements OnInit {
     );
     const dt = debounceTime(250);
     const sm = switchMap((value: string) =>
-      this.adminService.getAllUsers(value)
+      this.adminService.getAllUsers(value).pipe(map(({ users }) => users))
     );
 
     this.filteredOptions = this.myControl.valueChanges.pipe(sw, mp, dt, sm);
@@ -85,13 +87,19 @@ export class AddProjectModalComponent implements OnInit {
     }
 
     this.projectService
-      .createProject({
+      .updateProject({
         ...this.form.value,
         developers: this.developers.value.map((d) => d.id),
       })
       .subscribe(
-        () => {
-          this.buildForm();
+        (res) => {
+          this.snackBar.openFromComponent(InfoSnackbarComponent, {
+            data: {
+              message: "Project updated successfully",
+            },
+            duration: 5000,
+          });
+          this.dialogRef.close(res);
         },
         (error) => {
           if (error.status === 409) {
@@ -165,22 +173,25 @@ export class AddProjectModalComponent implements OnInit {
 
   private buildForm() {
     this.form = this.formbuilder.group({
+      id: [this.project.id],
       title: [this.project.title, Validators.required],
       scrumMaster: [
-        this.project.scrumMaster.firstName +
-          " " +
-          this.project.scrumMaster.lastName +
-          " (" +
-          this.project.scrumMaster.username +
-          ")",
+        `${this.project.scrumMaster.firstName} ${this.project.scrumMaster.lastName}`,
         Validators.required,
       ],
-      scrumMasterId: [null],
-      scrumMasterUser: [null],
-      projectOwner: ["", Validators.required],
-      projectOwnerId: [null],
-      projectOwnerUser: [null],
-      developers: this.formbuilder.array([]),
+      scrumMasterId: [this.project.scrumMaster.id],
+      scrumMasterUser: [this.project.scrumMaster],
+      projectOwner: [
+        `${this.project.projectOwner.firstName} ${this.project.projectOwner.lastName}`,
+        Validators.required,
+      ],
+      projectOwnerId: [this.project.projectOwner.id],
+      projectOwnerUser: [this.project.projectOwner],
+      developers: this.formbuilder.array(
+        this.project.developers.map((developer) =>
+          this.formbuilder.group({ user: developer, id: developer.id })
+        )
+      ),
     });
     this.selectedUsers = [...this.developers.controls];
   }

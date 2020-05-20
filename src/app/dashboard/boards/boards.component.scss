@@ -173,4 +173,8 @@ mat-card {
 #info-button {
   position: absolute;
   right: 3%;
+  mat-icon {
+    font-size: auto;
+    vertical-align: top;
+  }
 }
