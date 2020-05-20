@@ -8,6 +8,7 @@ import { AddProjectComponent } from './add-project/add-project.component';
 import { AddUserComponent } from './add-user/add-user.component';
 import { BoardsComponent } from './boards/boards.component';
 import { DashboardComponent } from './dashboard.component';
+import { EditUsersComponent } from './edit-users/edit-users.component';
 import { ProjectListComponent } from './project-list/project-list.component';
 
 const routes: Routes = [
@@ -27,6 +28,11 @@ const routes: Routes = [
       {
         path: "admin/add-user",
         component: AddUserComponent,
+        canActivate: [AdminGuard],
+      },
+      {
+        path: "admin/edit-users",
+        component: EditUsersComponent,
         canActivate: [AdminGuard],
       },
       {

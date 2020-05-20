@@ -6,7 +6,7 @@ import { User } from '../interfaces/user.interface';
 import { RootStore } from '../store/root.store';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class UserService {
   constructor(private http: HttpClient, private rootStore: RootStore) {}
@@ -14,6 +14,6 @@ export class UserService {
   getMe() {
     return this.http
       .get<User>("user/me")
-      .pipe(tap(user => this.rootStore.userStore.setUser(user)));
+      .pipe(tap((user) => this.rootStore.userStore.setUser(user)));
   }
 }

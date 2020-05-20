@@ -1,0 +1,14 @@
+<div class="delete-user">
+  <div class="text">
+    Are you sure you want to {{ user.deleted ? "restore" : "delete" }} user
+    <b>{{ user.username }}</b
+    >?
+  </div>
+
+  <div class="btns-row">
+    <button mat-raised-button color="warn" (click)="onConfirm()">
+      Yes
+    </button>
+    <button mat-raised-button (click)="onCancel()">No</button>
+  </div>
+</div>

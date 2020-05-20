@@ -12,6 +12,7 @@ import { DashboardComponent } from './dashboard.component';
 import { MaterialModule } from './material';
 import { ProjectListComponent } from './project-list/project-list.component';
 import { UsersOnProjectComponent } from './users-on-project/users-on-project.component';
+import { EditUsersComponent } from './edit-users/edit-users.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { UsersOnProjectComponent } from './users-on-project/users-on-project.com
     ProjectListComponent,
     BoardsComponent,
     AddProjectComponent,
-    UsersOnProjectComponent
+    UsersOnProjectComponent,
+    EditUsersComponent
   ],
   imports: [
     CommonModule,
