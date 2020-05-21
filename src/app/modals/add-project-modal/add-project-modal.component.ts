@@ -58,7 +58,7 @@ export class AddProjectModalComponent implements OnInit {
     );
     const dt = debounceTime(250);
     const sm = switchMap((value: string) =>
-      this.adminService.getAllUsers(value).pipe(map(({ users }) => users))
+      this.projectService.getAllUsers(value).pipe(map(({ users }) => users))
     );
 
     this.filteredOptions = this.myControl.valueChanges.pipe(sw, mp, dt, sm);
