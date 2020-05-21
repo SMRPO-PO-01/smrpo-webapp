@@ -15,7 +15,6 @@ import { TaskService } from "../../services/task.service";
 import { CreateTasksModalComponent } from "../create-tasks-modal/create-tasks-modal.component";
 import { StorySizeModalComponent } from "../story-size-modal/story-size-modal.component";
 import { InfoSnackbarComponent } from "src/app/snackbars/info-snackbar/info-snackbar.component";
-
 @Component({
   selector: "app-show-story-details-modal",
   templateUrl: "./show-story-details-modal.component.html",
@@ -57,7 +56,6 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     this.project = data.project;
     this.projectId = data.project.id;
     this.activeSprint = data.activeSprint;
-
     this.board = data.board;
   }
 
@@ -86,6 +84,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   storyInSprint() {
     this.isStoryInSprint = this.board == "Sprint";
     this.isStoryInProductBackLog = this.board == "Backlog";
+
     this.isStoryInAccepted = this.board == "Accepted";
   }
 
@@ -121,6 +120,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     if (!this.isStoryInSprint) {
       return false;
     }
+
     const me = this.rootStore.userStore.user;
 
     // only developers can accept tasks
@@ -133,6 +133,10 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     }
 
     return !task.userId || task.userId === me.id;
+  }
+
+  canDeleteTask(task: Task) {
+    return task.state !== TASK_STATE.ASSIGNED;
   }
 
   canRejectTask(task: Task) {
