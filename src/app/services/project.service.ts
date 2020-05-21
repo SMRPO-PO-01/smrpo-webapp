@@ -44,6 +44,18 @@ export class ProjectService {
     return this.http.get<ProjectWithStories>(`project/${id}`);
   }
 
+  getAllUsers(search = "", page = 1, perPage = 100) {
+    return this.http.get<{ users: User[]; count: number }>("user/list-all", {
+      params: new HttpParams({
+        fromObject: {
+          page: page.toString(),
+          perPage: perPage.toString(),
+          search,
+        },
+      }),
+    });
+  }
+
   createSprint(projectId: number, sprint: Sprint) {
     return this.http
       .post(`project/${projectId}/sprint`, {
