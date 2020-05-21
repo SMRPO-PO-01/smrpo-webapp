@@ -56,7 +56,6 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     this.project = data.project;
     this.projectId = data.project.id;
     this.activeSprint = data.activeSprint;
-
     this.board = data.board;
   }
 
@@ -121,6 +120,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     if (!this.isStoryInSprint) {
       return false;
     }
+
     const me = this.rootStore.userStore.user;
 
     // only developers can accept tasks
@@ -133,6 +133,10 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     }
 
     return !task.userId || task.userId === me.id;
+  }
+
+  canDeleteTask(task: Task) {
+    return task.state !== TASK_STATE.ASSIGNED;
   }
 
   canRejectTask(task: Task) {

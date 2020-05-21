@@ -74,6 +74,10 @@
             <mat-card *ngFor="let task of tasks">
               <div class="edit-buttons">
                 <button
+                  *ngIf="
+                    canDeleteTask(task) &&
+                    ((isScrumMaster$ | async) || (isDeveloper$ | async))
+                  "
                   mat-icon-button
                   color="white"
                   (click)="deleteTask(task); $event.stopPropagation()"
@@ -85,6 +89,7 @@
                 <button
                   mat-icon-button
                   color="white"
+                  *ngIf="(isScrumMaster$ | async) || (isDeveloper$ | async)"
                   (click)="editTask(task); $event.stopPropagation()"
                   matTooltip="Edit task"
                   matTooltipPosition="below"
