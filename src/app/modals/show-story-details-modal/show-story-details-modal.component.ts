@@ -197,14 +197,12 @@ export class ShowStoryDetailsModalComponent implements OnInit {
       );
     });
   }
-  /**
-   *
-   * @param task Task Object task
-   * @todo Finish
-   */
+
   deleteTask(task: Task) {
     this.taskService.deleteTask(this.projectId, task.id).subscribe(
       (res) => {
+        this.tasks = this.tasks.filter((x) => x !== task);
+
         this.snackBar.openFromComponent(InfoSnackbarComponent, {
           data: {
             message: "Task deleted successfully!",

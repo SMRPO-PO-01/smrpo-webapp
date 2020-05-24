@@ -54,7 +54,7 @@
             </div>
         </mat-tab>
         <mat-tab
-            *ngIf="!(isProjectOwner$ | async)"
+            *ngIf="(isScrumMaster$ | async) || (isDeveloper$ | async)"
             label="Tasks"
         >
             <div class="tasks">
