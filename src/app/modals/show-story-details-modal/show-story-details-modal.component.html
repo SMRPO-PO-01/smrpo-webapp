@@ -14,54 +14,44 @@
             </button>
         </div>
     </mat-card-title>
-
-
-
-
-
-
     <mat-tab-group>
         <mat-tab label="Details">
-            <mat-card-content>
-                <div class="group">
-                    <div class="group-title">Description:</div>
-                    <div class="description">{{ story.description }}</div>
-                </div>
-                <div class="group">
-                    <div class="group-title">Acceptance Tests:</div>
-
-
-
-
-
-
-                    <div class="group-content">{{ story.acceptanceTests }}</div>
-                </div>
-                <div class="group">
-                    <div class="group-title">Reject reason:</div>
-
-
-
-
-
-
-                    <div class="group-content">{{ story.rejectReason }}</div>
-                </div>
-                <div class="last-group">
-                    <div class="group wrap">
-                        <div class="group-title">Priority:</div>
-                        <div class="group-content">{{ story.priority }}</div>
-                    </div>
-                    <div class="group wrap">
-                        <div class="group-title">Bussiness Value:</div>
-                        <div class="group-content">{{ story.businessValue }}</div>
-                    </div>
-                    <div class="group wrap">
-                        <div class="group-title">Size:</div>
-                        <div class="group-content">{{ story.size ? story.size : "None" }}</div>
+            <div class="details">
+                <div class="boards">
+                    <div class="cards">
+                        <mat-card-content>
+                            <div class="group">
+                                <div class="group-title">Description:</div>
+                                <div class="description">{{ story.description }}</div>
+                            </div>
+                            <div class="group">
+                                <div class="group-title">Acceptance Tests:</div>
+                                <div class="group-content">
+                                    <div *ngFor="let item of acceptanceTests"># {{item}}</div>
+                                </div>
+                            </div>
+                            <div class="group">
+                                <div class="group-title">Reject reason:</div>
+                                <div class="group-content">{{ story.rejectReason }}</div>
+                            </div>
+                            <div class="last-group">
+                                <div class="group wrap">
+                                    <div class="group-title">Priority:</div>
+                                    <div class="group-content">{{ story.priority }}</div>
+                                </div>
+                                <div class="group wrap">
+                                    <div class="group-title">Bussiness Value:</div>
+                                    <div class="group-content">{{ story.businessValue }}</div>
+                                </div>
+                                <div class="group wrap">
+                                    <div class="group-title">Size:</div>
+                                    <div class="group-content">{{ story.size ? story.size : "None" }}</div>
+                                </div>
+                            </div>
+                        </mat-card-content>
                     </div>
                 </div>
-            </mat-card-content>
+            </div>
         </mat-tab>
         <mat-tab
             *ngIf="!(isProjectOwner$ | async)"
@@ -85,12 +75,6 @@
                                 Create new task
                             </mat-card-content>
                         </mat-card>
-
-
-
-
-
-
                         <mat-card *ngFor="let task of tasks">
                             <div class="edit-buttons">
                                 <button
@@ -128,12 +112,6 @@
                                         {{ task.size }}
                                     </div>
                                 </div>
-
-
-
-
-
-
                                 <div style="padding-right: 50px;">
                                     <div>
                                         <span>

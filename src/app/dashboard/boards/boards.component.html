@@ -1,77 +1,80 @@
 <div class="project-header">
-  <div class="title">{{ project.title }}</div>
-  <div class="roles">
-    <span>My roles:</span>
-    {{ myRoles() }}
-  </div>
-</div>
-<div class="board-container" cdkDropListGroup>
-  <div
-    id="backlog"
-    class="board"
-    cdkDropList
-    [cdkDropListData]="backlogBoard.stories"
-    [cdkDropListDisabled]="backlogBoard.dropDisabled"
-  >
-    <div class="title">{{ backlogBoard.title }}</div>
-    <div class="cards">
-      <mat-card
-        *ngIf="(isScrumMaster$ | async) || (isProjectOwner$ | async)"
-        class="create-story"
-        (click)="addStory(); $event.stopPropagation()"
-      >
-        <mat-card-content>
-          <mat-icon>add_outline</mat-icon>
-          Create new story
-        </mat-card-content>
-      </mat-card>
-      <mat-card
-        *ngFor="let story of backlogBoard.stories"
-        cdkDrag
-        [class.unsaved]="story.unsaved"
-        [cdkDragDisabled]="story.size === null"
-        (cdkDragDropped)="storyFromBacklogDropped(story, $event)"
-        (cdkDragStarted)="storyFromBacklogDrag()"
-      >
-        <mat-card-title (click)="openDetails(story)">
-          {{ story.title }}
-          <span style="float: right;">Size: {{ story.size || "-" }}</span>
-        </mat-card-title>
-        <mat-card-content>{{ story.description }}</mat-card-content>
-      </mat-card>
+    <div class="title">{{ project.title }}</div>
+    <div class="roles">
+        <span>My roles:</span>
+        {{ myRoles() }}
     </div>
-  </div>
-  <div
-    *ngIf="activeSprint"
-    id="sprint"
-    class="board"
-    cdkDropList
-    [cdkDropListData]="sprintBoard.stories"
-    [cdkDropListDisabled]="sprintBoard.dropDisabled"
-  >
-    <div class="title">
-      Sprint:
-      <span>{{ sprintBoard.title }}</span>
-      <span
-        style="float: right;"
-        [ngStyle]="
+</div>
+<div
+    class="board-container"
+    cdkDropListGroup
+>
+    <div
+        id="backlog"
+        class="board"
+        cdkDropList
+        [cdkDropListData]="backlogBoard.stories"
+        [cdkDropListDisabled]="backlogBoard.dropDisabled"
+    >
+        <div class="title">{{ backlogBoard.title }}</div>
+        <div class="cards">
+            <mat-card
+                *ngIf="(isScrumMaster$ | async) || (isProjectOwner$ | async)"
+                class="create-story"
+                (click)="addStory(); $event.stopPropagation()"
+            >
+                <mat-card-content>
+                    <mat-icon>add_outline</mat-icon>
+                    Create new story
+                </mat-card-content>
+            </mat-card>
+            <mat-card
+                *ngFor="let story of backlogBoard.stories"
+                cdkDrag
+                [class.unsaved]="story.unsaved"
+                [cdkDragDisabled]="story.size === null"
+                (cdkDragDropped)="storyFromBacklogDropped(story, $event)"
+                (cdkDragStarted)="storyFromBacklogDrag()"
+            >
+                <mat-card-title (click)="openDetails(story)">
+                    {{ story.title }}
+                    <!-- <span style="float: right;">Size: {{ story.size || "-" }}</span> -->
+                </mat-card-title>
+                <mat-card-content>{{ story.description }}</mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+    <div
+        *ngIf="activeSprint"
+        id="sprint"
+        class="board"
+        cdkDropList
+        [cdkDropListData]="sprintBoard.stories"
+        [cdkDropListDisabled]="sprintBoard.dropDisabled"
+    >
+        <div class="title">
+            Sprint:
+            <span>{{ sprintBoard.title }}</span>
+            <span
+                style="float: right;"
+                [ngStyle]="
           sumSizes(sprintBoard.stories) > activeSprint.velocity
             ? { color: 'red' }
             : {}
         "
-      >
-        {{ sumSizes(sprintBoard.stories) }}/{{ activeSprint.velocity }}
-      </span>
-    </div>
-    <div class="cards">
-      <mat-card
-        *ngFor="let story of sprintBoard.stories"
-        cdkDrag
-        [class.unsaved]="story.unsaved"
-        (cdkDragDropped)="storyFromSprintDropped(story, $event)"
-        (cdkDragStarted)="storyFromSprintDrag(story)"
-      >
-        <!-- <button
+            >
+                {{ sumSizes(sprintBoard.stories) }}/{{ activeSprint.velocity }}
+            </span>
+        </div>
+        <div class="cards">
+            <mat-card
+                *ngFor="let story of sprintBoard.stories"
+                cdkDrag
+                [class.unsaved]="story.unsaved"
+                (cdkDragDropped)="storyFromSprintDropped(story, $event)"
+                (cdkDragStarted)="storyFromSprintDrag(story)"
+            >
+                <!-- <button
           mat-icon-button
           color="white"
           matTooltip="Edit story"
@@ -79,65 +82,68 @@
         >
           <mat-icon>settings</mat-icon>
         </button> -->
-        <mat-card-title (click)="openDetails(story)">
-          {{ story.title }}
-          <span style="float: right;">Size: {{ story.size || "-" }}</span>
-        </mat-card-title>
-        <mat-card-content>{{ story.description }}</mat-card-content>
-      </mat-card>
-      <button
-        *ngIf="someUnsavedStories(sprintBoard.stories)"
-        class="add-to-sprint-btn"
-        mat-flat-button
-        color="primary"
-        [ngStyle]="
+                <mat-card-title (click)="openDetails(story)">
+                    {{ story.title }}
+                    <span style="float: right;">Size: {{ story.size || "-" }}</span>
+                </mat-card-title>
+                <mat-card-content>{{ story.description }}</mat-card-content>
+            </mat-card>
+            <button
+                *ngIf="someUnsavedStories(sprintBoard.stories)"
+                class="add-to-sprint-btn"
+                mat-flat-button
+                color="primary"
+                [ngStyle]="
           sumSizes(sprintBoard.stories) > activeSprint.velocity
             ? { opacity: 0.5, cursor: 'default' }
             : {}
         "
-        [matTooltip]="
+                [matTooltip]="
           sumSizes(sprintBoard.stories) > activeSprint.velocity
             ? 'Story sizes sum is greater than sprint velocity'
             : ''
         "
-        (click)="addStoriesToSprint(sprintBoard.stories)"
-      >
-        Add selected stories to sprint
-      </button>
+                (click)="addStoriesToSprint(sprintBoard.stories)"
+            >
+                Add selected stories to sprint
+            </button>
+        </div>
     </div>
-  </div>
-  <div
-    *ngIf="!activeSprint"
-    class="board missing-sprint"
-    [ngStyle]="(isScrumMaster$ | async) ? {} : { pointerEvents: 'none' }"
-    (click)="addSprint(); $event.stopPropagation()"
-  >
-    <div class="title">Sprint</div>
-    <div class="cards" *ngIf="isScrumMaster$ | async; else notScrumMaster">
-      There is no currently active sprint. Add new sprint!
-      <mat-icon>add_circle_outline</mat-icon>
+    <div
+        *ngIf="!activeSprint"
+        class="board missing-sprint"
+        [ngStyle]="(isScrumMaster$ | async) ? {} : { pointerEvents: 'none' }"
+        (click)="addSprint(); $event.stopPropagation()"
+    >
+        <div class="title">Sprint</div>
+        <div
+            class="cards"
+            *ngIf="isScrumMaster$ | async; else notScrumMaster"
+        >
+            There is no currently active sprint. Add new sprint!
+            <mat-icon>add_circle_outline</mat-icon>
+        </div>
+        <ng-template #notScrumMaster>
+            <div class="cards">There is no currently active sprint.</div>
+        </ng-template>
     </div>
-    <ng-template #notScrumMaster>
-      <div class="cards">There is no currently active sprint.</div>
-    </ng-template>
-  </div>
-  <div
-    id="accepted"
-    class="board"
-    cdkDropList
-    [cdkDropListData]="acceptedBoard.stories"
-    [cdkDropListDisabled]="acceptedBoard.dropDisabled"
-  >
-    <div class="title">{{ acceptedBoard.title }}</div>
-    <div class="cards">
-      <mat-card
-        *ngFor="let story of acceptedBoard.stories"
-        cdkDrag
-        [class.unsaved]="story.unsaved"
-        (cdkDragDropped)="storyFromAcceptedDropped(story, $event)"
-        (cdkDragStarted)="storyFromAcceptedDrag(story)"
-      >
-        <!-- <button
+    <div
+        id="accepted"
+        class="board"
+        cdkDropList
+        [cdkDropListData]="acceptedBoard.stories"
+        [cdkDropListDisabled]="acceptedBoard.dropDisabled"
+    >
+        <div class="title">{{ acceptedBoard.title }}</div>
+        <div class="cards">
+            <mat-card
+                *ngFor="let story of acceptedBoard.stories"
+                cdkDrag
+                [class.unsaved]="story.unsaved"
+                (cdkDragDropped)="storyFromAcceptedDropped(story, $event)"
+                (cdkDragStarted)="storyFromAcceptedDrag(story)"
+            >
+                <!-- <button
           mat-icon-button
           color="white"
           matTooltip="Edit story"
@@ -145,34 +151,34 @@
         >
           <mat-icon>settings</mat-icon>
         </button> -->
-        <mat-card-title (click)="openDetails(story)">
-          {{ story.title }}
-          <span style="float: right;">Size: {{ story.size || "-" }}</span>
-        </mat-card-title>
-        <mat-card-content>{{ story.description }}</mat-card-content>
-      </mat-card>
-      <button
-        *ngIf="someUnsavedStories(acceptedBoard.stories)"
-        class="add-to-sprint-btn"
-        mat-flat-button
-        color="primary"
-        (click)="acceptStories(acceptedBoard.stories)"
-      >
-        Accept selected stories
-      </button>
+                <mat-card-title (click)="openDetails(story)">
+                    {{ story.title }}
+                    <span style="float: right;">Size: {{ story.size || "-" }}</span>
+                </mat-card-title>
+                <mat-card-content>{{ story.description }}</mat-card-content>
+            </mat-card>
+            <button
+                *ngIf="someUnsavedStories(acceptedBoard.stories)"
+                class="add-to-sprint-btn"
+                mat-flat-button
+                color="primary"
+                (click)="acceptStories(acceptedBoard.stories)"
+            >
+                Accept selected stories
+            </button>
+        </div>
     </div>
-  </div>
-  <div>
-    <button
-      id="info-button"
-      mat-fab
-      (click)="openProjectInfo()"
-      color="primary"
-      matTooltip="Project info"
-      matTooltipPosition="left"
-      aria-label="Example icon button with a delete icon"
-    >
-      <mat-icon>info</mat-icon>
-    </button>
-  </div>
+    <div>
+        <button
+            id="info-button"
+            mat-fab
+            (click)="openProjectInfo()"
+            color="primary"
+            matTooltip="Project info"
+            matTooltipPosition="left"
+            aria-label="Example icon button with a delete icon"
+        >
+            <mat-icon>info</mat-icon>
+        </button>
+    </div>
 </div>

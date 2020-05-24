@@ -32,6 +32,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   project: ProjectWithStories;
   projectId: number;
   tasks: Task[];
+  acceptanceTests;
 
   sprintStories: Story[];
   board: string;
@@ -57,7 +58,9 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     this.project = data.project;
     this.projectId = data.project.id;
     this.activeSprint = data.activeSprint;
-
+    this.acceptanceTests = data.story.acceptanceTests
+      .split("#")
+      .filter((x) => x != "");
     this.board = data.board;
   }
 
