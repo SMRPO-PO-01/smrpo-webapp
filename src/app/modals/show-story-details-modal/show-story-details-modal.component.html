@@ -1,165 +1,172 @@
 <div class="project-container">
-  <mat-card-title class="story-details"
-    >{{ story.title }}
-    <div class="edit-buttons">
-      <button
-        *ngIf="isStoryInProductBackLog && (isScrumMaster$ | async)"
-        mat-icon-button
-        matTooltip="Edit size"
-        matTooltipPosition="below"
-        color="black"
-        (click)="editTime(story); $event.stopPropagation()"
-      >
-        <mat-icon>schedule</mat-icon>
-      </button>
-    </div></mat-card-title
-  >
-
-  <mat-tab-group>
-    <mat-tab label="Details">
-      <mat-card-content>
-        <div class="group">
-          <div class="group-title">Description:</div>
-          <div class="description">{{ story.description }}</div>
+    <mat-card-title class="story-details">
+        {{ story.title }}
+        <div class="edit-buttons">
+            <button
+                *ngIf="isStoryInProductBackLog && (isScrumMaster$ | async)"
+                mat-icon-button
+                matTooltip="Edit size"
+                matTooltipPosition="below"
+                color="black"
+                (click)="editTime(story); $event.stopPropagation()"
+            >
+                <mat-icon>schedule</mat-icon>
+            </button>
         </div>
-        <div class="group">
-          <div class="group-title">Acceptance Tests:</div>
-
-          <div class="group-content">{{ story.acceptanceTests }}</div>
-        </div>
-        <div class="group">
-          <div class="group-title">Reject reason:</div>
-
-          <div class="group-content">{{ story.rejectReason }}</div>
-        </div>
-        <div class="last-group">
-          <div class="group wrap">
-            <div class="group-title">Priority:</div>
-            <div class="group-content">{{ story.priority }}</div>
-          </div>
-          <div class="group wrap">
-            <div class="group-title">Bussiness Value:</div>
-            <div class="group-content">{{ story.businessValue }}</div>
-          </div>
-          <div class="group wrap">
-            <div class="group-title">Size:</div>
-            <div class="group-content">
-              {{ story.size ? story.size : "None" }}
+    </mat-card-title>
+    <mat-tab-group>
+        <mat-tab label="Details">
+            <div class="details">
+                <div class="boards">
+                    <div class="cards">
+                        <mat-card-content>
+                            <div class="group">
+                                <div class="group-title">Description:</div>
+                                <div class="description">{{ story.description }}</div>
+                            </div>
+                            <div class="group">
+                                <div class="group-title">Acceptance Tests:</div>
+                                <div class="group-content">
+                                    <div *ngFor="let item of acceptanceTests"># {{item}}</div>
+                                </div>
+                            </div>
+                            <div class="group">
+                                <div class="group-title">Reject reason:</div>
+                                <div class="group-content">{{ story.rejectReason }}</div>
+                            </div>
+                            <div class="last-group">
+                                <div class="group wrap">
+                                    <div class="group-title">Priority:</div>
+                                    <div class="group-content">{{ story.priority }}</div>
+                                </div>
+                                <div class="group wrap">
+                                    <div class="group-title">Bussiness Value:</div>
+                                    <div class="group-content">{{ story.businessValue }}</div>
+                                </div>
+                                <div class="group wrap">
+                                    <div class="group-title">Size:</div>
+                                    <div class="group-content">{{ story.size ? story.size : "None" }}</div>
+                                </div>
+                            </div>
+                        </mat-card-content>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-tab>
-
-    <mat-tab label="Tasks">
-      <div class="tasks">
-        <div class="board">
-          <div class="cards">
-            <mat-card
-              *ngIf="
+        </mat-tab>
+        <mat-tab
+            *ngIf="(isScrumMaster$ | async) || (isDeveloper$ | async)"
+            label="Tasks"
+        >
+            <div class="tasks">
+                <div class="board">
+                    <div class="cards">
+                        <mat-card
+                            *ngIf="
                 areTasksEmpty &&
                 isStoryInSprint &&
                 activeSprint &&
                 ((isDeveloper$ | async) || (isScrumMaster$ | async))
               "
-              class="create-story"
-              (click)="addTask(); $event.stopPropagation()"
-            >
-              <mat-card-content>
-                <mat-icon>add_outline</mat-icon>
-                Create new task
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card *ngFor="let task of tasks">
-              <div class="edit-buttons">
-                <button
-                  *ngIf="
-                    canDeleteTask(task) &&
-                    ((isScrumMaster$ | async) || (isDeveloper$ | async))
-                  "
-                  mat-icon-button
-                  color="white"
-                  (click)="deleteTask(task); $event.stopPropagation()"
-                  matTooltip="Delete task"
-                  matTooltipPosition="below"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-                <button
-                  mat-icon-button
-                  color="white"
-                  *ngIf="(isScrumMaster$ | async) || (isDeveloper$ | async)"
-                  (click)="editTask(task); $event.stopPropagation()"
-                  matTooltip="Edit task"
-                  matTooltipPosition="below"
-                >
-                  <mat-icon>edit</mat-icon>
-                </button>
-              </div>
-              <mat-card-title [ngClass]="task.state">
-                ({{ task.id }}) {{ task.title }}
-              </mat-card-title>
-              <mat-card-content class="flex">
-                <div>
-                  <div>
-                    <b>Description:</b>
-                    {{ task.description ? task.description : "None" }}
-                  </div>
-                  <div><b>State:</b> {{ task.state }}</div>
-                  <div><b>Size:</b> {{ task.size }}</div>
+                            class="create-story"
+                            (click)="addTask(); $event.stopPropagation()"
+                        >
+                            <mat-card-content>
+                                <mat-icon>add_outline</mat-icon>
+                                Create new task
+                            </mat-card-content>
+                        </mat-card>
+                        <mat-card *ngFor="let task of tasks">
+                            <div class="edit-buttons">
+                                <button
+                                    *ngIf="((isDeveloper$ | async) && (task.userId == whoAmI().id)) || (isScrumMaster$ | async)"
+                                    mat-icon-button
+                                    color="white"
+                                    (click)="deleteTask(task); $event.stopPropagation()"
+                                    matTooltip="Delete task"
+                                    matTooltipPosition="below"
+                                >
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                                <button
+                                    *ngIf="((isDeveloper$ | async) && (task.userId == whoAmI().id)) || (isScrumMaster$ | async)"
+                                    mat-icon-button
+                                    color="white"
+                                    (click)="editTask(task); $event.stopPropagation()"
+                                    matTooltip="Edit task"
+                                    matTooltipPosition="below"
+                                >
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </div>
+                            <mat-card-title [ngClass]="task.state">({{ task.id }}) {{ task.title }}</mat-card-title>
+                            <mat-card-content class="flex">
+                                <div>
+                                    <div>
+                                        <b>Description:</b>
+                                        {{ task.description ? task.description : "None" }}
+                                    </div>
+                                    <div>
+                                        <b>State:</b>
+                                        {{ task.state }}
+                                    </div>
+                                    <div>
+                                        <b>Size:</b>
+                                        {{ task.size }}
+                                    </div>
+                                </div>
+                                <div style="padding-right: 50px;">
+                                    <div>
+                                        <span>
+                                            <b>User:</b>
+                                            {{ getUser(task) }}
+                                        </span>
+                                        <button
+                                            *ngIf="canAcceptTask(task)"
+                                            mat-icon-button
+                                            (click)="acceptTask(task)"
+                                            matTooltip="Accept task"
+                                            matTooltipPosition="below"
+                                            style="color: #66bb6a;"
+                                        >
+                                            <mat-icon>done</mat-icon>
+                                        </button>
+                                        <button
+                                            *ngIf="canRejectTask(task)"
+                                            mat-icon-button
+                                            (click)="rejectTask(task)"
+                                            matTooltip="Reject task"
+                                            matTooltipPosition="below"
+                                            style="color: red;"
+                                        >
+                                            <mat-icon>clear</mat-icon>
+                                        </button>
+                                        <button
+                                            *ngIf="canFinishTask(task)"
+                                            mat-icon-button
+                                            (click)="finishTask(task)"
+                                            matTooltip="Mark as done"
+                                            matTooltipPosition="below"
+                                            style="color: #66bb6a;"
+                                        >
+                                            <mat-icon>done_all</mat-icon>
+                                        </button>
+                                        <button
+                                            *ngIf="task.undo"
+                                            mat-icon-button
+                                            (click)="undoFinishedTask(task)"
+                                            matTooltip="Undo"
+                                            matTooltipPosition="below"
+                                            style="color: #019cb1;"
+                                        >
+                                            <mat-icon>undo</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
                 </div>
-
-                <div style="padding-right: 50px;">
-                  <div>
-                    <span><b>User:</b> {{ getUser(task) }}</span>
-                    <button
-                      *ngIf="canAcceptTask(task)"
-                      mat-icon-button
-                      (click)="acceptTask(task)"
-                      matTooltip="Accept task"
-                      matTooltipPosition="below"
-                      style="color: #66bb6a;"
-                    >
-                      <mat-icon>done</mat-icon>
-                    </button>
-                    <button
-                      *ngIf="canRejectTask(task)"
-                      mat-icon-button
-                      (click)="rejectTask(task)"
-                      matTooltip="Reject task"
-                      matTooltipPosition="below"
-                      style="color: red;"
-                    >
-                      <mat-icon>clear</mat-icon>
-                    </button>
-                    <button
-                      *ngIf="canFinishTask(task)"
-                      mat-icon-button
-                      (click)="finishTask(task)"
-                      matTooltip="Mark as done"
-                      matTooltipPosition="below"
-                      style="color: #66bb6a;"
-                    >
-                      <mat-icon>done_all</mat-icon>
-                    </button>
-                    <button
-                      *ngIf="task.undo"
-                      mat-icon-button
-                      (click)="undoFinishedTask(task)"
-                      matTooltip="Undo"
-                      matTooltipPosition="below"
-                      style="color: #019cb1;"
-                    >
-                      <mat-icon>undo</mat-icon>
-                    </button>
-                  </div>
-                </div>
-              </mat-card-content>
-            </mat-card>
-          </div>
-        </div>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
 </div>

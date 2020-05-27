@@ -1,72 +1,82 @@
 <div class="add-task-container">
-  <form autocomplete="off" class="add-task-form" [formGroup]="form">
-    <div class="title">
-      <span>
-        Add a new task
-      </span>
-    </div>
+    <form
+        autocomplete="off"
+        class="add-task-form"
+        [formGroup]="form"
+    >
+        <div class="title">
+            <span>
+                {{newTask ? "Add a new task" : "Update task"}}
+            </span>
+        </div>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Task title</mat-label>
-      <input matInput formControlName="title" />
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Task description</mat-label>
-      <textarea
-        cdkTextareaAutosize
-        cdkAutosizeMinRows="1"
-        cdkAutosizeMaxRows="5"
-        matInput
-        formControlName="description"
-      ></textarea>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Size</mat-label>
 
-      <input
-        matInput
-        type="number"
-        formControlName="size"
-        min="1"
-        max="15"
-        step="1"
-      />
-      <mat-error>Input a number between 1 and 15</mat-error>
-    </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Task title</mat-label>
+            <input
+                matInput
+                formControlName="title"
+            >
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Task description</mat-label>
+            <textarea
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="1"
+                cdkAutosizeMaxRows="5"
+                matInput
+                formControlName="description"
+            ></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Size</mat-label>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Assignee</mat-label>
-      <input
-        type="text"
-        matInput
-        formControlName="user"
-        [matAutocomplete]="autoDeveloper"
-        #autoInput
-        (blur)="onUserBlur()"
-      />
-      <mat-autocomplete
-        #autoDeveloper="matAutocomplete"
-        (optionSelected)="userSelected($event.option.value)"
-      >
-        <mat-option
-          *ngFor="let developer of developerFilteredOptions"
-          [value]="developer"
-        >
-          {{ developer.firstName }} {{ developer.lastName }} ({{
+
+            <input
+                matInput
+                type="number"
+                formControlName="size"
+                min="1"
+                max="15"
+                step="1"
+            >
+            <mat-error>Input a number between 1 and 15</mat-error>
+        </mat-form-field>
+
+
+        <mat-form-field appearance="fill">
+            <mat-label>Assignee</mat-label>
+            <input
+                type="text"
+                matInput
+                formControlName="user"
+                [matAutocomplete]="autoDeveloper"
+                #autoInput
+                (blur)="onUserBlur()"
+            >
+            <mat-autocomplete
+                #autoDeveloper="matAutocomplete"
+                (optionSelected)="userSelected($event.option.value)"
+            >
+                <mat-option
+                    *ngFor="let developer of developerFilteredOptions"
+                    [value]="developer"
+                >
+                    {{ developer.firstName }} {{ developer.lastName }} ({{
             developer.username
           }})
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-    <mat-error class="error-msg">{{ errorMsg }}</mat-error>
-    <button
-      mat-raised-button
-      color="primary"
-      style="margin-top: 10px;"
-      [disabled]="form.invalid"
-      (click)="createTask()"
-    >
-      Add task
-    </button>
-  </form>
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <mat-error class="error-msg">{{ errorMsg }}</mat-error>
+        <button
+            mat-raised-button
+            color="primary"
+            style="margin-top: 10px;"
+            [disabled]="form.invalid"
+            (click)="createTask()"
+        >
+            {{ newTask ? "Add Task": "Update Task"}}
+        </button>
+    </form>
 </div>

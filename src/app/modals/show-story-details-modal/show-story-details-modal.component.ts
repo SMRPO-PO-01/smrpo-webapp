@@ -31,6 +31,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   project: ProjectWithStories;
   projectId: number;
   tasks: Task[];
+  acceptanceTests;
 
   sprintStories: Story[];
   board: string;
@@ -56,6 +57,9 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     this.project = data.project;
     this.projectId = data.project.id;
     this.activeSprint = data.activeSprint;
+    this.acceptanceTests = data.story.acceptanceTests
+      .split("#")
+      .filter((x) => x != "");
     this.board = data.board;
   }
 
@@ -84,7 +88,6 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   storyInSprint() {
     this.isStoryInSprint = this.board == "Sprint";
     this.isStoryInProductBackLog = this.board == "Backlog";
-
     this.isStoryInAccepted = this.board == "Accepted";
   }
 
@@ -198,14 +201,12 @@ export class ShowStoryDetailsModalComponent implements OnInit {
       );
     });
   }
-  /**
-   *
-   * @param task Task Object task
-   * @todo Finish
-   */
+
   deleteTask(task: Task) {
     this.taskService.deleteTask(this.projectId, task.id).subscribe(
       (res) => {
+        this.tasks = this.tasks.filter((x) => x !== task);
+
         this.snackBar.openFromComponent(InfoSnackbarComponent, {
           data: {
             message: "Task deleted successfully!",
@@ -231,6 +232,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
           data: {
             project: this.project,
             storyId: this.story.id,
+            task: undefined,
           },
         })
         .afterClosed()
@@ -250,6 +252,28 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   }
 
   editTask(task: Task) {
-    console.log(task);
+    if (this.isScrumMaster$ || this.isDeveloper$) {
+      this.dialog
+        .open(CreateTasksModalComponent, {
+          data: {
+            project: this.project,
+            storyId: this.story.id,
+            task: task,
+          },
+        })
+        .afterClosed()
+        .subscribe((res) => {
+          if (res != undefined) {
+            this.getTasks();
+          }
+        });
+    } else {
+      this.snackBar.openFromComponent(WarningSnackbarComponent, {
+        data: {
+          message: "Sorry you don't have the rights to update tasks!",
+        },
+        duration: 5000,
+      });
+    }
   }
 }
