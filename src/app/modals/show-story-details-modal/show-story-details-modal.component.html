@@ -78,6 +78,7 @@
                         <mat-card *ngFor="let task of tasks">
                             <div class="edit-buttons">
                                 <button
+                                    *ngIf="((isDeveloper$ | async) && (task.userId == whoAmI().id)) || (isScrumMaster$ | async)"
                                     mat-icon-button
                                     color="white"
                                     (click)="deleteTask(task); $event.stopPropagation()"
@@ -87,6 +88,7 @@
                                     <mat-icon>delete</mat-icon>
                                 </button>
                                 <button
+                                    *ngIf="((isDeveloper$ | async) && (task.userId == whoAmI().id)) || (isScrumMaster$ | async)"
                                     mat-icon-button
                                     color="white"
                                     (click)="editTask(task); $event.stopPropagation()"
