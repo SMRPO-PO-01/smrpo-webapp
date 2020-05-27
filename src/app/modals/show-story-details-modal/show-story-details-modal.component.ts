@@ -228,6 +228,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
           data: {
             project: this.project,
             storyId: this.story.id,
+            task: undefined,
           },
         })
         .afterClosed()
@@ -247,6 +248,28 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   }
 
   editTask(task: Task) {
-    console.log(task);
+    if (this.isScrumMaster$ || this.isDeveloper$) {
+      this.dialog
+        .open(CreateTasksModalComponent, {
+          data: {
+            project: this.project,
+            storyId: this.story.id,
+            task: task,
+          },
+        })
+        .afterClosed()
+        .subscribe((res) => {
+          if (res != undefined) {
+            this.getTasks();
+          }
+        });
+    } else {
+      this.snackBar.openFromComponent(WarningSnackbarComponent, {
+        data: {
+          message: "Sorry you don't have the rights to update tasks!",
+        },
+        duration: 5000,
+      });
+    }
   }
 }

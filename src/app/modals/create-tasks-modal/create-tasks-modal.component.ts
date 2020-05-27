@@ -9,6 +9,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { User } from "src/app/interfaces/user.interface";
 import { TaskService } from "src/app/services/task.service";
 import { Project } from "src/app/interfaces/project.interface";
+import { Task } from "src/app/interfaces/task.interface";
 
 @Component({
   selector: "app-create-tasks-modal",
@@ -22,9 +23,11 @@ export class CreateTasksModalComponent implements OnInit {
   developerFilteredOptions: User[];
   private loading = false;
   errorMsg: string;
+  u: User;
+  newTask: boolean = true;
   constructor(
     @Inject(MAT_DIALOG_DATA)
-    private data: { project: Project; storyId: number },
+    private data: { project: Project; storyId: number; task: Task },
     private dialogRef: MatDialogRef<CreateTasksModalComponent>,
     private formBuilder: FormBuilder,
     private taskService: TaskService
@@ -38,17 +41,45 @@ export class CreateTasksModalComponent implements OnInit {
   }
 
   buildForm() {
-    this.form = this.formBuilder.group({
-      projectId: this.data.project.id,
-      storyId: this.data.storyId,
-      title: ["", Validators.required],
-      state: ["UNASSIGNED"],
-      description: [""],
-      size: ["", [Validators.required, Validators.min(1), Validators.max(10)]],
-      user: [""],
-      userId: [null],
-      userUser: [null],
-    });
+    if (this.data.task == undefined) {
+      this.newTask = true;
+      this.form = this.formBuilder.group({
+        projectId: this.data.project.id,
+        storyId: this.data.storyId,
+        title: ["", Validators.required],
+        state: ["UNASSIGNED"],
+        description: [""],
+        size: [
+          "",
+          [Validators.required, Validators.min(1), Validators.max(10)],
+        ],
+        user: [""],
+        userId: [null],
+        userUser: [null],
+      });
+    } else {
+      this.newTask = false;
+      this.u = this.project.developers
+        .filter((developer) => developer.id == this.data.task.userId)
+        .pop();
+      this.form = this.formBuilder.group({
+        projectId: this.data.project.id,
+        id: this.data.task.id,
+        title: [this.data.task.title, Validators.required],
+        state: [this.data.task.state],
+        description: [this.data.task.description],
+        size: [
+          this.data.task.size,
+          [Validators.required, Validators.min(1), Validators.max(10)],
+        ],
+        user:
+          this.u != undefined
+            ? [`${this.u.firstName} ${this.u.lastName} (${this.u.username})`]
+            : [],
+        userId: this.u != undefined ? [this.data.task.userId] : [],
+        userUser: this.u != undefined ? [this.u] : [],
+      });
+    }
   }
 
   createTask() {
@@ -58,17 +89,36 @@ export class CreateTasksModalComponent implements OnInit {
     }
 
     this.loading = true;
-    this.taskService.createTask(this.project.id, this.form.value).subscribe(
-      (res) => {
-        this.dialogRef.close(res);
-      },
-      (err) => {
-        if (err.status === 409) {
-          this.errorMsg = err.body.message;
-          this.loading = false;
+    if (this.newTask) {
+      this.taskService.createTask(this.project.id, this.form.value).subscribe(
+        (res) => {
+          this.dialogRef.close(res);
+        },
+        (err) => {
+          if (err.status === 409) {
+            this.errorMsg = err.body.message;
+            this.loading = false;
+          }
         }
+      );
+    } else {
+      // New assignee
+
+      if (!this.u || this.form.value.userId != this.u.id) {
+        this.form.value.state = "UNASSIGNED";
       }
-    );
+      this.taskService.updateTask(this.form.value, this.project.id).subscribe(
+        (res) => {
+          this.dialogRef.close(res);
+        },
+        (err) => {
+          if (err.status === 409) {
+            this.errorMsg = err.body.message;
+            this.loading = false;
+          }
+        }
+      );
+    }
   }
 
   onUserBlur() {
