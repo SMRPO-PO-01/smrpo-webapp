@@ -1,13 +1,11 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { tap } from 'rxjs/operators';
 
-import { Task } from "../interfaces/task.interface";
-import { of } from "rxjs";
-import { Story } from "../interfaces/story.interface";
-
-import { tap } from "rxjs/operators";
-import { InfoSnackbarComponent } from "../snackbars/info-snackbar/info-snackbar.component";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import { Story } from '../interfaces/story.interface';
+import { Task } from '../interfaces/task.interface';
+import { InfoSnackbarComponent } from '../snackbars/info-snackbar/info-snackbar.component';
 
 @Injectable({
   providedIn: "root",
@@ -52,5 +50,19 @@ export class TaskService {
   }
   updateTask(data: any, projectId: number) {
     return this.http.put<Task>(`project/${projectId}/task`, data);
+  }
+
+  startWorkOnTask(projectId: number, taskId: number) {
+    return this.http.put<Task>(
+      `project/${projectId}/task-time/${taskId}/start`,
+      {}
+    );
+  }
+
+  stopWorkOnTask(projectId: number, taskId: number) {
+    return this.http.put<Task>(
+      `project/${projectId}/task-time/${taskId}/stop`,
+      {}
+    );
   }
 }

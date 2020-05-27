@@ -134,6 +134,30 @@
                       <mat-icon>clear</mat-icon>
                     </button>
                     <button
+                      *ngIf="canStartWork(task)"
+                      mat-icon-button
+                      (click)="startWork(task)"
+                      [matTooltip]="
+                        task.time
+                          ? 'Continue working on task'
+                          : 'Start working on task'
+                      "
+                      matTooltipPosition="below"
+                      style="color: #019cb1;"
+                    >
+                      <mat-icon>play_circle_outline</mat-icon>
+                    </button>
+                    <button
+                      *ngIf="canStopWork(task)"
+                      mat-icon-button
+                      (click)="stopWork(task)"
+                      matTooltip="Stop working on task"
+                      matTooltipPosition="below"
+                      style="color: #019cb1;"
+                    >
+                      <mat-icon>pause_circle_outline</mat-icon>
+                    </button>
+                    <button
                       *ngIf="canFinishTask(task)"
                       mat-icon-button
                       (click)="finishTask(task)"
@@ -153,6 +177,9 @@
                     >
                       <mat-icon>undo</mat-icon>
                     </button>
+                  </div>
+                  <div>
+                    <span><b>Work done:</b> {{ task.time | elapsed }}</span>
                   </div>
                 </div>
               </mat-card-content>

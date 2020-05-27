@@ -9,11 +9,11 @@ import { AddUserComponent } from './add-user/add-user.component';
 import { BoardsComponent } from './boards/boards.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
+import { EditUsersComponent } from './edit-users/edit-users.component';
 import { MaterialModule } from './material';
+import { MyAccountComponent } from './my-account/my-account.component';
 import { ProjectListComponent } from './project-list/project-list.component';
 import { UsersOnProjectComponent } from './users-on-project/users-on-project.component';
-import { EditUsersComponent } from './edit-users/edit-users.component';
-import { MyAccountComponent } from './my-account/my-account.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +24,7 @@ import { MyAccountComponent } from './my-account/my-account.component';
     AddProjectComponent,
     UsersOnProjectComponent,
     EditUsersComponent,
-    MyAccountComponent
+    MyAccountComponent,
   ],
   imports: [
     CommonModule,
@@ -33,7 +33,7 @@ import { MyAccountComponent } from './my-account/my-account.component';
     ReactiveFormsModule,
     MaterialModule,
     DragDropModule,
-    ModalsModule
-  ]
+    ModalsModule,
+  ],
 })
 export class DashboardModule {}
