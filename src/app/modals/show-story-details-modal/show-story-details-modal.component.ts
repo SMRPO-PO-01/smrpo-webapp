@@ -24,7 +24,6 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   isScrumMaster$: Observable<boolean>;
   isProjectOwner$: Observable<boolean>;
   isDeveloper$: Observable<boolean>;
-
   activeSprint: Sprint;
   user: User;
   story: Story;
@@ -32,7 +31,6 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   projectId: number;
   tasks: Task[];
   acceptanceTests;
-
   sprintStories: Story[];
   board: string;
   areTasksEmpty: boolean = true;
