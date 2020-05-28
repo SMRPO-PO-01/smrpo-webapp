@@ -8,13 +8,14 @@ import { Sprint } from "src/app/interfaces/sprint.interface";
 import { Story } from "src/app/interfaces/story.interface";
 import { Task, TASK_STATE } from "src/app/interfaces/task.interface";
 import { User } from "src/app/interfaces/user.interface";
+import { InfoSnackbarComponent } from "src/app/snackbars/info-snackbar/info-snackbar.component";
 import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
 import { RootStore } from "src/app/store/root.store";
 
 import { TaskService } from "../../services/task.service";
 import { CreateTasksModalComponent } from "../create-tasks-modal/create-tasks-modal.component";
 import { StorySizeModalComponent } from "../story-size-modal/story-size-modal.component";
-import { InfoSnackbarComponent } from "src/app/snackbars/info-snackbar/info-snackbar.component";
+
 @Component({
   selector: "app-show-story-details-modal",
   templateUrl: "./show-story-details-modal.component.html",
@@ -86,6 +87,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   storyInSprint() {
     this.isStoryInSprint = this.board == "Sprint";
     this.isStoryInProductBackLog = this.board == "Backlog";
+
     this.isStoryInAccepted = this.board == "Accepted";
   }
 
@@ -137,13 +139,29 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   }
 
   canDeleteTask(task: Task) {
-    return task.state !== TASK_STATE.ASSIGNED;
+    return ![TASK_STATE.ASSIGNED, TASK_STATE.ACTIVE].includes(task.state);
   }
 
   canRejectTask(task: Task) {
     return (
       this.isStoryInSprint &&
+      task.state !== TASK_STATE.ACTIVE &&
       task.state !== TASK_STATE.DONE &&
+      task.userId === this.rootStore.userStore.user.id
+    );
+  }
+
+  canStartWork(task: Task) {
+    return (
+      this.isStoryInSprint &&
+      task.state === TASK_STATE.ASSIGNED &&
+      task.userId === this.rootStore.userStore.user.id
+    );
+  }
+
+  canStopWork(task: Task) {
+    return (
+      task.state === TASK_STATE.ACTIVE &&
       task.userId === this.rootStore.userStore.user.id
     );
   }
@@ -151,7 +169,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   canFinishTask(task: Task) {
     return (
       this.isStoryInSprint &&
-      [TASK_STATE.ASSIGNED, TASK_STATE.ACTIVE].includes(task.state) &&
+      TASK_STATE.ASSIGNED === task.state &&
       task.userId === this.rootStore.userStore.user.id
     );
   }
@@ -168,6 +186,21 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     task.state = TASK_STATE.UNASSIGNED;
 
     this.taskService.updateTask(task, this.projectId).subscribe();
+  }
+
+  startWork(task: Task) {
+    this.taskService.startWorkOnTask(this.projectId, task.id).subscribe(() => {
+      task.state = TASK_STATE.ACTIVE;
+    });
+  }
+
+  stopWork(task: Task) {
+    this.taskService
+      .stopWorkOnTask(this.projectId, task.id)
+      .subscribe((res) => {
+        task.state = TASK_STATE.ASSIGNED;
+        task.time = res.time;
+      });
   }
 
   finishTask(task: Task) {

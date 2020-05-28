@@ -14,49 +14,46 @@
             </button>
         </div>
     </mat-card-title>
+
+
     <mat-tab-group>
         <mat-tab label="Details">
-            <div class="details">
-                <div class="boards">
-                    <div class="cards">
-                        <mat-card-content>
-                            <div class="group">
-                                <div class="group-title">Description:</div>
-                                <div class="description">{{ story.description }}</div>
-                            </div>
-                            <div class="group">
-                                <div class="group-title">Acceptance Tests:</div>
-                                <div class="group-content">
-                                    <div *ngFor="let item of acceptanceTests"># {{item}}</div>
-                                </div>
-                            </div>
-                            <div class="group">
-                                <div class="group-title">Reject reason:</div>
-                                <div class="group-content">{{ story.rejectReason }}</div>
-                            </div>
-                            <div class="last-group">
-                                <div class="group wrap">
-                                    <div class="group-title">Priority:</div>
-                                    <div class="group-content">{{ story.priority }}</div>
-                                </div>
-                                <div class="group wrap">
-                                    <div class="group-title">Bussiness Value:</div>
-                                    <div class="group-content">{{ story.businessValue }}</div>
-                                </div>
-                                <div class="group wrap">
-                                    <div class="group-title">Size:</div>
-                                    <div class="group-content">{{ story.size ? story.size : "None" }}</div>
-                                </div>
-                            </div>
-                        </mat-card-content>
+            <mat-card-content>
+                <div class="group">
+                    <div class="group-title">Description:</div>
+                    <div class="description">{{ story.description }}</div>
+                </div>
+                <div class="group">
+                    <div class="group-title">Acceptance Tests:</div>
+
+
+                    <div class="group-content">{{ story.acceptanceTests }}</div>
+                </div>
+                <div class="group">
+                    <div class="group-title">Reject reason:</div>
+
+
+                    <div class="group-content">{{ story.rejectReason }}</div>
+                </div>
+                <div class="last-group">
+                    <div class="group wrap">
+                        <div class="group-title">Priority:</div>
+                        <div class="group-content">{{ story.priority }}</div>
+                    </div>
+                    <div class="group wrap">
+                        <div class="group-title">Bussiness Value:</div>
+                        <div class="group-content">{{ story.businessValue }}</div>
+                    </div>
+                    <div class="group wrap">
+                        <div class="group-title">Size:</div>
+                        <div class="group-content">{{ story.size ? story.size : "None" }}</div>
                     </div>
                 </div>
-            </div>
+            </mat-card-content>
         </mat-tab>
-        <mat-tab
-            *ngIf="(isScrumMaster$ | async) || (isDeveloper$ | async)"
-            label="Tasks"
-        >
+
+
+        <mat-tab label="Tasks">
             <div class="tasks">
                 <div class="board">
                     <div class="cards">
@@ -75,10 +72,15 @@
                                 Create new task
                             </mat-card-content>
                         </mat-card>
+
+
                         <mat-card *ngFor="let task of tasks">
                             <div class="edit-buttons">
                                 <button
-                                    *ngIf="((isDeveloper$ | async) && (task.userId == whoAmI().id)) || (isScrumMaster$ | async)"
+                                    *ngIf="
+                    canDeleteTask(task) &&
+                    ((isDeveloper$ | async) && (task.userId == whoAmI().id)) || (isScrumMaster$ | async)
+                  "
                                     mat-icon-button
                                     color="white"
                                     (click)="deleteTask(task); $event.stopPropagation()"
@@ -88,9 +90,9 @@
                                     <mat-icon>delete</mat-icon>
                                 </button>
                                 <button
-                                    *ngIf="((isDeveloper$ | async) && (task.userId == whoAmI().id)) || (isScrumMaster$ | async)"
                                     mat-icon-button
                                     color="white"
+                                    *ngIf="((isDeveloper$ | async) && (task.userId == whoAmI().id)) || (isScrumMaster$ | async)"
                                     (click)="editTask(task); $event.stopPropagation()"
                                     matTooltip="Edit task"
                                     matTooltipPosition="below"
@@ -114,6 +116,8 @@
                                         {{ task.size }}
                                     </div>
                                 </div>
+
+
                                 <div style="padding-right: 50px;">
                                     <div>
                                         <span>
@@ -141,6 +145,30 @@
                                             <mat-icon>clear</mat-icon>
                                         </button>
                                         <button
+                                            *ngIf="canStartWork(task)"
+                                            mat-icon-button
+                                            (click)="startWork(task)"
+                                            [matTooltip]="
+                        task.time
+                          ? 'Continue working on task'
+                          : 'Start working on task'
+                      "
+                                            matTooltipPosition="below"
+                                            style="color: #019cb1;"
+                                        >
+                                            <mat-icon>play_circle_outline</mat-icon>
+                                        </button>
+                                        <button
+                                            *ngIf="canStopWork(task)"
+                                            mat-icon-button
+                                            (click)="stopWork(task)"
+                                            matTooltip="Stop working on task"
+                                            matTooltipPosition="below"
+                                            style="color: #019cb1;"
+                                        >
+                                            <mat-icon>pause_circle_outline</mat-icon>
+                                        </button>
+                                        <button
                                             *ngIf="canFinishTask(task)"
                                             mat-icon-button
                                             (click)="finishTask(task)"
@@ -160,6 +188,12 @@
                                         >
                                             <mat-icon>undo</mat-icon>
                                         </button>
+                                    </div>
+                                    <div>
+                                        <span>
+                                            <b>Work done:</b>
+                                            {{ task.time | elapsed }}
+                                        </span>
                                     </div>
                                 </div>
                             </mat-card-content>
