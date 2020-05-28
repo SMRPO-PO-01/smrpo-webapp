@@ -48,6 +48,7 @@ export class TaskService {
       )
     );
   }
+
   updateTask(data: any, projectId: number) {
     return this.http.put<Task>(`project/${projectId}/task`, data);
   }

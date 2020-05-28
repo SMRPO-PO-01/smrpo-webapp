@@ -1,20 +1,20 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ProjectWithStories } from 'src/app/interfaces/project.interface';
-import { Sprint } from 'src/app/interfaces/sprint.interface';
-import { Story } from 'src/app/interfaces/story.interface';
-import { Task, TASK_STATE } from 'src/app/interfaces/task.interface';
-import { User } from 'src/app/interfaces/user.interface';
-import { InfoSnackbarComponent } from 'src/app/snackbars/info-snackbar/info-snackbar.component';
-import { WarningSnackbarComponent } from 'src/app/snackbars/warning-snackbar/warning-snackbar.component';
-import { RootStore } from 'src/app/store/root.store';
+import { Component, Inject, OnInit } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { ProjectWithStories } from "src/app/interfaces/project.interface";
+import { Sprint } from "src/app/interfaces/sprint.interface";
+import { Story } from "src/app/interfaces/story.interface";
+import { Task, TASK_STATE } from "src/app/interfaces/task.interface";
+import { User } from "src/app/interfaces/user.interface";
+import { InfoSnackbarComponent } from "src/app/snackbars/info-snackbar/info-snackbar.component";
+import { WarningSnackbarComponent } from "src/app/snackbars/warning-snackbar/warning-snackbar.component";
+import { RootStore } from "src/app/store/root.store";
 
-import { TaskService } from '../../services/task.service';
-import { CreateTasksModalComponent } from '../create-tasks-modal/create-tasks-modal.component';
-import { StorySizeModalComponent } from '../story-size-modal/story-size-modal.component';
+import { TaskService } from "../../services/task.service";
+import { CreateTasksModalComponent } from "../create-tasks-modal/create-tasks-modal.component";
+import { StorySizeModalComponent } from "../story-size-modal/story-size-modal.component";
 
 @Component({
   selector: "app-show-story-details-modal",
@@ -25,14 +25,13 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   isScrumMaster$: Observable<boolean>;
   isProjectOwner$: Observable<boolean>;
   isDeveloper$: Observable<boolean>;
-
   activeSprint: Sprint;
   user: User;
   story: Story;
   project: ProjectWithStories;
   projectId: number;
   tasks: Task[];
-
+  acceptanceTests;
   sprintStories: Story[];
   board: string;
   areTasksEmpty: boolean = true;
@@ -57,6 +56,9 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     this.project = data.project;
     this.projectId = data.project.id;
     this.activeSprint = data.activeSprint;
+    this.acceptanceTests = data.story.acceptanceTests
+      .split("#")
+      .filter((x) => x != "");
     this.board = data.board;
   }
 
@@ -230,14 +232,12 @@ export class ShowStoryDetailsModalComponent implements OnInit {
       );
     });
   }
-  /**
-   *
-   * @param task Task Object task
-   * @todo Finish
-   */
+
   deleteTask(task: Task) {
     this.taskService.deleteTask(this.projectId, task.id).subscribe(
       (res) => {
+        this.tasks = this.tasks.filter((x) => x !== task);
+
         this.snackBar.openFromComponent(InfoSnackbarComponent, {
           data: {
             message: "Task deleted successfully!",
@@ -263,6 +263,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
           data: {
             project: this.project,
             storyId: this.story.id,
+            task: undefined,
           },
         })
         .afterClosed()
@@ -282,6 +283,28 @@ export class ShowStoryDetailsModalComponent implements OnInit {
   }
 
   editTask(task: Task) {
-    console.log(task);
+    if (this.isScrumMaster$ || this.isDeveloper$) {
+      this.dialog
+        .open(CreateTasksModalComponent, {
+          data: {
+            project: this.project,
+            storyId: this.story.id,
+            task: task,
+          },
+        })
+        .afterClosed()
+        .subscribe((res) => {
+          if (res != undefined) {
+            this.getTasks();
+          }
+        });
+    } else {
+      this.snackBar.openFromComponent(WarningSnackbarComponent, {
+        data: {
+          message: "Sorry you don't have the rights to update tasks!",
+        },
+        duration: 5000,
+      });
+    }
   }
 }
