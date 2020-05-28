@@ -122,22 +122,7 @@ export class BoardsComponent implements OnInit {
         },
       })
       .afterClosed()
-      .subscribe((story_res) => {
-        if(story_res) {
-          let index = this.backlogBoard.stories.indexOf(story);
-
-          if(story_res.id !== -1) {
-            if (index !== -1) {
-              this.backlogBoard.stories[index] = story_res;
-            }
-          }
-          else {
-            if (index > -1) {
-              this.backlogBoard.stories.splice(index, 1);
-            }
-          }
-        }
-      });
+      .subscribe(console.log);
   }
 
   getBoardOfStory(story: Story) {
