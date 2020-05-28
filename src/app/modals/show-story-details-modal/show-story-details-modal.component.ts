@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -15,6 +15,9 @@ import { RootStore } from 'src/app/store/root.store';
 import { TaskService } from '../../services/task.service';
 import { CreateTasksModalComponent } from '../create-tasks-modal/create-tasks-modal.component';
 import { StorySizeModalComponent } from '../story-size-modal/story-size-modal.component';
+import { StoryModalComponent } from '../story-modal/story-modal.component';
+import { ProjectService } from 'src/app/services/project.service';
+import { Board } from 'src/app/interfaces/board.interface';
 
 @Component({
   selector: "app-show-story-details-modal",
@@ -35,6 +38,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
 
   sprintStories: Story[];
   board: string;
+  boardStories: Board;
   areTasksEmpty: boolean = true;
   isStoryInSprint: boolean;
   isStoryInProductBackLog: boolean;
@@ -45,10 +49,12 @@ export class ShowStoryDetailsModalComponent implements OnInit {
       project: ProjectWithStories;
       story: Story;
       board: string;
+      boardStories: Board;
       activeSprint: Sprint;
     },
-
+    private dialogRef: MatDialogRef<ShowStoryDetailsModalComponent>,
     private taskService: TaskService,
+    private projectService: ProjectService,
     private dialog: MatDialog,
     private rootStore: RootStore,
     private snackBar: MatSnackBar
@@ -58,6 +64,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     this.projectId = data.project.id;
     this.activeSprint = data.activeSprint;
     this.board = data.board;
+    this.boardStories = data.boardStories;
   }
 
   ngOnInit(): void {
@@ -65,6 +72,7 @@ export class ShowStoryDetailsModalComponent implements OnInit {
     this.getUserRole();
     this.storyInSprint();
   }
+
   editTime(story: Story) {
     this.dialog
       .open(StorySizeModalComponent, {
@@ -80,6 +88,49 @@ export class ShowStoryDetailsModalComponent implements OnInit {
           this.getTasks();
         }
       });
+  }
+
+  editStory(story: Story) {
+    this.dialog
+      .open(StoryModalComponent, {
+        data: {
+          projectId: this.project.id,
+          story,
+        },
+      })
+      .afterClosed()
+      .subscribe((story) => {
+        Object.assign(this.story, story);
+        console.log(this.board);
+      });
+  }
+
+  deleteStory(story: Story) {
+    this.projectService.deleteStory(this.projectId, story.id).subscribe(
+      (res) => {
+        this.snackBar.openFromComponent(InfoSnackbarComponent, {
+          data: {
+            message: "Story deleted successfully.",
+          },
+          duration: 5000,
+        });
+
+        let delIndex = this.boardStories.stories.indexOf(story);
+        if(delIndex !== -1) {
+          this.boardStories.stories.splice(delIndex, 1);
+        }
+        this.dialogRef.close(res);
+      },
+      (error) => {
+        this.snackBar.openFromComponent(InfoSnackbarComponent, {
+          data: {
+            message: "Error: " + error.body.message,
+          },
+          duration: 5000,
+        });
+        console.error(error);
+      }
+    );
   }
 
   storyInSprint() {

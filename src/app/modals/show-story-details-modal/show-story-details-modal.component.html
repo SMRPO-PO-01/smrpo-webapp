@@ -12,6 +12,26 @@
       >
         <mat-icon>schedule</mat-icon>
       </button>
+      <button
+        *ngIf="isStoryInProductBackLog && (isScrumMaster$ || isProjectOwner$ | async)"
+        mat-icon-button
+        color="black"
+        matTooltip="Edit story"
+        matTooltipPosition="below"
+        (click)="editStory(story); $event.stopPropagation()"
+      >
+          <mat-icon>settings</mat-icon>
+      </button>
+      <button
+      *ngIf="isStoryInProductBackLog && (isScrumMaster$ || isProjectOwner$ | async)"
+        mat-icon-button
+        color="black"
+        matTooltip="Delete story"
+        matTooltipPosition="below"
+        (click)="deleteStory(story); $event.stopPropagation()"
+      >
+          <mat-icon>delete</mat-icon>
+      </button>
     </div></mat-card-title
   >
 

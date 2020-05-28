@@ -104,6 +104,9 @@ export class BoardsComponent implements OnInit {
   }
 
   openDetails(story) {
+    let board = this.getBoardOfStory(story);
+    let boardStories = (board == "Backlog" ? this.backlogBoard : (board == "Sprint" ? this.sprintBoard : this.acceptedBoard))
+
     this.dialog
       .open(ShowStoryDetailsModalComponent, {
         height: "800px",
@@ -113,12 +116,28 @@ export class BoardsComponent implements OnInit {
           story: story,
 
           board: this.getBoardOfStory(story),
+          boardStories: boardStories,
 
           activeSprint: this.activeSprint,
         },
       })
       .afterClosed()
-      .subscribe();
+      .subscribe((story_res) => {
+        if(story_res) {
+          let index = this.backlogBoard.stories.indexOf(story);
+
+          if(story_res.id !== -1) {
+            if (index !== -1) {
+              this.backlogBoard.stories[index] = story_res;
+            }
+          }
+          else {
+            if (index > -1) {
+              this.backlogBoard.stories.splice(index, 1);
+            }
+          }
+        }
+      });
   }
 
   getBoardOfStory(story: Story) {
