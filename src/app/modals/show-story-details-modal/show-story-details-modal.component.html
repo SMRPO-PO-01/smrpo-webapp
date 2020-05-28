@@ -1,6 +1,6 @@
 <div class="project-container">
-    <mat-card-title class="story-details">
-        {{ story.title }}
+  <mat-card-title class="story-details"
+    >{{ story.title }}
         <div class="edit-buttons">
             <button
                 *ngIf="isStoryInProductBackLog && (isScrumMaster$ | async)"
@@ -12,10 +12,28 @@
             >
                 <mat-icon>schedule</mat-icon>
             </button>
+            <button
+                *ngIf="isStoryInProductBackLog && (isScrumMaster$ || isProjectOwner$ | async)"
+                mat-icon-button
+                color="black"
+                matTooltip="Edit story"
+                matTooltipPosition="below"
+                (click)="editStory(story); $event.stopPropagation()"
+            >
+                <mat-icon>settings</mat-icon>
+            </button>
+            <button
+            *ngIf="isStoryInProductBackLog && (isScrumMaster$ || isProjectOwner$ | async)"
+                mat-icon-button
+                color="black"
+                matTooltip="Delete story"
+                matTooltipPosition="below"
+                (click)="deleteStory(story); $event.stopPropagation()"
+            >
+                <mat-icon>delete</mat-icon>
+            </button>
         </div>
     </mat-card-title>
-
-
     <mat-tab-group>
         <mat-tab label="Details">
             <mat-card-content>

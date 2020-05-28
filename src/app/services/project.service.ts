@@ -112,6 +112,10 @@ export class ProjectService {
       );
   }
 
+  deleteStory(projectId: number, storyId: number) {
+    return this.http.delete(`project/${projectId}/story/${storyId}`);
+  }
+
   getStories(projectId: number) {
     return this.http.get<Story[]>(`project/${projectId}/story`);
   }

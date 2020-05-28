@@ -1,6 +1,8 @@
 @import "../../../variables";
 
 .story-details {
+  position: relative;
+  
   .edit-buttons {
     color: #000000;
     display: inline;
